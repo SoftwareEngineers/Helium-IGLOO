@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="startBtn_width">210dp</dimen>
+    <dimen name="startBtn_heigth">55dp</dimen>
+    <dimen name="tutorialBg_height">420dp</dimen>
+    <dimen name="tutorialImage_dimen">200dp</dimen>
+    <dimen name="tutorialHeadText_size">20sp</dimen>
+    <dimen name="tutorialTextBox_width">290dp</dimen>
+    <dimen name="sixteen">16sp</dimen>
+    <dimen name="pagerHeight">595dp</dimen>
+    <dimen name="sliderWidth">100dp</dimen>
+    <dimen name="sliderHeight">45dp</dimen>
+    <dimen name="logoDimen">100dp</dimen>
+    <dimen name="fourteen">14sp</dimen>
+</resources>

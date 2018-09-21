@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">IGLOO</string>
+    <string name="start_text">GET STARTED</string>
+    <string name="nothing">nothing</string>
+    <string name="tutorial_text">CREATE LECTURES</string>
+    <string name="tutorial_desc">You can create your own lecture and
+        do discussions among users live.</string>
+    <string name="back">BACK</string>
+    <string name="next">NEXT</string>
+    <string name="greetings">WELCOME TO IGLOO</string>
+    <string name="meaning">interactive global learning outcome online</string>
+</resources>
