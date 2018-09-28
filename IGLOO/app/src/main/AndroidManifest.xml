@@ -2,6 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="helium.com.igloo">
 
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -16,9 +22,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".TutorialView"></activity>
-        <activity android:name=".LoginView"></activity>
-        <activity android:name=".RegisterView"></activity>
+        <activity android:name=".TutorialView" />
+        <activity android:name=".LoginView" />
+        <activity android:name=".RegisterView" />
+        <activity android:name=".CreatePrivateLectureView" />
+        <activity android:name=".CreatePublicLectureView" />
+        <activity android:name=".LectureView" />
+        <activity android:name=".HomeView" />
+        <activity android:name=".ViewLectureView"></activity>
     </application>
 
 </manifest>

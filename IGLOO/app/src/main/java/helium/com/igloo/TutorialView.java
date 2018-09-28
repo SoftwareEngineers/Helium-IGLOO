@@ -1,5 +1,6 @@
 package helium.com.igloo;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -49,6 +50,10 @@ public class TutorialView extends AppCompatActivity {
         mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(mNextButton.getText().toString() == "LET'S GO") {
+                    Intent intent = new Intent(TutorialView.this, RegisterView.class);
+                    startActivity(intent);
+                }
                 mTutorialPager.setCurrentItem(mCurrentPage + 1);
             }
         });
