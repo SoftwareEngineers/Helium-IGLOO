@@ -33,7 +33,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.w3c.dom.Text;
 
-public class SignInActivity extends AppCompatActivity {
+public class SigningInActivity extends AppCompatActivity {
 
     private TextInputEditText mEmail;
     private TextInputEditText mPassword;
@@ -50,12 +50,9 @@ public class SignInActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign_in);
+        setContentView(R.layout.activity_signing_in);
 
         auth = FirebaseAuth.getInstance();
-        if (auth.getCurrentUser() != null) {
-            finish();
-        }
 
         mEmail = (TextInputEditText) findViewById(R.id.email_signin_input);
         mPassword = (TextInputEditText) findViewById(R.id.password_signin_input);
@@ -102,42 +99,23 @@ public class SignInActivity extends AppCompatActivity {
 
             try {
                 auth.signInWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(SignInActivity.this, new OnCompleteListener<AuthResult>() {
+                        .addOnCompleteListener(SigningInActivity.this, new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
-                                // If sign in fails, display a message to the user. If sign in succeeds
-                                // the auth state listener will be notified and logic to handle the
-                                // signed in user can be handled in the listener.
+
                                 if (!task.isSuccessful()) {
                                     if(!isOnline()){
                                         mProgressDialog.dismiss();
-                                        Toast.makeText(SignInActivity.this, "No internet connection", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(SigningInActivity.this, "No internet connection", Toast.LENGTH_SHORT).show();
                                     }
                                     else{
                                         mProgressDialog.dismiss();
-                                        Toast.makeText(SignInActivity.this, "Check your email and password", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(SigningInActivity.this, "Check your email and password", Toast.LENGTH_LONG).show();
                                     }
                                 }
                                 else {
-                                    final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("UserModel");
-                                    DatabaseReference userRef = databaseReference.child(auth.getCurrentUser().getUid());
-                                    DatabaseReference setupRef = userRef.child("setup");
-
-                                    setupRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot) {
-                                            Boolean value = dataSnapshot.getValue(Boolean.class);
-                                            if (value == true) {
-                                                CountDown cd = new CountDown(100, 100);
-                                                cd.start();
-                                            }
-                                        }
-
-                                        @Override
-                                        public void onCancelled(DatabaseError databaseError) {
-
-                                        }
-                                    });
+                                    CountDown cd = new CountDown(100, 100);
+                                    cd.start();
                                 }
                             }
                         });
@@ -149,7 +127,7 @@ public class SignInActivity extends AppCompatActivity {
     private class SwitchPage implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            startActivity(new Intent(SignInActivity.this, SignUpActivity.class));
+            startActivity(new Intent(SigningInActivity.this, SigningUpActivity.class));
         }
     }
 
@@ -174,19 +152,16 @@ public class SignInActivity extends AppCompatActivity {
         @Override
         public void onFinish() {
             mProgressDialog.dismiss();
-            //startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+            startActivity(new Intent(SigningInActivity.this, LandingActivity.class));
+
         }
     }
 
     private boolean isOnline() {
         ConnectivityManager cm = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        assert cm != null;
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
 
-        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 }

@@ -22,8 +22,7 @@ public class LandingActivity extends AppCompatActivity {
     private class Click implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            Intent intent = new Intent(LandingActivity.this, TutorialActitvity.class);
-            startActivity(intent);
+            startActivity(new Intent(LandingActivity.this, TutorialActivity.class));
         }
     }
 }

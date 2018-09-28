@@ -2,12 +2,12 @@ package helium.com.igloo;
 
 import android.content.Intent;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -25,7 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import helium.com.igloo.Models.UserModel;
 
-public class SignUpActivity extends AppCompatActivity {
+public class SigningUpActivity extends AppCompatActivity {
 
     private TextInputEditText mName;
     private TextInputEditText mEmail;
@@ -43,12 +43,9 @@ public class SignUpActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign_up);
+        setContentView(R.layout.activity_signing_up);
 
         auth = FirebaseAuth.getInstance();
-        if (auth.getCurrentUser() != null) {
-            finish();
-        }
 
         mName = (TextInputEditText) findViewById(R.id.name_signup_input);
         mEmail = (TextInputEditText) findViewById(R.id.email_signup_input);
@@ -90,17 +87,17 @@ public class SignUpActivity extends AppCompatActivity {
     private class SignUp implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
+            auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(SigningUpActivity.this, new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
 
                     if (!task.isSuccessful()) {
-                        Toast.makeText(SignUpActivity.this, "Authentication failed." + task.getException(),
+                        Toast.makeText(SigningUpActivity.this, "Authentication failed." + task.getException(),
                                 Toast.LENGTH_SHORT).show();
                     }
                     else {
-                        Toast.makeText(SignUpActivity.this, "You have registered successfully", Toast.LENGTH_SHORT).show();
-                        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("UserModel");
+                        Toast.makeText(SigningUpActivity.this, "You have registered successfully", Toast.LENGTH_SHORT).show();
+                        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User");
                         UserModel user = new UserModel(name, email, password, "user-512.png");
 
                         String userID = auth.getCurrentUser().getUid();
@@ -140,7 +137,7 @@ public class SignUpActivity extends AppCompatActivity {
     private class SwitchPage implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            startActivity(new Intent(SignUpActivity.this, SignInActivity.class));
+            startActivity(new Intent(SigningUpActivity.this, SigningInActivity.class));
         }
     }
 }

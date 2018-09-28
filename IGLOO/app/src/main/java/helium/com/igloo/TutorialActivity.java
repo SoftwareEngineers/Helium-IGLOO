@@ -9,10 +9,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import helium.com.igloo.Adapters.TutorialSlideAdapter;
 
-public class TutorialActitvity extends AppCompatActivity {
+public class TutorialActivity extends AppCompatActivity {
 
     private ViewPager mTutorialPager;
     private LinearLayout mTutorialDots;
@@ -65,8 +66,7 @@ public class TutorialActitvity extends AppCompatActivity {
     private class Click implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            Intent intent = new Intent(TutorialActitvity.this, SignInActivity.class);
-            startActivity(intent);
+            startActivity(new Intent(TutorialActivity.this, SigningInActivity.class));
         }
     }
 
