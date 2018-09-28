@@ -5,7 +5,13 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorAccent">@color/colorPrimary</item>
+    </style>
+
+    <style name="passwordFields" parent="TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/montserrat</item>
+        <item name="android:textColor">@color/lightGrey</item>
+        <item name="android:textSize">@dimen/fourteen</item>
     </style>
 
 </resources>

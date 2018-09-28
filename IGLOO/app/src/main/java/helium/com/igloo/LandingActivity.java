@@ -6,14 +6,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-public class LandingView extends AppCompatActivity {
+public class LandingActivity extends AppCompatActivity {
 
     private Button mGetStarted;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_landing_view);
+        setContentView(R.layout.activity_landing);
 
         mGetStarted = (Button)findViewById(R.id.get_started);
         mGetStarted.setOnClickListener(new Click());
@@ -22,7 +22,7 @@ public class LandingView extends AppCompatActivity {
     private class Click implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            Intent intent = new Intent(LandingView.this, TutorialView.class);
+            Intent intent = new Intent(LandingActivity.this, TutorialActitvity.class);
             startActivity(intent);
         }
     }
