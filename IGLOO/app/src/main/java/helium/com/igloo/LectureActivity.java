@@ -1,7 +1,6 @@
 package helium.com.igloo;
 
 import android.content.Intent;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,7 +8,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,28 +19,32 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.opentok.android.BaseVideoRenderer;
 import com.opentok.android.OpentokError;
+import com.opentok.android.PublisherKit;
 import com.opentok.android.Session;
 import com.opentok.android.Stream;
+import com.opentok.android.Publisher;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import helium.com.igloo.Adapters.QuestionAdapter;
 import helium.com.igloo.Models.LectureModel;
 import helium.com.igloo.Models.QuestionModel;
 
-public class LectureView extends AppCompatActivity implements Session.SessionListener{
+public class LectureActivity extends AppCompatActivity implements Session.SessionListener, PublisherKit.PublisherListener{
 
     private TextView textLectureTitle;
     private TextView textLectureDescription;
@@ -49,6 +53,10 @@ public class LectureView extends AppCompatActivity implements Session.SessionLis
     private List<QuestionModel> questions;
     private QuestionAdapter questionAdapter;
     private String key;
+    private FrameLayout mLectureView;
+    private Publisher mPublisher;
+    private Session mSession;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,13 +65,16 @@ public class LectureView extends AppCompatActivity implements Session.SessionLis
         key = intent.getStringExtra("key");
         Toast.makeText(this, key, Toast.LENGTH_SHORT).show();
         setContentView(R.layout.activity_lecture_view);
+        progressBar = (ProgressBar)findViewById(R.id.prog_lecture);
+        mLectureView = (FrameLayout) findViewById(R.id.frm_lecture_view);
         textLectureTitle = (TextView)findViewById(R.id.txt_lecture_title);
         textLectureDescription = (TextView)findViewById(R.id.txt_lecture_description);
         buttonStartLecture = (Button)findViewById(R.id.btn_start_lecture);
         buttonStartLecture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                progressBar.setVisibility(View.VISIBLE);
+                startLecture();
             }
         });
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Lectures");
@@ -73,7 +84,7 @@ public class LectureView extends AppCompatActivity implements Session.SessionLis
                 LectureModel mLectureModel = dataSnapshot.child(key).getValue(LectureModel.class);
                 textLectureTitle.setText(mLectureModel.getTitle());
                 textLectureDescription.setText(mLectureModel.getDescription());
-                Toast.makeText(LectureView.this, mLectureModel.getTitle(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(LectureActivity.this, mLectureModel.getTitle(),Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -93,7 +104,6 @@ public class LectureView extends AppCompatActivity implements Session.SessionLis
 
     public void startLecture(){
         RequestQueue reqQueue = Volley.newRequestQueue(this);
-        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Lectures");
         reqQueue.add(new JsonObjectRequest(Request.Method.GET,
                 "https://iglov2.herokuapp.com" + "/create_session",
                 null, new Response.Listener<JSONObject>() {
@@ -104,19 +114,17 @@ public class LectureView extends AppCompatActivity implements Session.SessionLis
                     final String api_key = response.getString("api_key");
                     final String session_id = response.getString("session_id");
                     final String token = response.getString("token");
-                    final Session mSession = new Session.Builder(LectureView.this, api_key, session_id).build();
-                    mSession.setSessionListener(LectureView.this);
+                    mSession = new Session.Builder(LectureActivity.this, api_key, session_id).build();
+                    mSession.setSessionListener(LectureActivity.this);
                     mSession.connect(token);
-                    databaseReference.child(key).child("id").setValue(session_id);
-                    databaseReference.child(key).child("isLive").setValue(true);
                 } catch (JSONException error) {
-                    Toast.makeText(LectureView.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LectureActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(LectureView.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(LectureActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         }));
 
@@ -124,7 +132,19 @@ public class LectureView extends AppCompatActivity implements Session.SessionLis
 
     @Override
     public void onConnected(Session session) {
-
+        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Lectures");
+        databaseReference.child(key).child("session_id").setValue(session.getSessionId()).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                databaseReference.child(key).child("live").setValue(true);
+            }
+        });
+        mPublisher = new Publisher.Builder(LectureActivity.this ).build();
+        mPublisher.setPublisherListener(this);
+        progressBar.setVisibility(View.GONE);
+        mPublisher.getRenderer().setStyle(BaseVideoRenderer.STYLE_VIDEO_SCALE, BaseVideoRenderer.STYLE_VIDEO_FILL);
+        mLectureView.addView(mPublisher.getView(), 0);
+        mSession.publish(mPublisher);
     }
 
     @Override
@@ -139,25 +159,25 @@ public class LectureView extends AppCompatActivity implements Session.SessionLis
 
     @Override
     public void onStreamDropped(Session session, Stream stream) {
-
+        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Lectures");
+        databaseReference.child(key).child("live").setValue(false);
     }
 
     @Override
     public void onError(Session session, OpentokError opentokError) {
-
+        Toast.makeText(LectureActivity.this, opentokError.getMessage(), Toast.LENGTH_SHORT).show();
     }
 
     public void loadQuestions(){
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Questions");
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        databaseReference.orderByChild("time").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                questions.clear();
                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
-                    Toast.makeText(LectureView.this,childSnapshot.child("lecture").getValue(String.class) + " == " + key, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LectureActivity.this,childSnapshot.child("lecture").getValue(String.class) + " == " + key, Toast.LENGTH_SHORT).show();
                     if(childSnapshot.child("lecture").getValue(String.class).equals(key)){
-                        QuestionModel question = new QuestionModel();
-                        question.setOwner_id(childSnapshot.child("owner_id").getValue(String.class));
-                        question.setQuestion(childSnapshot.child("question").getValue(String.class));
+                        QuestionModel question = childSnapshot.getValue(QuestionModel.class);
                         questions.add(question);
                         questionAdapter.notifyDataSetChanged();
                         recyclerView.smoothScrollToPosition(0);
@@ -167,8 +187,30 @@ public class LectureView extends AppCompatActivity implements Session.SessionLis
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
             }
         });
+    }
+
+    @Override
+    public void onStreamCreated(PublisherKit publisherKit, Stream stream) {
+        Toast.makeText(LectureActivity.this, "Lecture started successfully", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onStreamDestroyed(PublisherKit publisherKit, Stream stream) {
+        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Lectures");
+        databaseReference.child(key).child("isLive").setValue(false);
+    }
+
+    @Override
+    public void onError(PublisherKit publisherKit, OpentokError opentokError) {
+        Toast.makeText(LectureActivity.this, opentokError.getMessage(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onStop() {
+        mSession.unpublish(mPublisher);
+        mSession.disconnect();
+        super.onStop();
     }
 }

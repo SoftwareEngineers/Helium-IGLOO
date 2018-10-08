@@ -14,13 +14,13 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:contentDescription="@string/nothing"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.236"
-        app:srcCompat="@mipmap/one"
-        android:contentDescription="@string/nothing" />
+        app:layout_constraintVertical_bias="0.256"
+        app:srcCompat="@mipmap/one" />
 
     <TextView
         android:id="@+id/tutorial_heading"
@@ -32,22 +32,22 @@
         android:layout_marginTop="8dp"
         android:fontFamily="@font/montserrat_bold"
         android:text="@string/tutorial_text"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@color/white"
         android:textSize="@dimen/tutorialHeadText_size"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.596" />
+        app:layout_constraintVertical_bias="0.609" />
 
     <TextView
         android:id="@+id/tutorial_description"
         android:layout_width="@dimen/tutorialTextBox_width"
-        android:layout_height="57dp"
-        android:layout_marginBottom="144dp"
+        android:layout_height="53dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:fontFamily="@font/montserrat"
         android:gravity="center_horizontal"
         android:text="@string/tutorial_desc"
@@ -56,5 +56,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.798" />
 </android.support.constraint.ConstraintLayout>

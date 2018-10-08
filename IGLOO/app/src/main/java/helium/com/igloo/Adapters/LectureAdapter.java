@@ -2,23 +2,25 @@ package helium.com.igloo.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.media.Image;
-import android.support.constraint.ConstraintLayout;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
 import helium.com.igloo.Models.LectureModel;
 import helium.com.igloo.R;
-import helium.com.igloo.RegisterView;
-import helium.com.igloo.ViewLectureView;
+import helium.com.igloo.ViewLectureActivity;
 
 public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.LectureViewHolder> {
     private List<LectureModel> lectures;
@@ -40,13 +42,26 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.LectureV
         lectureViewHolder.textOwner.setText(p.getOwnerId());
         lectureViewHolder.textTitle.setText(p.getTitle());
         lectureViewHolder.texttime_created.setText(p.getTime_created());
+        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users");
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String name = dataSnapshot.child(p.getOwnerId()).child("name").getValue(String.class);
+                lectureViewHolder.textOwner.setText(name);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
         if(p.getPublic() != true){
             lectureViewHolder.imagePrivate.setVisibility(View.VISIBLE);
         }
         lectureViewHolder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context,ViewLectureView.class);
+                Intent intent = new Intent(context,ViewLectureActivity.class);
                 intent.putExtra("key", p.getId());
                 context.startActivity(intent);
             }

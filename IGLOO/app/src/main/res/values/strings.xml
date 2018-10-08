@@ -1,15 +1,26 @@
 <resources>
     <string name="app_name">IGLOO</string>
     <string name="start_text">GET STARTED</string>
-    <string name="nothing">nothing</string>
+    <string name="nothing">""</string>
     <string name="tutorial_text">CREATE LECTURES</string>
     <string name="tutorial_desc">You can create your own lecture and
         do discussions among users live.</string>
     <string name="back">BACK</string>
     <string name="next">NEXT</string>
+    <string name="skip">SKIP</string>
+    <string name="go">"LET'S GO"</string>
     <string name="greetings">WELCOME TO IGLOO</string>
     <string name="meaning">interactive global learning outcome online</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="email">EMAIL</string>
+    <string name="password">PASSWORD</string>
+    <string name="name">NAME</string>
+    <string name="sign_in">SIGN IN</string>
+    <string name="sign_in_small">Sign in</string>
+    <string name="not_sign_up">Do not have an account yet?</string>
+    <string name="sign_up">SIGN UP</string>
+    <string name="sign_up_small">Sign up</string>
+    <string name="have_account">Already have an account.</string>
+    <string name="empty">This field is required</string>
+    <string name="create_account">Create your account</string>
+    <string name="terms">By signing up, I accept the Terms and Conditions</string>
 </resources>

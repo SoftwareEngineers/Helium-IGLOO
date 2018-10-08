@@ -11,8 +11,9 @@ public class LectureModel {
     private Boolean isAvailable;
     private Boolean isLive;
     private String time_created;
+    private String session_id;
 
-    public LectureModel(String id, String owner_id, String title, String description, String password, Boolean isPublic, Boolean isAvailable, Boolean isLive, String time_created) {
+    public LectureModel(String id, String owner_id, String title, String description, String password, Boolean isPublic, Boolean isAvailable, Boolean isLive, String time_created, String session_id) {
         this.id = id;
         this.owner_id = owner_id;
         this.title = title;
@@ -22,18 +23,18 @@ public class LectureModel {
         this.isAvailable = isAvailable;
         this.isLive = isLive;
         this.time_created = time_created;
+        this.session_id = session_id;
     }
 
     public LectureModel() {
-        this.id = "";
-        this.owner_id = "";
-        this.title = "";
-        this.description = "";
-        this.password = "";
-        this.isPublic = true;
-        this.isAvailable = false;
-        isLive = false;
-        time_created = "";
+    }
+
+    public String getSession_id() {
+        return session_id;
+    }
+
+    public void setSession_id(String session_id) {
+        this.session_id = session_id;
     }
 
     public String getTime_created(){

@@ -2,6 +2,8 @@ package helium.com.igloo.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +11,13 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
@@ -18,6 +27,7 @@ import helium.com.igloo.R;
 public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.QuestionViewHolder> {
     private List<QuestionModel> questions;
     private Context context;
+    private Drawable drawable;
 
     public QuestionAdapter(List<QuestionModel> questions, Context context) {
         this.questions = questions;
@@ -32,7 +42,22 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.Questi
     @Override
     public void onBindViewHolder(final QuestionViewHolder questionViewHolder, int i) {
         final QuestionModel p = questions.get(i);
-        questionViewHolder.textOwner.setText(p.getOwner_id());
+        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users");
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String name = dataSnapshot.child(p.getOwner_id()).child("name").getValue(String.class);
+                questionViewHolder.textOwner.setText(name);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        if(p.getIs_call()){
+            questionViewHolder.textOwner.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_settings_phone_black_24dp, 0);
+        }
         questionViewHolder.textQuestion.setText(p.getQuestion());
     }
 

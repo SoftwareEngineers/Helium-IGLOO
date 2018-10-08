@@ -17,6 +17,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import helium.com.igloo.Adapters.LectureAdapter;
@@ -56,13 +57,15 @@ public class LiveLectureFragment extends Fragment {
 
     public void loadLectures(){
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Lectures");
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        databaseReference.orderByChild("time_created").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                lectures.clear();
                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                     if (childSnapshot.child("live").getValue(Boolean.class) == true) {
                         LectureModel lecture = childSnapshot.getValue(LectureModel.class);
                         lectures.add(lecture);
+                        Collections.reverse(lectures);
                         lectureAdapter.notifyDataSetChanged();
                         recyclerView.smoothScrollToPosition(0);
                     }
