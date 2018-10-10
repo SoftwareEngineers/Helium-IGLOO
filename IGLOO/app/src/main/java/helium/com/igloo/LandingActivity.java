@@ -22,7 +22,7 @@ public class LandingActivity extends AppCompatActivity {
     private class Click implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            startActivity(new Intent(LandingActivity.this, TutorialActivity.class));
+            startActivity(new Intent(LandingActivity.this, SigningInActivity.class));
         }
     }
 }

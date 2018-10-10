@@ -11,6 +11,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import helium.com.igloo.Adapters.TutorialSlideAdapter;
 
 public class TutorialActivity extends AppCompatActivity {
@@ -21,6 +25,8 @@ public class TutorialActivity extends AppCompatActivity {
     private Button mNextButton;
     private Button mSkipButton;
     private Button mGoButton;
+
+    private FirebaseAuth auth;
 
     private TextView[] mDots;
     private int mCurrentPage;
@@ -66,7 +72,7 @@ public class TutorialActivity extends AppCompatActivity {
     private class Click implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            startActivity(new Intent(TutorialActivity.this, SigningInActivity.class));
+            startActivity(new Intent(TutorialActivity.this, HomeActivity.class));
         }
     }
 

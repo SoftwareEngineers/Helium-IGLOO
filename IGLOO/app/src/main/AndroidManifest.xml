@@ -21,7 +21,8 @@
         </activity>
         <activity android:name=".TutorialActivity" />
         <activity android:name=".SigningInActivity" />
-        <activity android:name=".SigningUpActivity"></activity>
+        <activity android:name=".SigningUpActivity" />
+        <activity android:name=".HomeActivity"></activity>
     </application>
 
 </manifest>
