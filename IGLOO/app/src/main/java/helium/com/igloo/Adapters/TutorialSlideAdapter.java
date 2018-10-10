@@ -21,7 +21,7 @@ public class TutorialSlideAdapter extends PagerAdapter {
     public String[] headings = {"CREATE LECTURES", "LEARN AND INTERACT", "INDEXED SEARCHING"};
     public String[] description = {
             "You can create your own lecture and do discussions among users live.",
-            "Ask questions during the discussion byface-to-face video chat or just type it.",
+            "Ask questions during the discussion by a video chat or by typing it.",
             "Search topics into videos and easily access them through time stamps. "
     };
 

@@ -1,5 +1,6 @@
 package helium.com.igloo;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -8,15 +9,18 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import helium.com.igloo.Adapters.TutorialSlideAdapter;
 
-public class TutorialView extends AppCompatActivity {
+public class TutorialActivity extends AppCompatActivity {
 
     private ViewPager mTutorialPager;
     private LinearLayout mTutorialDots;
     private Button mBackButton;
     private Button mNextButton;
+    private Button mSkipButton;
+    private Button mGoButton;
 
     private TextView[] mDots;
     private int mCurrentPage;
@@ -26,12 +30,17 @@ public class TutorialView extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tutorial_view);
+        setContentView(R.layout.activity_tutorial);
 
         mTutorialPager = (ViewPager) findViewById(R.id.tutorial_pager);
         mTutorialDots = (LinearLayout) findViewById(R.id.tutorial_dots);
         mBackButton = (Button) findViewById(R.id.prev_tutorial_button);
         mNextButton = (Button) findViewById(R.id.next_tutorial_button);
+        mSkipButton = (Button) findViewById(R.id.skip_tutorial_button);
+        mGoButton = (Button) findViewById(R.id.go_tutorial_button);
+
+        mSkipButton.setOnClickListener(new Click());
+        mGoButton.setOnClickListener(new Click());
 
         sliderAdapter = new TutorialSlideAdapter(this);
         mTutorialPager.setAdapter(sliderAdapter);
@@ -49,9 +58,20 @@ public class TutorialView extends AppCompatActivity {
         mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(mNextButton.getText().toString() == "LET'S GO") {
+                    Intent intent = new Intent(TutorialActivity.this, HomeActivity.class);
+                    startActivity(intent);
+                }
                 mTutorialPager.setCurrentItem(mCurrentPage + 1);
             }
         });
+    }
+
+    private class Click implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            startActivity(new Intent(TutorialActivity.this, SigningInActivity.class));
+        }
     }
 
     public void addDotsIndicator(int position){
@@ -83,29 +103,25 @@ public class TutorialView extends AppCompatActivity {
             addDotsIndicator(position);
             mCurrentPage = position;
 
-            if(position == 0){
-                mBackButton.setEnabled(false);
-                mNextButton.setEnabled(true);
-                mBackButton.setVisibility(View.INVISIBLE);
-
-                mNextButton.setText("NEXT");
-                mBackButton.setText("");
-            }
-            else if(position == mDots.length - 1){
+            if(position == mDots.length - 1){
                 mBackButton.setEnabled(true);
-                mNextButton.setEnabled(true);
+                mNextButton.setEnabled(false);
+                mSkipButton.setEnabled(false);
+                mGoButton.setEnabled(true);
                 mBackButton.setVisibility(View.VISIBLE);
-
-                mNextButton.setText("LET'S GO");
-                mBackButton.setText("BACK");
+                mNextButton.setVisibility(View.INVISIBLE);
+                mSkipButton.setVisibility(View.INVISIBLE);
+                mGoButton.setVisibility(View.VISIBLE);
             }
             else{
                 mBackButton.setEnabled(true);
                 mNextButton.setEnabled(true);
+                mSkipButton.setEnabled(true);
+                mGoButton.setEnabled(false);
                 mBackButton.setVisibility(View.VISIBLE);
-
-                mNextButton.setText("NEXT");
-                mBackButton.setText("BACK");
+                mNextButton.setVisibility(View.VISIBLE);
+                mSkipButton.setVisibility(View.VISIBLE);
+                mGoButton.setVisibility(View.INVISIBLE);
             }
         }
 
@@ -114,4 +130,8 @@ public class TutorialView extends AppCompatActivity {
 
         }
     };
+
+    public void onBackPressed(){
+        moveTaskToBack(false);
+    }
 }

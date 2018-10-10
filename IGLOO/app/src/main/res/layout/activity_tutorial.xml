@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/tutorial_background1"
-    tools:context=".TutorialView">
+    android:background="@mipmap/tutorial_background"
+    tools:context=".TutorialActivity">
 
     <android.support.v4.view.ViewPager
         android:id="@+id/tutorial_pager"
@@ -48,6 +48,7 @@
         android:text="@string/back"
         android:textColor="@color/colorPrimary"
         android:textSize="@dimen/sixteen"
+        android:enabled="false"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -70,23 +71,45 @@
         android:textSize="@dimen/sixteen"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.791"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.525" />
+        app:layout_constraintVertical_bias="1.0" />
 
     <Button
-        android:id="@+id/next_tutorial_button2"
+        android:id="@+id/skip_tutorial_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@android:color/transparent"
+        android:fontFamily="@font/montserrat_bold"
+        android:text="@string/skip"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sixteen"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/go_tutorial_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
         android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
         android:background="@android:color/transparent"
+        android:enabled="false"
         android:fontFamily="@font/montserrat_bold"
-        android:text="@string/next"
+        android:text="@string/go"
         android:textColor="@color/colorPrimary"
         android:textSize="@dimen/sixteen"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
