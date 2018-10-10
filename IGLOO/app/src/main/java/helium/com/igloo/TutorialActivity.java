@@ -64,6 +64,10 @@ public class TutorialActivity extends AppCompatActivity {
         mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(mNextButton.getText().toString() == "LET'S GO") {
+                    Intent intent = new Intent(TutorialActivity.this, HomeActivity.class);
+                    startActivity(intent);
+                }
                 mTutorialPager.setCurrentItem(mCurrentPage + 1);
             }
         });

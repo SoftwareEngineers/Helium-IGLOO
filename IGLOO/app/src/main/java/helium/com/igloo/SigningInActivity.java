@@ -14,7 +14,6 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.InputType;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
@@ -25,13 +24,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import org.w3c.dom.Text;
 
 public class SigningInActivity extends AppCompatActivity {
 
@@ -46,7 +38,7 @@ public class SigningInActivity extends AppCompatActivity {
     private String email;
     private String password;
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
+    //@RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,7 +53,7 @@ public class SigningInActivity extends AppCompatActivity {
         mProgressDialog = new ProgressDialog(this);
 
         mPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        mPassword.setTextAppearance(R.style.passwordFields);
+        //mPassword.setTextAppearance(R.style.passwordFields);
         mSignInButton.setEnabled(false);
 
         mEmail.addTextChangedListener(new Change());
