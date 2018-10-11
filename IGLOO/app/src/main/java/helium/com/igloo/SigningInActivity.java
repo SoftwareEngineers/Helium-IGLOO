@@ -8,6 +8,7 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.TextInputEditText;
@@ -37,8 +38,9 @@ public class SigningInActivity extends AppCompatActivity {
 
     private String email;
     private String password;
+    private boolean doubleBackToExitPressedOnce = false;
 
-    //@RequiresApi(api = Build.VERSION_CODES.M)
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,7 +55,7 @@ public class SigningInActivity extends AppCompatActivity {
         mProgressDialog = new ProgressDialog(this);
 
         mPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        //mPassword.setTextAppearance(R.style.passwordFields);
+        mPassword.setTextAppearance(R.style.passwordFields);
         mSignInButton.setEnabled(false);
 
         mEmail.addTextChangedListener(new Change());
@@ -155,4 +157,24 @@ public class SigningInActivity extends AppCompatActivity {
 
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
+
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            return;
+        }
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce=false;
+            }
+        }, 2000);
+    }
+
 }
