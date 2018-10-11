@@ -10,18 +10,30 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.opentok.android.Session;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import helium.com.igloo.Adapters.LectureAdapter;
+import helium.com.igloo.LectureActivity;
 import helium.com.igloo.Models.LectureModel;
 import helium.com.igloo.R;
 
@@ -53,11 +65,22 @@ public class ArchiveLectureFragment extends Fragment {
         return view;
     }
     public void loadLectures(){
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Lectures");
+        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Lectures");
         databaseReference.orderByChild("time_created").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 lectures.clear();
+
+//                for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
+//                    if(childSnapshot.child("available").getValue(Boolean.class) == false){
+//                        LectureModel lecture = childSnapshot.getValue(LectureModel.class);
+//                        lectures.add(lecture);
+//                        Collections.reverse(lectures);
+//                        lectureAdapter.notifyDataSetChanged();
+//                        recyclerView.smoothScrollToPosition(0);
+//                    }
+//                }
+
                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                     if(childSnapshot.child("available").getValue(Boolean.class) == true){
                         LectureModel lecture = childSnapshot.getValue(LectureModel.class);
@@ -69,6 +92,11 @@ public class ArchiveLectureFragment extends Fragment {
                         lectureAdapter.notifyDataSetChanged();
                         recyclerView.smoothScrollToPosition(0);
                     }
+                    else{
+                        if(checkStatus(childSnapshot.child("archive_id").getValue(String.class))){
+                            databaseReference.child(childSnapshot.getKey()).child("available").setValue(true);
+                        }
+                    }
                 }
             }
 
@@ -78,6 +106,33 @@ public class ArchiveLectureFragment extends Fragment {
             }
         });
         progressBar.setVisibility(View.GONE);
+    }
+
+    public Boolean checkStatus(String archiveID){
+        final Context context = super.getContext();
+        final boolean[] flag = {false};
+        RequestQueue reqQueue = Volley.newRequestQueue(context);
+        reqQueue.add(new JsonObjectRequest(Request.Method.GET,
+                "https://iglov2.herokuapp.com/get_archive_status/"+archiveID,
+                null, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    if(response.getString("status").toString() == "available"){
+                        flag[0] = false;
+                    }
+                } catch (JSONException error) {
+                    Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        }));
+        return flag[0];
     }
 
 }

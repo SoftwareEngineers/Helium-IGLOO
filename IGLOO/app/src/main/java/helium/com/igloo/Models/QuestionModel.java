@@ -7,11 +7,12 @@ public class QuestionModel {
     private String time;
     private String question;
     private Boolean is_call;
+    private Boolean is_answered;
 
     public QuestionModel() {
     }
 
-    public QuestionModel(String owner, String id, String lecture, String time, String question, Boolean is_call) {
+    public QuestionModel(String owner, String id, String lecture, String time, String question, Boolean is_call, Boolean is_answered) {
 
         this.owner_id = owner;
         this.id = id;
@@ -19,6 +20,15 @@ public class QuestionModel {
         this.time = time;
         this.question = question;
         this.is_call = is_call;
+        this.is_answered = is_answered;
+    }
+
+    public Boolean getIs_answered() {
+        return is_answered;
+    }
+
+    public void setIs_answered(Boolean is_answered) {
+        this.is_answered = is_answered;
     }
 
     public String getOwner_id() {

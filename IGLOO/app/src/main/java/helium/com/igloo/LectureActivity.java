@@ -200,7 +200,7 @@ public class LectureActivity extends AppCompatActivity implements Session.Sessio
     @Override
     public void onStreamDestroyed(PublisherKit publisherKit, Stream stream) {
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Lectures");
-        databaseReference.child(key).child("isLive").setValue(false);
+        databaseReference.child(key).child("live").setValue(false);
     }
 
     @Override
@@ -216,12 +216,12 @@ public class LectureActivity extends AppCompatActivity implements Session.Sessio
     }
 
     @Override
-    public void onArchiveStarted(Session session, String s, String s1) {
-
+    public void onArchiveStarted(Session session, String archiveID, String archiveName) {
+        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Lectures");
+        databaseReference.child(key).child("archive_id").setValue(archiveID);
     }
 
     @Override
     public void onArchiveStopped(Session session, String s) {
-
     }
 }

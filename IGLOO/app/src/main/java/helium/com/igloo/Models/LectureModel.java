@@ -28,6 +28,25 @@ public class LectureModel {
         this.archive_id = archive_id;
     }
 
+    public LectureModel() {
+    }
+
+    public String getOwner_id() {
+        return owner_id;
+    }
+
+    public void setOwner_id(String owner_id) {
+        this.owner_id = owner_id;
+    }
+
+    public String getArchive_id() {
+        return archive_id;
+    }
+
+    public void setArchive_id(String archive_id) {
+        this.archive_id = archive_id;
+    }
+
     public String getSession_id() {
         return session_id;
     }
