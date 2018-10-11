@@ -29,17 +29,16 @@
 
     <TextView
         android:id="@+id/tab_profile_name"
-        android:layout_width="200dp"
+        android:layout_width="158dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="1dp"
         android:fontFamily="@font/montserrat"
-        android:textAlignment="center"
         android:textColor="@color/colorPrimary"
         android:textSize="@dimen/fourteen"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.186"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.77" />
@@ -65,8 +64,8 @@
 
     <ImageButton
         android:id="@+id/imgbtn_create_lecture"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_weight="1"
@@ -77,7 +76,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.554"
-        app:srcCompat="@drawable/ic_video_camera" />
+        app:srcCompat="@drawable/ic_video_camera"
+        android:contentDescription="@string/nothing" />
 
     <View
         android:layout_width="match_parent"
@@ -86,7 +86,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:background="@color/buttonColor"
+        android:background="@color/blur"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"

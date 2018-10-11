@@ -29,6 +29,7 @@
     <string name="subscriptions">Subscriptions</string>
     <string name="payment">Payment</string>
     <string name="settings">Settings</string>
+    <string name="sign_out">Sign out</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
