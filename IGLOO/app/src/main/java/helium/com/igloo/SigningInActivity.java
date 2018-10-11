@@ -31,7 +31,7 @@ public class SigningInActivity extends AppCompatActivity {
     private TextInputEditText mPassword;
     private Button mSignInButton;
     private TextView mSwitch;
-    ProgressDialog mProgressDialog;
+    private ProgressDialog mProgressDialog;
 
     private FirebaseAuth auth;
 
@@ -90,27 +90,26 @@ public class SigningInActivity extends AppCompatActivity {
             mProgressDialog.show();
 
             try {
-                auth.signInWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(SigningInActivity.this, new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
+                auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(SigningInActivity.this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
 
-                                if (!task.isSuccessful()) {
-                                    if(!isOnline()){
-                                        mProgressDialog.dismiss();
-                                        Toast.makeText(SigningInActivity.this, "No internet connection", Toast.LENGTH_SHORT).show();
-                                    }
-                                    else{
-                                        mProgressDialog.dismiss();
-                                        Toast.makeText(SigningInActivity.this, "Check your email and password", Toast.LENGTH_LONG).show();
-                                    }
-                                }
-                                else {
-                                    CountDown cd = new CountDown(100, 100);
-                                    cd.start();
-                                }
-                            }
-                        });
+                    if (!task.isSuccessful()) {
+                        if(!isOnline()){
+                            mProgressDialog.dismiss();
+                            Toast.makeText(SigningInActivity.this, "No internet connection", Toast.LENGTH_SHORT).show();
+                        }
+                        else{
+                            mProgressDialog.dismiss();
+                            Toast.makeText(SigningInActivity.this, "Check your email and password", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                    else {
+                        CountDown cd = new CountDown(100, 100);
+                        cd.start();
+                    }
+                    }
+                });
             }
             catch(Exception ie){}
         }

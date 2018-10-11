@@ -71,15 +71,13 @@ public class ArchiveLectureFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 lectures.clear();
 
-//                for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
-//                    if(childSnapshot.child("available").getValue(Boolean.class) == false){
-//                        LectureModel lecture = childSnapshot.getValue(LectureModel.class);
-//                        lectures.add(lecture);
-//                        Collections.reverse(lectures);
-//                        lectureAdapter.notifyDataSetChanged();
-//                        recyclerView.smoothScrollToPosition(0);
-//                    }
-//                }
+                for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
+                    if(childSnapshot.child("available").getValue(Boolean.class) == false){
+                        if(checkStatus(childSnapshot.child("archive_id").getValue(String.class))){
+                            databaseReference.child(childSnapshot.getKey()).child("available").setValue(true);
+                        }
+                    }
+                }
 
                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                     if(childSnapshot.child("available").getValue(Boolean.class) == true){
@@ -91,11 +89,6 @@ public class ArchiveLectureFragment extends Fragment {
                         Collections.reverse(lectures);
                         lectureAdapter.notifyDataSetChanged();
                         recyclerView.smoothScrollToPosition(0);
-                    }
-                    else{
-                        if(checkStatus(childSnapshot.child("archive_id").getValue(String.class))){
-                            databaseReference.child(childSnapshot.getKey()).child("available").setValue(true);
-                        }
                     }
                 }
             }

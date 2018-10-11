@@ -44,7 +44,8 @@
             android:inputType="textPersonName"
             android:textColor="@color/lightGrey"
             android:textColorHint="@color/colorPrimary"
-            android:textSize="@dimen/fourteen" />
+            android:textSize="@dimen/fourteen"
+            android:drawableEnd="@drawable/ic_user_solid"/>
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
@@ -67,7 +68,8 @@
             android:inputType="textEmailAddress"
             android:textColor="@color/lightGrey"
             android:textColorHint="@color/colorPrimary"
-            android:textSize="@dimen/fourteen" />
+            android:textSize="@dimen/fourteen"
+            android:drawableEnd="@drawable/ic_email_solid"/>
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
@@ -90,7 +92,8 @@
             android:hint="@string/password"
             android:textColor="@color/lightGrey"
             android:textColorHint="@color/colorPrimary"
-            android:textSize="@dimen/fourteen" />
+            android:textSize="@dimen/fourteen"
+            android:drawableEnd="@drawable/ic_lock_solid"/>
     </android.support.design.widget.TextInputLayout>
 
     <View

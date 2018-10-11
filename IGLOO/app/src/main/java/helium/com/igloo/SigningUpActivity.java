@@ -55,6 +55,7 @@ public class SigningUpActivity extends AppCompatActivity {
 
         mPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         mPassword.setTextAppearance(R.style.passwordFields);
+        mSignUpButton.setEnabled(false);
 
         mName.addTextChangedListener(new Change());
         mEmail.addTextChangedListener(new Change());
@@ -98,10 +99,12 @@ public class SigningUpActivity extends AppCompatActivity {
                     else {
                         Toast.makeText(SigningUpActivity.this, "You have registered successfully", Toast.LENGTH_SHORT).show();
                         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users");
-                        UserModel user = new UserModel(name, email, password, "user-512.png");
 
+                        UserModel user = new UserModel(name, email, password, "default_profile.png");
                         String userID = auth.getCurrentUser().getUid();
+
                         databaseReference.child(userID).setValue(user);
+
                         CountDown cd = new CountDown(100, 100);
                         cd.start();
                     }

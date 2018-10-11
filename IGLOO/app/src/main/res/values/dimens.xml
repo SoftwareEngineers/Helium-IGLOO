@@ -7,6 +7,7 @@
     <dimen name="tutorialHeadText_size">20sp</dimen>
     <dimen name="tutorialTextBox_width">290dp</dimen>
     <dimen name="sixteen">16sp</dimen>
+    <dimen name="eighteen">18sp</dimen>
     <dimen name="pagerHeight">595dp</dimen>
     <dimen name="sliderWidth">100dp</dimen>
     <dimen name="sliderHeight">45dp</dimen>

@@ -41,7 +41,7 @@ public class ViewArchiveActivity extends AppCompatActivity {
         try {
             mediaController = new MediaController(this);
             mediaController.setAnchorView(videoView);
-            Uri video = Uri.parse(getUrl(archiveID));
+            Uri video = Uri.parse("https://s3.amazonaws.com/tokbox.com.archive2/46176272"+ archiveID + "/archive.mp4");
             Log.e("Opentok Archive", "Archive starting");
             videoView.setMediaController(mediaController);
             videoView.setVideoURI(video);
