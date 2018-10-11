@@ -9,6 +9,7 @@ public class UserModel {
     private String username;
     private String password;
     private String profileUrl;
+    private int tokens;
     private double rating;
     private double numberOfSubscribers;
     private List<String> subscriptions;
@@ -61,6 +62,10 @@ public class UserModel {
     public void setProfileUrl(String profileUrl) {
         this.profileUrl = profileUrl;
     }
+
+    public double getTokens() { return tokens; }
+
+    public void setTokens(int tokens) { this.tokens = tokens; }
 
     public double getRating() {
         return rating;

@@ -34,8 +34,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     private CircleImageView mTabPic;
     private DrawerLayout mDrawer;
-    //TextView name;
-    //TextView email;
+    private TextView mName;
+    private TextView mTokens;
 
     private FirebaseAuth.AuthStateListener authListener;
     private FirebaseAuth auth;
@@ -54,8 +54,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         View headerLayout = navigationView.getHeaderView(0);
         mTabPic = (CircleImageView)headerLayout.findViewById(R.id.tab_profile_pic);
-        //name = (TextView)headerLayout.findViewById(R.id.profileName);
-        //email = (TextView)headerLayout.findViewById(R.id.profileEmail);
+        mName = (TextView)headerLayout.findViewById(R.id.tab_profile_name);
+        mTokens = (TextView)headerLayout.findViewById(R.id.tab_profile_token);
 
         auth = FirebaseAuth.getInstance();
         storage = FirebaseStorage.getInstance();
@@ -83,7 +83,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.frame_container, new HomeFragment()).commit();
-        setTitle("Home");
+        setTitle("IGLOO");
     }
 
     @Override
@@ -125,7 +125,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String pName = dataSnapshot.child("name").getValue(String.class);
-                String pEmail = dataSnapshot.child("email").getValue(String.class);
+                int pTokens = dataSnapshot.child("tokens").getValue(Integer.class);
                 String url = dataSnapshot.child("profileUrl").getValue(String.class);
 
                 storage = FirebaseStorage.getInstance();
@@ -138,6 +138,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         mTabPic.setImageBitmap(bitmap);
                     }
                 });
+
+                mName.setText(pName);
+                mTokens.setText(Integer.toString(pTokens));
             }
 
             @Override
@@ -151,17 +154,17 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
-//        int id = item.getItemId();
-//
-//        if (id == R.id.notes) {
+        int id = item.getItemId();
+
+        if (id == R.id.home) {
 //            startActivity(new Intent(this, NotebookFragmentActivity.class));
 //            finish();
-//        }
-//        else if (id == R.id.achieve) {
+        }
+        else if (id == R.id.subscriptions) {
 //            android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
 //            fragmentManager.beginTransaction().replace(R.id.frame_container, new AchievementFragment()).commit();
 //            setTitle("My Achievements");
-//        }
+        }
 //        else if (id == R.id.settings) {
 //            android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
 //            fragmentManager.beginTransaction().replace(R.id.frame_container, new SettingsFragment()).commit();
@@ -173,7 +176,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 //            setTitle("About Us");
 //        }
 //
-//        drawer.closeDrawer(GravityCompat.START);
+        mDrawer.closeDrawer(GravityCompat.START);
         return true;
     }
 

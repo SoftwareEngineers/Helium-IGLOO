@@ -6,9 +6,10 @@
     <color name="buttonColor">#7FC4FD</color>
     <color name="white">#FFFFFF</color>
     <color name="background">#F1F9FF</color>
-    <color name="blueHighlight">#7dbce0fd</color>
+    <color name="blueHighlight">#bce0fd</color>
     <color name="textColor">#4C5264</color>
     <color name="blur">#28479ac8</color>
     <color name="lightGrey">#B8B6B6</color>
     <color name="greyWhite">#F0F2F7</color>
+    <color name="yellowCorn">#F4BF1A</color>
 </resources>
