@@ -12,4 +12,5 @@
     <color name="lightGrey">#B8B6B6</color>
     <color name="greyWhite">#F0F2F7</color>
     <color name="yellowCorn">#F4BF1A</color>
+    <color name="shadow">#dddddd</color>
 </resources>

@@ -18,7 +18,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/C:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/av/ic_subscriptions_black_24dp.xml" />
+                                      <entry key="url" value="jar:file:/C:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/action/ic_credit_card_black_24dp.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -29,8 +29,8 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="outputName" value="ic_home" />
-                            <entry key="sourceFile" value="C:\Users\Joy\Downloads\home.svg" />
+                            <entry key="outputName" value="ic_inactive_video" />
+                            <entry key="sourceFile" value="C:\Users\Joy\Downloads\inactive_video.svg" />
                           </map>
                         </option>
                       </PersistentState>

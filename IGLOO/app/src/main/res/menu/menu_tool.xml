@@ -7,7 +7,7 @@
         app:showAsAction="ifRoom|collapseActionView"
         app:actionViewClass="android.support.v7.widget.SearchView" />
 
-    <item android:id="@+id/menu_home"
+    <item android:id="@+id/menu_notification"
         android:title=""
         android:icon="@drawable/ic_bell_solid"
         app:showAsAction="always"/>

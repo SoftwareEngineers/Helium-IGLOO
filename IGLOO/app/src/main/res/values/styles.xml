@@ -25,4 +25,13 @@
         <item name="android:textSize">@dimen/twelve</item>
     </style>
 
+    <style name="tabItem" parent="TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/montserrat</item>
+        <item name="android:textColor">@color/lightGrey</item>
+    </style>
+
+    <style name="navigationTheme" parent="AppTheme">
+        <item name="listPreferredItemHeightSmall">60dp</item>
+    </style>
+
 </resources>

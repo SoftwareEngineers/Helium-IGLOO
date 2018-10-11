@@ -1,13 +1,20 @@
 package helium.com.igloo.Fragments;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ImageSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +26,19 @@ import helium.com.igloo.R;
 
 public class HomeFragment extends Fragment {
 
+    private TabLayout tabLayout;
+
+    private int[] activeTabIcons = {
+            R.drawable.ic_active_video,
+            R.drawable.ic_active_live
+    };
+
+    private int[] inactiveTabIcons = {
+            R.drawable.ic_inactive_video,
+            R.drawable.ic_inactive_live
+    };
+    private int activeTab;
+
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -29,41 +49,60 @@ public class HomeFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_home, container, false);
         super.onCreate(savedInstanceState);
+
         ViewPager viewPager = (ViewPager) v.findViewById(R.id.home_view_pager);
-
-        TabLayout tabLayout = (TabLayout) v.findViewById(R.id.home_tab);
-        tabLayout.setupWithViewPager(viewPager);
-
         setupViewPager(viewPager);
 
-        //tabLayout.getTabAt(0).setIcon(R.drawable.ic_newspaper);
-        //tabLayout.getTabAt(1).setIcon(R.drawable.ic_users);
+        tabLayout = (TabLayout) v.findViewById(R.id.home_tab);
+        tabLayout.setupWithViewPager(viewPager);
+
+//        tabLayout.getTabAt(0).setIcon(tabIcons[0]);
+//        tabLayout.getTabAt(1).setIcon(tabIcons[3]);
+//
+//        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+//            @Override
+//            public void onTabSelected(TabLayout.Tab tab) {
+//                if(activeTab == 0)
+//                    tabLayout.getTabAt(0).setIcon(tabIcons[0]);
+//                else
+//                    tabLayout.getTabAt(1).setIcon(tabIcons[1]);
+//            }
+//
+//            @Override
+//            public void onTabUnselected(TabLayout.Tab tab) {
+//                if(activeTab == 1)
+//                    tabLayout.getTabAt(0).setIcon(tabIcons[2]);
+//                else
+//                    tabLayout.getTabAt(1).setIcon(tabIcons[3]);
+//            }
+//
+//            @Override
+//            public void onTabReselected(TabLayout.Tab tab) {
+//            }
+//        });
 
         return v;
     }
 
     private void setupViewPager(ViewPager viewPager) {
-        Adapter adapter = new Adapter(getChildFragmentManager());
-        adapter.addFragment(new ArchiveLectureFragment());
-        adapter.addFragment(new LiveLectureFragment());
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
+        adapter.addFragment(new ArchiveLectureFragment(), "VIDEOS" );
+        adapter.addFragment(new LiveLectureFragment(), "LIVE");
 
         viewPager.setAdapter(adapter);
     }
 
-    private class Adapter extends FragmentPagerAdapter {
+    class ViewPagerAdapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
 
-        public Adapter(FragmentManager fm) {
-            super(fm);
+        public ViewPagerAdapter(FragmentManager manager) {
+            super(manager);
         }
-
-        public void addFragment(Fragment fragment) {
-            mFragmentList.add(fragment);
-        }
-
 
         @Override
-        public android.support.v4.app.Fragment getItem(int position) {
+        public Fragment getItem(int position) {
+            activeTab = position;
             return mFragmentList.get(position);
         }
 
@@ -72,5 +111,20 @@ public class HomeFragment extends Fragment {
             return mFragmentList.size();
         }
 
+        public void addFragment(Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            Drawable image = getResources().getDrawable(activeTabIcons[position]);
+            image.setBounds(0, 0, image.getIntrinsicWidth(), image.getIntrinsicHeight());
+
+            SpannableString sb = new SpannableString("   " + mFragmentTitleList.get(position));
+            ImageSpan imageSpan = new ImageSpan(image, ImageSpan.ALIGN_BOTTOM);
+            sb.setSpan(imageSpan, 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            return sb;
+        }
     }
 }
