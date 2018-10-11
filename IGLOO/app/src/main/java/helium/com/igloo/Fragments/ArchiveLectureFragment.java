@@ -106,7 +106,7 @@ public class ArchiveLectureFragment extends Fragment {
         final boolean[] flag = {false};
         RequestQueue reqQueue = Volley.newRequestQueue(context);
         reqQueue.add(new JsonObjectRequest(Request.Method.GET,
-                "https://iglov2.herokuapp.com/get_archive_status/"+archiveID,
+                "https://iglov2.herokuapp.com/videos/"+archiveID,
                 null, new Response.Listener<JSONObject>() {
 
             @Override
