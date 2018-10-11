@@ -177,7 +177,7 @@ public class LectureActivity extends AppCompatActivity implements Session.Sessio
                 questions.clear();
                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                     Toast.makeText(LectureActivity.this,childSnapshot.child("lecture").getValue(String.class) + " == " + key, Toast.LENGTH_SHORT).show();
-                    if(childSnapshot.child("lecture").getValue(String.class).equals(key)){
+                    if(childSnapshot.child("lecture").getValue(String.class).equals(key) && !childSnapshot.child("answered").getValue(Boolean.class)){
                         QuestionModel question = childSnapshot.getValue(QuestionModel.class);
                         questions.add(question);
                         questionAdapter.notifyDataSetChanged();

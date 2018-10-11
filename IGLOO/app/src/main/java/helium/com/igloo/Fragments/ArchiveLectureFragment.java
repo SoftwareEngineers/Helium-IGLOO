@@ -66,16 +66,15 @@ public class ArchiveLectureFragment extends Fragment {
     }
     public void loadLectures(){
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Lectures");
+        final Context context = super.getContext();
         databaseReference.orderByChild("time_created").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 lectures.clear();
 
                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
-                    if(childSnapshot.child("available").getValue(Boolean.class) == false){
-                        if(checkStatus(childSnapshot.child("archive_id").getValue(String.class))){
-                            databaseReference.child(childSnapshot.getKey()).child("available").setValue(true);
-                        }
+                    if(!childSnapshot.child("available").getValue(Boolean.class)){
+                        checkStatus(databaseReference, childSnapshot.getKey(), childSnapshot.child("archive_id").getValue(String.class));
                     }
                 }
 
@@ -101,9 +100,8 @@ public class ArchiveLectureFragment extends Fragment {
         progressBar.setVisibility(View.GONE);
     }
 
-    public Boolean checkStatus(String archiveID){
+    public void checkStatus(final DatabaseReference databaseReference, final String key, String archiveID){
         final Context context = super.getContext();
-        final boolean[] flag = {false};
         RequestQueue reqQueue = Volley.newRequestQueue(context);
         reqQueue.add(new JsonObjectRequest(Request.Method.GET,
                 "https://iglov2.herokuapp.com/videos/"+archiveID,
@@ -112,8 +110,9 @@ public class ArchiveLectureFragment extends Fragment {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    if(response.getString("status").toString() == "available"){
-                        flag[0] = false;
+                    if(response.getString("status").toString().equals("available")){
+                        databaseReference.child(key).child("available").setValue(true);
+                        Toast.makeText(context, "true", Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException error) {
                     Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
@@ -125,7 +124,6 @@ public class ArchiveLectureFragment extends Fragment {
                 Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         }));
-        return flag[0];
     }
 
 }
