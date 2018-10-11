@@ -112,7 +112,6 @@ public class ArchiveLectureFragment extends Fragment {
                 try {
                     if(response.getString("status").toString().equals("available")){
                         databaseReference.child(key).child("available").setValue(true);
-                        Toast.makeText(context, "true", Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException error) {
                     Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
