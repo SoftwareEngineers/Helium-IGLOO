@@ -63,7 +63,7 @@
         app:layout_constraintVertical_bias="0.90999997" />
 
     <ImageButton
-        android:id="@+id/imageButton"
+        android:id="@+id/imgbtn_create_lecture"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginEnd="8dp"

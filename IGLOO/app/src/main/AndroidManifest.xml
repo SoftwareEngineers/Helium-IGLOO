@@ -31,10 +31,10 @@
         <activity android:name=".TutorialActivity" />
         <activity android:name=".SigningInActivity" />
         <activity android:name=".SigningUpActivity" />
-        <activity android:name=".HomeActivity" />
         <activity android:name=".ProfileActivity" />
         <activity android:name=".SettingsActivity" />
-        <activity android:name=".PaymentActivity"></activity>
+        <activity android:name=".PaymentActivity" />
+        <activity android:name=".ViewArchiveActivity" />
     </application>
 
 </manifest>
