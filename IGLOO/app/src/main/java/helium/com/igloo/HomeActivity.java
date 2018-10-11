@@ -8,12 +8,15 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -40,6 +43,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private FirebaseAuth.AuthStateListener authListener;
     private FirebaseAuth auth;
     private FirebaseStorage storage;
+    private ImageButton mCreateLecture;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +60,33 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         mTabPic = (CircleImageView)headerLayout.findViewById(R.id.tab_profile_pic);
         mName = (TextView)headerLayout.findViewById(R.id.tab_profile_name);
         mTokens = (TextView)headerLayout.findViewById(R.id.tab_profile_token);
+        mCreateLecture = (ImageButton)headerLayout.findViewById(R.id.imgbtn_create_lecture);
+        mCreateLecture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder mBuilder = new AlertDialog.Builder(HomeActivity.this);
+                View mView = getLayoutInflater().inflate(R.layout.choose_lecture_type_layout, null);
+                Button buttonPublicLecture = (Button)mView.findViewById(R.id.btn_public_lecture);
+                buttonPublicLecture.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(HomeActivity.this, CreatePublicLectureActivity.class);
+                        startActivity(intent);
+                    }
+                });
+                Button buttonPrivateLecture = (Button)mView.findViewById(R.id.btn_private_lecture);
+                buttonPrivateLecture.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(HomeActivity.this, CreatePrivateLectureActivity.class);
+                        startActivity(intent);
+                    }
+                });
+                mBuilder.setView(mView);
+                AlertDialog dialog = mBuilder.create();
+                dialog.show();
+            }
+        });
 
         auth = FirebaseAuth.getInstance();
         storage = FirebaseStorage.getInstance();

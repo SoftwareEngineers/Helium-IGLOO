@@ -27,11 +27,11 @@
         <activity android:name=".CreatePublicLectureActivity" />
         <activity android:name=".LectureActivity" />
         <activity android:name=".HomeActivity" />
-        <activity android:name=".ViewLectureActivity"></activity>
+        <activity android:name=".ViewLectureActivity" />
         <activity android:name=".TutorialActivity" />
         <activity android:name=".SigningInActivity" />
         <activity android:name=".SigningUpActivity" />
-        <activity android:name=".HomeActivity"></activity>
+        <activity android:name=".ViewArchiveActivity"></activity>
     </application>
 
 </manifest>

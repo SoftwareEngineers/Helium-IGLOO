@@ -12,8 +12,9 @@ public class LectureModel {
     private Boolean isLive;
     private String time_created;
     private String session_id;
+    private String archive_id;
 
-    public LectureModel(String id, String owner_id, String title, String description, String password, Boolean isPublic, Boolean isAvailable, Boolean isLive, String time_created, String session_id) {
+    public LectureModel(String id, String owner_id, String title, String description, String password, Boolean isPublic, Boolean isAvailable, Boolean isLive, String time_created, String session_id, String archive_id) {
         this.id = id;
         this.owner_id = owner_id;
         this.title = title;
@@ -24,9 +25,26 @@ public class LectureModel {
         this.isLive = isLive;
         this.time_created = time_created;
         this.session_id = session_id;
+        this.archive_id = archive_id;
     }
 
     public LectureModel() {
+    }
+
+    public String getOwner_id() {
+        return owner_id;
+    }
+
+    public void setOwner_id(String owner_id) {
+        this.owner_id = owner_id;
+    }
+
+    public String getArchive_id() {
+        return archive_id;
+    }
+
+    public void setArchive_id(String archive_id) {
+        this.archive_id = archive_id;
     }
 
     public String getSession_id() {

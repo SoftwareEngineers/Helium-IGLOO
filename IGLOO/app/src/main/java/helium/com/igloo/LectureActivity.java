@@ -44,7 +44,7 @@ import helium.com.igloo.Adapters.QuestionAdapter;
 import helium.com.igloo.Models.LectureModel;
 import helium.com.igloo.Models.QuestionModel;
 
-public class LectureActivity extends AppCompatActivity implements Session.SessionListener, PublisherKit.PublisherListener{
+public class LectureActivity extends AppCompatActivity implements Session.SessionListener, PublisherKit.PublisherListener, Session.ArchiveListener {
 
     private TextView textLectureTitle;
     private TextView textLectureDescription;
@@ -116,6 +116,7 @@ public class LectureActivity extends AppCompatActivity implements Session.Sessio
                     final String token = response.getString("token");
                     mSession = new Session.Builder(LectureActivity.this, api_key, session_id).build();
                     mSession.setSessionListener(LectureActivity.this);
+                    mSession.setArchiveListener(LectureActivity.this);
                     mSession.connect(token);
                 } catch (JSONException error) {
                     Toast.makeText(LectureActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
@@ -199,7 +200,7 @@ public class LectureActivity extends AppCompatActivity implements Session.Sessio
     @Override
     public void onStreamDestroyed(PublisherKit publisherKit, Stream stream) {
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Lectures");
-        databaseReference.child(key).child("isLive").setValue(false);
+        databaseReference.child(key).child("live").setValue(false);
     }
 
     @Override
@@ -212,5 +213,15 @@ public class LectureActivity extends AppCompatActivity implements Session.Sessio
         mSession.unpublish(mPublisher);
         mSession.disconnect();
         super.onStop();
+    }
+
+    @Override
+    public void onArchiveStarted(Session session, String archiveID, String archiveName) {
+        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Lectures");
+        databaseReference.child(key).child("archive_id").setValue(archiveID);
+    }
+
+    @Override
+    public void onArchiveStopped(Session session, String s) {
     }
 }

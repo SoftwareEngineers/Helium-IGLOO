@@ -50,6 +50,7 @@ public class LiveLectureFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(super.getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
+        Toast.makeText(super.getContext(), "dsdsd", Toast.LENGTH_SHORT).show();
         loadLectures();
 
         return view;

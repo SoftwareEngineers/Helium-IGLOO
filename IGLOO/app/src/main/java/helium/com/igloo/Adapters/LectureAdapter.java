@@ -20,6 +20,7 @@ import java.util.List;
 
 import helium.com.igloo.Models.LectureModel;
 import helium.com.igloo.R;
+import helium.com.igloo.ViewArchiveActivity;
 import helium.com.igloo.ViewLectureActivity;
 
 public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.LectureViewHolder> {
@@ -61,9 +62,16 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.LectureV
         lectureViewHolder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context,ViewLectureActivity.class);
-                intent.putExtra("key", p.getId());
-                context.startActivity(intent);
+                if(p.getLive()){
+                    Intent intent = new Intent(context,ViewLectureActivity.class);
+                    intent.putExtra("key", p.getId());
+                    context.startActivity(intent);
+                }
+                else{
+                    Intent intent = new Intent(context,ViewArchiveActivity.class);
+                    intent.putExtra("archiveID", p.getArchive_id());
+                    context.startActivity(intent);
+                }
             }
         });
     }
