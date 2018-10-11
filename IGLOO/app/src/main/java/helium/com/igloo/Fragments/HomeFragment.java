@@ -44,8 +44,8 @@ public class HomeFragment extends Fragment {
 
     private void setupViewPager(ViewPager viewPager) {
         Adapter adapter = new Adapter(getChildFragmentManager());
-        adapter.addFragment(new VideoFragment());
-        adapter.addFragment(new LiveFragment());
+        adapter.addFragment(new ArchiveLectureFragment());
+        adapter.addFragment(new LiveLectureFragment());
 
         viewPager.setAdapter(adapter);
     }
