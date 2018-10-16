@@ -49,6 +49,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import helium.com.igloo.Adapters.LectureSearchAdapter;
 import helium.com.igloo.Fragments.HomeFragment;
 import helium.com.igloo.Fragments.SubscriptionsFragment;
+import helium.com.igloo.Models.SubscriptionModel;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
@@ -63,7 +64,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private FirebaseAuth auth;
     private FirebaseStorage storage;
     private ImageButton mCreateLecture;
-
+    private DatabaseReference databaseReference;
+    private List<SubscriptionModel> subscriptionModelList;
+    private SubscriptionModel subscriptionModel;
 
     private boolean doubleBackToExitPressedOnce = false;
 
@@ -141,6 +144,27 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 }
             }
         };
+
+        subscriptionModelList = new ArrayList<>();
+        databaseReference = FirebaseDatabase.getInstance().getReference("Subscription").child(auth.getCurrentUser().getUid());
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                subscriptionModelList.clear();
+                String text = "";
+                for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
+                    subscriptionModel = childSnapshot.getValue(SubscriptionModel.class);
+                    text += childSnapshot.hashCode()+"-";
+                    subscriptionModelList.add(subscriptionModel);
+                }
+                mName.setText(text);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(

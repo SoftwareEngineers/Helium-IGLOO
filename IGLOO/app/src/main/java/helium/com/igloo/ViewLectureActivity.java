@@ -89,8 +89,8 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
             public void onClick(View v) {
                 if(lectureModel!=null){
                     final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Subscription");
-                    SubscriptionModel subscription = new SubscriptionModel(lectureModel.getOwner_id(),auth.getCurrentUser().getUid());
-                    databaseReference.child(lectureModel.getOwner_id()).setValue(subscription);
+                    SubscriptionModel subscription = new SubscriptionModel(lectureModel.getOwner_id(),auth.getCurrentUser().getUid(),"pending");
+                    databaseReference.child(lectureModel.getOwner_id()).child(auth.getCurrentUser().getUid()).setValue(subscription);
                 }
             }
         });
