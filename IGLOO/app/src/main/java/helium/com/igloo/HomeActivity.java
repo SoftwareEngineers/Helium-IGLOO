@@ -4,12 +4,13 @@ package helium.com.igloo;
 import android.app.SearchManager;
 import android.content.Context;
 import android.app.ProgressDialog;
-
+import android.content.Context;
 import android.content.Intent;
-import android.database.MatrixCursor;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -83,20 +84,24 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
         View headerLayout = navigationView.getHeaderView(0);
-        mTabPic = (CircleImageView)headerLayout.findViewById(R.id.tab_profile_pic);
-        mName = (TextView)headerLayout.findViewById(R.id.tab_profile_name);
-        mTokens = (TextView)headerLayout.findViewById(R.id.tab_profile_token);
+        mTabPic = (CircleImageView) headerLayout.findViewById(R.id.tab_profile_pic);
+        mName = (TextView) headerLayout.findViewById(R.id.tab_profile_name);
+        mTokens = (TextView) headerLayout.findViewById(R.id.tab_profile_token);
         mLogout = (Button) navigationView.findViewById(R.id.logout_button);
         mProgressDialog = new ProgressDialog(this);
-        mCreateLecture = (ImageButton)headerLayout.findViewById(R.id.imgbtn_create_lecture);
+        mCreateLecture = (ImageButton) headerLayout.findViewById(R.id.imgbtn_create_lecture);
 
         mCreateLecture.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
+
                 AlertDialog.Builder mBuilder = new AlertDialog.Builder(HomeActivity.this);
                 View mView = getLayoutInflater().inflate(R.layout.choose_lecture_type_layout, null);
-                Button buttonPublicLecture = (Button)mView.findViewById(R.id.btn_public_lecture);
+
+                Button buttonPublicLecture = (Button) mView.findViewById(R.id.btn_public_lecture);
+                Button buttonPrivateLecture = (Button) mView.findViewById(R.id.btn_private_lecture);
+
                 buttonPublicLecture.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -104,7 +109,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         startActivity(intent);
                     }
                 });
-                Button buttonPrivateLecture = (Button)mView.findViewById(R.id.btn_private_lecture);
+
                 buttonPrivateLecture.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -112,6 +117,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         startActivity(intent);
                     }
                 });
+
                 mBuilder.setView(mView);
                 AlertDialog dialog = mBuilder.create();
                 dialog.show();
@@ -130,8 +136,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     mProgressDialog.show();
                     CountDown cd = new CountDown(500, 100);
                     cd.start();
-                }
-                else{
+                } else {
                     setProfileInfo();
                 }
             }
@@ -151,19 +156,16 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         mLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                SharedPreferences settings = getSharedPreferences("User", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = settings.edit();
+
+                editor.remove("email");
+                editor.remove("password");
+                editor.commit();
+
                 auth.signOut();
             }
         });
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (mDrawer.isDrawerOpen(GravityCompat.START)) {
-            mDrawer.closeDrawer(GravityCompat.START);
-        }
-        else {
-            super.onBackPressed();
-        }
     }
 
     @Override
@@ -318,4 +320,22 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            finishAffinity();
+            super.onBackPressed();
+        }
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce=false;
+            }
+        }, 2000);
+    }
 }

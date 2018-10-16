@@ -44,12 +44,15 @@ public class LiveLectureFragment extends Fragment {
         progressBar = (ProgressBar)view.findViewById(R.id.pro_live_lectures);
         progressBar.setVisibility(View.VISIBLE);
         recyclerView = (RecyclerView)view.findViewById(R.id.rec_live_lectures);
+
         lectures = new ArrayList<>();
         lectureAdapter = new LectureAdapter(lectures, super.getContext());
         recyclerView.setAdapter(lectureAdapter);
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(super.getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
+
         loadLectures();
 
         return view;
