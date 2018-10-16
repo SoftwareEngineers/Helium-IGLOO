@@ -119,7 +119,7 @@ public class ViewArchiveActivity extends AppCompatActivity {
         } catch (Exception e) {
             System.out.println("Video Play Error :" + e.getMessage());
         }
-        mRecycleViewQuestions = (RecyclerView)findViewById(R.id.rec_questions);
+        mRecycleViewQuestions = findViewById(R.id.rec_questions);
         questions = new ArrayList<>();
         questionAdapter = new QuestionAdapter(questions, this);
         mRecycleViewQuestions.setAdapter(questionAdapter);
@@ -277,7 +277,7 @@ public class ViewArchiveActivity extends AppCompatActivity {
 
 
 
-        
+
     /////// DOWNLOADING VIDEO FROM SERVER
 
     private void DownloadVideoFromWeb(String url){
