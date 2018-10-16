@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:background="@color/white"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:popupTheme="@style/Theme.AppCompat.Light.NoActionBar"
             app:layout_scrollFlags="scroll|enterAlways"
             app:titleTextColor="@color/colorPrimary"
             app:titleTextAppearance="@style/title"/>
@@ -38,8 +38,31 @@
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         android:background="@color/white"
+        android:theme="@style/navigationTheme"
         app:itemTextAppearance="@style/menuItem"
         app:headerLayout="@layout/layout_header"
-        app:menu="@menu/drawer_menu" />
+        app:menu="@menu/drawer_menu">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/logout_button"
+                android:text="@string/sign_out"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:gravity="end|center"
+                android:background="@android:color/transparent"
+                android:fontFamily="@font/montserrat"
+                android:textColor="@color/textColor"
+                android:drawableEnd="@drawable/ic_logout"
+                android:drawablePadding="10dp"
+                android:layout_margin="15dp"
+                android:textAllCaps="false"/>
+        </LinearLayout>
+    </android.support.design.widget.NavigationView>
 
 </android.support.v4.widget.DrawerLayout>

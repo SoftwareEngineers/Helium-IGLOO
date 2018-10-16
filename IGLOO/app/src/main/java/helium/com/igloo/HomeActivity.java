@@ -1,12 +1,20 @@
 package helium.com.igloo;
 
+<<<<<<< HEAD
 import android.app.SearchManager;
 import android.content.Context;
+=======
+import android.app.ProgressDialog;
+>>>>>>> bc05c67316245cc4fca2ac7b657b70e0cbe4a3aa
 import android.content.Intent;
 import android.database.MatrixCursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+<<<<<<< HEAD
 import android.provider.BaseColumns;
+=======
+import android.os.CountDownTimer;
+>>>>>>> bc05c67316245cc4fca2ac7b657b70e0cbe4a3aa
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -44,6 +52,7 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 import helium.com.igloo.Adapters.LectureSearchAdapter;
 import helium.com.igloo.Fragments.HomeFragment;
+import helium.com.igloo.Fragments.SubscriptionsFragment;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
@@ -51,21 +60,16 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout mDrawer;
     private TextView mName;
     private TextView mTokens;
+    private Button mLogout;
+    private ProgressDialog mProgressDialog;
 
     private FirebaseAuth.AuthStateListener authListener;
     private FirebaseAuth auth;
     private FirebaseStorage storage;
     private ImageButton mCreateLecture;
 
-    private LectureSearchAdapter adapter;
-    private LinearLayoutManager layoutManager;
 
-    private static final String[] SUGGESTIONS = {
-            "Bauru", "Sao Paulo", "Rio de Janeiro",
-            "Bahia", "Mato Grosso", "Minas Gerais",
-            "Tocantins", "Rio Grande do Sul"
-    };
-
+    private boolean doubleBackToExitPressedOnce = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +81,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setItemBackgroundResource(R.drawable.item_highlight);
 
         ///adapter = new LectureSearchAdapter(HomeActivity.this,getDummyList());
         layoutManager = new LinearLayoutManager(this);
@@ -86,7 +91,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         mTabPic = (CircleImageView)headerLayout.findViewById(R.id.tab_profile_pic);
         mName = (TextView)headerLayout.findViewById(R.id.tab_profile_name);
         mTokens = (TextView)headerLayout.findViewById(R.id.tab_profile_token);
+        mLogout = (Button) navigationView.findViewById(R.id.logout_button);
+        mProgressDialog = new ProgressDialog(this);
         mCreateLecture = (ImageButton)headerLayout.findViewById(R.id.imgbtn_create_lecture);
+
         mCreateLecture.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -123,9 +131,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user == null) {
-
-                    startActivity(new Intent(HomeActivity.this, LandingActivity.class));
-                    finish();
+                    mProgressDialog.setMessage("Signing out....");
+                    mProgressDialog.show();
+                    CountDown cd = new CountDown(500, 100);
+                    cd.start();
                 }
                 else{
                     setProfileInfo();
@@ -136,12 +145,20 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, mDrawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        toggle.getDrawerArrowDrawable().setColor(getResources().getColor(R.color.colorPrimary));
         mDrawer.setDrawerListener(toggle);
         toggle.syncState();
 
         android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.frame_container, new HomeFragment()).commit();
         setTitle("IGLOO");
+
+        mLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                auth.signOut();
+            }
+        });
     }
 
     @Override
@@ -165,11 +182,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.menu_home) {
-            android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.frame_container, new HomeFragment()).commit();
-
-            setProfileInfo();
+        if (id == R.id.menu_notification) {
         }
         else if (id == R.id.menu_search){
 
@@ -228,6 +241,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
                 mName.setText(pName);
                 mTokens.setText(Integer.toString(pTokens));
+
+                mTabPic.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startActivity(new Intent(HomeActivity.this, ProfileActivity.class));
+                    }
+                });
             }
 
             @Override
@@ -244,25 +264,20 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         if (id == R.id.home) {
-//            startActivity(new Intent(this, NotebookFragmentActivity.class));
-//            finish();
+            android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.frame_container, new HomeFragment()).commit();
         }
         else if (id == R.id.subscriptions) {
-//            android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
-//            fragmentManager.beginTransaction().replace(R.id.frame_container, new AchievementFragment()).commit();
-//            setTitle("My Achievements");
+            android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.frame_container, new SubscriptionsFragment()).commit();
         }
-//        else if (id == R.id.settings) {
-//            android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
-//            fragmentManager.beginTransaction().replace(R.id.frame_container, new SettingsFragment()).commit();
-//            setTitle("Settings");
-//        }
-//        else if (id == R.id.about) {
-//            android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
-//            fragmentManager.beginTransaction().replace(R.id.frame_container, new AboutUsFragment()).commit();
-//            setTitle("About Us");
-//        }
-//
+        else if (id == R.id.payment) {
+            startActivity(new Intent(HomeActivity.this, PaymentActivity.class));
+        }
+        else {
+            startActivity(new Intent(HomeActivity.this, SettingsActivity.class));
+        }
+
         mDrawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -282,61 +297,30 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
+    public class CountDown extends CountDownTimer {
 
-    public List<String> getDummyList()
-    {
-        List<String> list = new ArrayList<>();
-        list.add("rohit");
-        list.add("Amanda");
-        list.add("Triple H");
-        list.add("Barack Obama");
-        list.add("Kesha");
-        list.add("Ganguly");
-        list.add("Tomatino");
-        list.add("rohit");
-        list.add("Amanda");
-        list.add("Triple H");
-        list.add("Barack Obama");
-        list.add("Kesha");
-        list.add("Ganguly");
-        list.add("Tomatino");
-        list.add("rohit");
-        list.add("Amanda");
-        list.add("Triple H");
-        list.add("Barack Obama");
-        list.add("Kesha");
-        list.add("Ganguly");
-        list.add("Tomatino");
+        /**
+         * @param millisInFuture    The number of millis in the future from the call
+         *                          to {@link #start()} until the countdown is done and {@link #onFinish()}
+         *                          is called.
+         * @param countDownInterval The interval along the way to receive
+         *                          {@link #onTick(long)} callbacks.
+         */
+        public CountDown(long millisInFuture, long countDownInterval) {
+            super(millisInFuture,countDownInterval);
+        }
 
-        return list;
-    }
-
-
-
-    private void GetSuggestions(String query) {
-
-        // Cursor
-        Object[] temp;
-        String current;
-        final MatrixCursor cursor = new MatrixCursor(new String[] {  BaseColumns._ID, "LectureTitles"});
-        StringBuilder output = new StringBuilder();
-        for(int i = 0; i < SUGGESTIONS.length;i++) {
-            current = SUGGESTIONS[i];
-            //if(current.toLowerCase().startsWith(query.toLowerCase())) {
-            if(current.toLowerCase().contains(query.toLowerCase())){
-                output.append(current);
-                output.append("\n");
-                temp = new Object[]{i, current};
-                cursor.addRow(temp);
-            }
+        @Override
+        public void onTick(long millisUntilFinished) {
 
         }
 
-        adapter = new LectureSearchAdapter(HomeActivity.this, cursor, SUGGESTIONS);
-        //search.setSuggestionsAdapter(adapter);
-        Toast.makeText(this,output.toString(),Toast.LENGTH_LONG).show();
-
+        @Override
+        public void onFinish() {
+            mProgressDialog.dismiss();
+            startActivity(new Intent(HomeActivity.this, SigningInActivity.class));
+            finish();
+        }
     }
-
 
 }

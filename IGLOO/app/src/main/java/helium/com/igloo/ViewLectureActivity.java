@@ -5,6 +5,7 @@ import android.provider.ContactsContract;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -127,7 +128,6 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    Toast.makeText(ViewLectureActivity.this, "successfull", Toast.LENGTH_SHORT).show();
                     final String apiKey = response.getString("api_key");
                     final String token = response.getString("token");
 
@@ -149,7 +149,7 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
 
     @Override
     public void onConnected(Session session) {
-
+        Toast.makeText(ViewLectureActivity.this, "successfull", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -188,7 +188,10 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
             question.setQuestion(textQuestion.getText().toString());
             question.setLecture(key);
             question.setId(questionId);
-            question.setTime(String.valueOf(new Date()));
+            question.setIs_answered(false);
+//            question.setTime(String.valueOf(new Date()));
+            DateFormat dateFormat = new DateFormat();
+            question.setTime(String.valueOf(dateFormat.format("hh:mm a MMM-dd-yyyy", new Date())));
             question.setOwner_id(auth.getCurrentUser().getUid());
             if(v == buttonAsk)
                 question.setIs_call(false);
@@ -206,8 +209,21 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
 
     @Override
     public void onStop() {
-        mSession.unsubscribe(mSubscriber);
-        mSession.disconnect();
+
+        ViewLectureActivity.this.finish();
+        if(mSession != null) {
+            mSession.disconnect();
+        }
         super.onStop();
+    }
+
+    @Override
+
+    public void onBackPressed() {
+        if(mSession != null) {
+            mSession.disconnect();
+        }
+        ViewLectureActivity.this.finish();
+        super.onBackPressed();
     }
 }

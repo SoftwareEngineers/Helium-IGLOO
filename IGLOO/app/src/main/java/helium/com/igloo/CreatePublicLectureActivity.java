@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,6 +17,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.Format;
 import java.util.Date;
 
 import helium.com.igloo.Models.LectureModel;
@@ -52,7 +54,9 @@ public class CreatePublicLectureActivity extends AppCompatActivity {
                     lectureModel.setPublic(true);
                     lectureModel.setAvailable(false);
                     lectureModel.setLive(false);
-                    lectureModel.setTime_created(String.valueOf(new Date()));
+                    //lectureModel.setTime_created(String.valueOf(new Date()));
+                    DateFormat dateFormat = new DateFormat();
+                    lectureModel.setTime_created(String.valueOf(dateFormat.format("hh:mm a MMM-dd-yyyy", new Date())));
                     final String key = mDatabase.push().getKey();
                     lectureModel.setId(key);
                     mDatabase.child(key).setValue(lectureModel).addOnSuccessListener(new OnSuccessListener<Void>() {
