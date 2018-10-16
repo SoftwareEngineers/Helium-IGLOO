@@ -6,6 +6,30 @@
     android:layout_height="match_parent"
     tools:context=".CreatePrivateLectureActivity">
 
+    <FrameLayout
+        android:layout_width="61dp"
+        android:layout_height="72dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:background="@drawable/bottom_oval"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.055"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+        <ImageView
+            android:id="@+id/imageView9"
+            android:layout_width="39dp"
+            android:layout_height="44dp"
+            android:layout_gravity="center"
+            app:srcCompat="@drawable/ic_private_lecture"
+            android:contentDescription="@string/nothing" />
+    </FrameLayout>
+
     <EditText
         android:id="@+id/txt_private_lecture_password"
         android:layout_width="0dp"
@@ -32,7 +56,9 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="Password"
-        android:textSize="18sp"
+        android:fontFamily="@font/montserrat_bold"
+        android:textColor="@color/colorPrimary"
+        android:textSize="@dimen/sixteen"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.025"
@@ -71,7 +97,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText4"
         app:layout_constraintVertical_bias="0.042" />
 
     <EditText
@@ -118,7 +143,7 @@
         android:layout_marginTop="8dp"
         android:background="@drawable/ellipse_button"
         android:fontFamily="@font/montserrat_bold"
-        android:text="Create"
+        android:text="@string/create"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

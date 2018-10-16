@@ -3,6 +3,7 @@ package helium.com.igloo;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
@@ -93,28 +94,39 @@ public class SigningInActivity extends AppCompatActivity {
 
             try {
                 auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(SigningInActivity.this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
 
-                    if (!task.isSuccessful()) {
-                        if(!isOnline()){
-                            mProgressDialog.dismiss();
-                            Toast.makeText(SigningInActivity.this, "No internet connection", Toast.LENGTH_SHORT).show();
+                        if (!task.isSuccessful()) {
+                            if(!isOnline()){
+                                mProgressDialog.dismiss();
+                                Toast.makeText(SigningInActivity.this, "No internet connection", Toast.LENGTH_SHORT).show();
+                            }
+                            else{
+                                mProgressDialog.dismiss();
+                                Toast.makeText(SigningInActivity.this, "Check your email and password", Toast.LENGTH_LONG).show();
+                            }
                         }
-                        else{
-                            mProgressDialog.dismiss();
-                            Toast.makeText(SigningInActivity.this, "Check your email and password", Toast.LENGTH_LONG).show();
+                        else {
+                            saveUser(email, password);
+
+                            CountDown cd = new CountDown(100, 100);
+                            cd.start();
                         }
-                    }
-                    else {
-                        CountDown cd = new CountDown(100, 100);
-                        cd.start();
-                    }
                     }
                 });
             }
             catch(Exception ie){}
         }
+    }
+
+    private void saveUser(String email,String password){
+        SharedPreferences settings = getSharedPreferences("User", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = settings.edit();
+
+        editor.putString("email", email);
+        editor.putString("password", password);
+        editor.commit();
     }
 
     private class SwitchPage implements View.OnClickListener {
