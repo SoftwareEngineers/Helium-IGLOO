@@ -44,6 +44,7 @@ import java.util.Date;
 
 import helium.com.igloo.Models.LectureModel;
 import helium.com.igloo.Models.QuestionModel;
+import helium.com.igloo.Models.SubscriptionModel;
 
 public class ViewLectureActivity extends AppCompatActivity implements Session.SessionListener {
 
@@ -56,14 +57,13 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
     private EditText textQuestion;
     private TextView textLectureOwner;
     private ImageView imageViewPrivate;
-    private Button buttonAsk;
-    private Button buttonCall;
+    private Button buttonAsk,buttonCall,buttonSubscribe;
     private FirebaseAuth auth;
     private FrameLayout viewLecture;
     private Session mSession;
     private ProgressBar progressBar;
     private Subscriber mSubscriber;
-
+    private LectureModel lectureModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,18 +71,29 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
         Intent intent = getIntent();
         key = intent.getStringExtra("key");
         auth = FirebaseAuth.getInstance();
-        more = (Switch)findViewById(R.id.swi_more);
-        progressBar = (ProgressBar)findViewById(R.id.prog_lecture);
+        more = findViewById(R.id.swi_more);
+        progressBar = findViewById(R.id.prog_lecture);
         progressBar.setVisibility(View.VISIBLE);
-        textLectureTitle = (TextView)findViewById(R.id.txt_lecture_title);
-        viewLecture = (FrameLayout) findViewById(R.id.view_lecture);
-        textLectureDescription = (EditText)findViewById(R.id.txt_lecture_description);
-        textQuestion = (EditText)findViewById(R.id.txt_question);
-        textLectureOwner = (TextView)findViewById(R.id.txt_lecture_owner);
-        details = (ConstraintLayout)findViewById(R.id.lyout_more_details);
-        imageViewPrivate = (ImageView)findViewById(R.id.img_private);
-        buttonAsk = (Button)findViewById(R.id.btn_ask);
-        buttonCall = (Button)findViewById(R.id.btn_call);
+        textLectureTitle = findViewById(R.id.txt_lecture_title);
+        viewLecture =  findViewById(R.id.view_lecture);
+        textLectureDescription = findViewById(R.id.txt_lecture_description);
+        textQuestion = findViewById(R.id.txt_question);
+        textLectureOwner = findViewById(R.id.txt_lecture_owner);
+        details = findViewById(R.id.lyout_more_details);
+        imageViewPrivate = findViewById(R.id.img_private);
+        buttonAsk = findViewById(R.id.btn_ask);
+        buttonCall = findViewById(R.id.btn_call);
+        buttonSubscribe = findViewById(R.id.btn_subscribe);
+        buttonSubscribe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(lectureModel!=null){
+                    final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Subscription");
+                    SubscriptionModel subscription = new SubscriptionModel(lectureModel.getOwner_id(),auth.getCurrentUser().getUid(),"pending");
+                    databaseReference.child(lectureModel.getOwner_id()).child(auth.getCurrentUser().getUid()).setValue(subscription);
+                }
+            }
+        });
         buttonAsk.setOnClickListener(new Click());
         buttonCall.setOnClickListener(new Click());
         more.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -98,7 +109,7 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                LectureModel lectureModel = dataSnapshot.child("Lectures").child(key).getValue(LectureModel.class);
+                lectureModel = dataSnapshot.child("Lectures").child(key).getValue(LectureModel.class);
                 textLectureTitle.setText(lectureModel.getTitle());
                 textLectureDescription.setText(lectureModel.getDescription());
                 textLectureOwner.setText(dataSnapshot.child("Users").child(lectureModel.getOwnerId()).child("name").getValue(String.class));

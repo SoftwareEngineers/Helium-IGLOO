@@ -35,7 +35,6 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -46,16 +45,16 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 import helium.com.igloo.Adapters.LectureSearchAdapter;
 import helium.com.igloo.Fragments.HomeFragment;
 import helium.com.igloo.Fragments.SubscriptionsFragment;
 import helium.com.igloo.Models.LectureModel;
 import helium.com.igloo.Models.QuestionModel;
+import helium.com.igloo.Models.SubscriptionModel;
+
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
@@ -76,9 +75,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private List<LectureModel> lectures;
     private List<String> titles;
 
-
-
     private boolean doubleBackToExitPressedOnce = false;
+    private DatabaseReference databaseReference;
+    private List<SubscriptionModel> subscriptionModelList;
+    private SubscriptionModel subscriptionModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,6 +155,27 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 }
             }
         };
+
+        subscriptionModelList = new ArrayList<>();
+        databaseReference = FirebaseDatabase.getInstance().getReference("Subscription").child(auth.getCurrentUser().getUid());
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                subscriptionModelList.clear();
+                String text = "";
+                for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
+                    subscriptionModel = childSnapshot.getValue(SubscriptionModel.class);
+                    text += childSnapshot.hashCode()+"-";
+                    subscriptionModelList.add(subscriptionModel);
+                }
+                mName.setText(text);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
