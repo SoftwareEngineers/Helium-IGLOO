@@ -20,6 +20,7 @@ import helium.com.igloo.Models.UserModel;
 public class LandingActivity extends AppCompatActivity {
 
     private FirebaseAuth auth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,7 +32,6 @@ public class LandingActivity extends AppCompatActivity {
 
             public void run(){
 
-
                 try{
                     sleep(3000);
                 }
@@ -39,8 +39,14 @@ public class LandingActivity extends AppCompatActivity {
                     ie.printStackTrace();
                 }
                 finally{
-                    loadPreferences();
-                    finish();
+                    if(check()){
+                        loadPreferences();
+                    }
+                    else{
+                        startActivity(new Intent(LandingActivity.this, SigningInActivity.class));
+                        finish();
+                    }
+
                 }
             }
         };
@@ -53,19 +59,31 @@ public class LandingActivity extends AppCompatActivity {
         String email = settings.getString("email", null);
         String password = settings.getString("password", null);
 
-        if(email != null && password != null) {
-            try {
-                auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(LandingActivity.this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        startActivity(new Intent(LandingActivity.this,HomeActivity.class));
-                    }
-                });
-            }
-            catch(Exception ie){}
+        try {
+            auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(LandingActivity.this, new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    startActivity(new Intent(LandingActivity.this,HomeActivity.class));
+                }
+            });
         }
-        else{
-            startActivity(new Intent(LandingActivity.this, SigningInActivity.class));
+        catch(Exception ie){
+            ie.printStackTrace();
         }
     }
+
+    private boolean check(){
+        boolean flag = false;
+
+        SharedPreferences settings = getSharedPreferences("User", Context.MODE_PRIVATE);
+        String email = settings.getString("email", null);
+        String password = settings.getString("password", null);
+
+        if(email != null && password != null) {
+            flag = true;
+        }
+
+        return flag;
+    }
+
 }

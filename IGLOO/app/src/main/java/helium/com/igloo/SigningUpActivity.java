@@ -119,6 +119,7 @@ public class SigningUpActivity extends AppCompatActivity {
             });
         }
     }
+
     private void saveUser(String email,String password){
         SharedPreferences settings = getSharedPreferences("User", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();

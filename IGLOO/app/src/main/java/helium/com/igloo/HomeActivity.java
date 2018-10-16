@@ -144,6 +144,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
                 editor.remove("email");
                 editor.remove("password");
+                editor.commit();
+
                 auth.signOut();
             }
         });
