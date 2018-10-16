@@ -16,6 +16,10 @@ public class UserModel {
     private double numberOfLectures;
     private List<String> tags;
 
+    public UserModel(){
+
+    }
+
     public UserModel(String name, String email, String password, String profileUrl) {
         this.name = name;
         this.email = email;

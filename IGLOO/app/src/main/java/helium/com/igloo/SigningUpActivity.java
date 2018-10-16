@@ -1,6 +1,8 @@
 package helium.com.igloo;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
@@ -20,8 +22,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.io.File;
 
 import helium.com.igloo.Models.UserModel;
 
@@ -93,8 +98,9 @@ public class SigningUpActivity extends AppCompatActivity {
                 public void onComplete(@NonNull Task<AuthResult> task) {
 
                     if (!task.isSuccessful()) {
-                        Toast.makeText(SigningUpActivity.this, "Authentication failed." + task.getException(),
+                        Toast.makeText(SigningUpActivity.this, "Sign Up failed." + task.getException(),
                                 Toast.LENGTH_SHORT).show();
+
                     }
                     else {
                         Toast.makeText(SigningUpActivity.this, "You have registered successfully", Toast.LENGTH_SHORT).show();
@@ -104,6 +110,7 @@ public class SigningUpActivity extends AppCompatActivity {
                         String userID = auth.getCurrentUser().getUid();
 
                         databaseReference.child(userID).setValue(user);
+                        saveUser(email, password);
 
                         CountDown cd = new CountDown(100, 100);
                         cd.start();
@@ -111,6 +118,15 @@ public class SigningUpActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    private void saveUser(String email,String password){
+        SharedPreferences settings = getSharedPreferences("User", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = settings.edit();
+
+        editor.putString("email", email);
+        editor.putString("password", password);
+        editor.commit();
     }
 
     public class CountDown extends CountDownTimer {

@@ -30,10 +30,10 @@ public class HomeFragment extends Fragment {
 
     private int[] activeTabIcons = {
             R.drawable.ic_active_video,
-            R.drawable.ic_active_live
+            R.drawable.ic_active_live,
     };
 
-    private int[] inactiveTabIcons = {
+    private int[] icons = {
             R.drawable.ic_inactive_video,
             R.drawable.ic_inactive_live
     };
@@ -56,30 +56,9 @@ public class HomeFragment extends Fragment {
         tabLayout = (TabLayout) v.findViewById(R.id.home_tab);
         tabLayout.setupWithViewPager(viewPager);
 
-//        tabLayout.getTabAt(0).setIcon(tabIcons[0]);
-//        tabLayout.getTabAt(1).setIcon(tabIcons[3]);
-//
-//        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-//            @Override
-//            public void onTabSelected(TabLayout.Tab tab) {
-//                if(activeTab == 0)
-//                    tabLayout.getTabAt(0).setIcon(tabIcons[0]);
-//                else
-//                    tabLayout.getTabAt(1).setIcon(tabIcons[1]);
-//            }
-//
-//            @Override
-//            public void onTabUnselected(TabLayout.Tab tab) {
-//                if(activeTab == 1)
-//                    tabLayout.getTabAt(0).setIcon(tabIcons[2]);
-//                else
-//                    tabLayout.getTabAt(1).setIcon(tabIcons[3]);
-//            }
-//
-//            @Override
-//            public void onTabReselected(TabLayout.Tab tab) {
-//            }
-//        });
+        tabLayout.getTabAt(0).setIcon(icons[0]);
+        tabLayout.getTabAt(1).setIcon(icons[1]);
+
 
         return v;
     }
@@ -118,13 +97,7 @@ public class HomeFragment extends Fragment {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            Drawable image = getResources().getDrawable(activeTabIcons[position]);
-            image.setBounds(0, 0, image.getIntrinsicWidth(), image.getIntrinsicHeight());
-
-            SpannableString sb = new SpannableString("   " + mFragmentTitleList.get(position));
-            ImageSpan imageSpan = new ImageSpan(image, ImageSpan.ALIGN_BOTTOM);
-            sb.setSpan(imageSpan, 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            return sb;
+            return mFragmentTitleList.get(position);
         }
     }
 }

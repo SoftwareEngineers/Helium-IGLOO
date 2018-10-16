@@ -2,6 +2,7 @@ package helium.com.igloo;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Icon;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -235,9 +236,15 @@ public class LectureActivity extends AppCompatActivity implements Session.Sessio
     public void onBackPressed() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(LectureActivity.this);
         alertDialog.setTitle("Warning!");
+        alertDialog.setIcon(R.drawable.warning);
         alertDialog.setMessage("Your lecture will be terminated. Are you sure you want to continue?");
         alertDialog.setPositiveButton("Confirm",new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
+                if(mSession != null){
+                    if(mPublisher != null)
+                        mSession.unpublish(mPublisher);
+                    mSession.disconnect();
+                }
                 Intent intent = new Intent(LectureActivity.this, HomeActivity.class);
                 startActivity(intent);
                 LectureActivity.this.finish();

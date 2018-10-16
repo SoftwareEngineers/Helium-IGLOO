@@ -69,6 +69,7 @@ public class ArchiveLectureFragment extends Fragment {
 
     @Override
     public void onResume(){
+        Toast.makeText(context, "called archived", Toast.LENGTH_SHORT).show();
         loadLectures();
         super.onResume();
     }
