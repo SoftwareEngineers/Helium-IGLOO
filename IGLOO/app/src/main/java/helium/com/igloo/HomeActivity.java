@@ -74,7 +74,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private SearchView.SearchAutoComplete   mSearchAutoComplete;
     private ArrayAdapter<String> adapter;
     private List<LectureModel> lectures;
-    private List<String> dummy;
+    private List<String> titles;
 
 
 
@@ -92,7 +92,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.setItemBackgroundResource(R.drawable.item_highlight);
 
-        dummy = getDummyList(); ////// DUMMY DATA
+        titles = new ArrayList<>(); ////// DATA FOR DISLPAYING SEARCH RESULTS
         lectures = new ArrayList<>(); ////// DATABASE DATA
 
         getTitlesAndIDs();
@@ -199,7 +199,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         mSearchAutoComplete.setDropDownAnchor(R.id.menu_search);
         mSearchAutoComplete.setThreshold(1);
 
-        adapter = new ArrayAdapter<>(HomeActivity.this, android.R.layout.simple_list_item_1,dummy);
+        adapter = new ArrayAdapter<>(HomeActivity.this, android.R.layout.simple_list_item_1,titles);
         mSearchAutoComplete.setAdapter(adapter);
         mSearchAutoComplete.showDropDown();
         return true;
@@ -221,7 +221,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     String item = (String) parent.getItemAtPosition(position);
-                    int index = dummy.indexOf(item);
+                    int index = titles.indexOf(item);
                     LectureModel model = lectures.get(index);
 
                     Intent intent;
@@ -248,25 +248,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    ///////// JUST SOME DUMMY DATA
-
-    public List<String> getDummyList() {
-
-        List<String> list = new ArrayList<>();
-        list.add("james D");
-        list.add("jess A");
-        list.add("paul");
-        list.add("ren dave");
-        list.add("mary joy");
-        list.add("maria");
-        list.add("renz");
-        list.add("rodel");
-        list.add("maharlika");
-        list.add("maya");
-
-        return list;
-    }
-
 
     ///////// GET DATA FROM DATABASE
 
@@ -279,12 +260,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
              public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                  lectures.clear();
-                 dummy.clear();
+                 titles.clear();
                  for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                      //Toast.makeText(HomeActivity.this,childSnapshot.child("lecture").getValue(String.class), Toast.LENGTH_SHORT).show();
                      model[0] = childSnapshot.getValue(LectureModel.class);
                      lectures.add(model[0]);
-                     dummy.add(model[0].getTitle());
+                     titles.add(model[0].getTitle());
                  }
              }
 
