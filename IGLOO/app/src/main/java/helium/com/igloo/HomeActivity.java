@@ -1,20 +1,15 @@
 package helium.com.igloo;
 
-<<<<<<< HEAD
+
 import android.app.SearchManager;
 import android.content.Context;
-=======
 import android.app.ProgressDialog;
->>>>>>> bc05c67316245cc4fca2ac7b657b70e0cbe4a3aa
+
 import android.content.Intent;
 import android.database.MatrixCursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-<<<<<<< HEAD
-import android.provider.BaseColumns;
-=======
 import android.os.CountDownTimer;
->>>>>>> bc05c67316245cc4fca2ac7b657b70e0cbe4a3aa
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -84,7 +79,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setItemBackgroundResource(R.drawable.item_highlight);
 
         ///adapter = new LectureSearchAdapter(HomeActivity.this,getDummyList());
-        layoutManager = new LinearLayoutManager(this);
+
 
 
         View headerLayout = navigationView.getHeaderView(0);
@@ -202,7 +197,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
                     @Override
                     public boolean onQueryTextChange(String newText) {
-                        GetSuggestions(newText);
+                        //GetSuggestions(newText);
                         return false;
                     }
                 });
