@@ -64,6 +64,13 @@ public class ArchiveLectureFragment extends Fragment {
 
         return view;
     }
+
+    @Override
+    public void onResume(){
+        loadLectures();
+        super.onResume();
+    }
+
     public void loadLectures(){
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Lectures");
         final Context context = super.getContext();

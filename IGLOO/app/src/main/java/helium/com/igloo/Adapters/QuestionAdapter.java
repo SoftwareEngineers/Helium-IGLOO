@@ -62,8 +62,8 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.Questi
         questionViewHolder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final DatabaseReference databaseReference1 = FirebaseDatabase.getInstance().getReference("Lectures");
-                databaseReference1.child(p.getId()).child("answered").setValue(true);
+                final DatabaseReference databaseReference1 = FirebaseDatabase.getInstance().getReference("Questions");
+                databaseReference1.child(p.getId()).child("is_answered").setValue(true);
             }
         });
     }
