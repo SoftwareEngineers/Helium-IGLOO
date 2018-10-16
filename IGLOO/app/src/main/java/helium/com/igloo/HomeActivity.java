@@ -1,18 +1,26 @@
 package helium.com.igloo;
 
+
+import android.app.SearchManager;
+import android.content.Context;
 import android.app.ProgressDialog;
+
 import android.content.Intent;
+import android.database.MatrixCursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,6 +28,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -32,7 +41,11 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import de.hdodenhof.circleimageview.CircleImageView;
+import helium.com.igloo.Adapters.LectureSearchAdapter;
 import helium.com.igloo.Fragments.HomeFragment;
 import helium.com.igloo.Fragments.SubscriptionsFragment;
 
@@ -50,7 +63,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private FirebaseStorage storage;
     private ImageButton mCreateLecture;
 
+
     private boolean doubleBackToExitPressedOnce = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +78,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.setItemBackgroundResource(R.drawable.item_highlight);
 
+        ///adapter = new LectureSearchAdapter(HomeActivity.this,getDummyList());
+
+
+
         View headerLayout = navigationView.getHeaderView(0);
         mTabPic = (CircleImageView)headerLayout.findViewById(R.id.tab_profile_pic);
         mName = (TextView)headerLayout.findViewById(R.id.tab_profile_name);
@@ -72,6 +91,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         mCreateLecture = (ImageButton)headerLayout.findViewById(R.id.imgbtn_create_lecture);
 
         mCreateLecture.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder mBuilder = new AlertDialog.Builder(HomeActivity.this);
@@ -98,9 +118,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
+
         auth = FirebaseAuth.getInstance();
         storage = FirebaseStorage.getInstance();
-
         authListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -159,9 +179,38 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         if (id == R.id.menu_notification) {
         }
+        else if (id == R.id.menu_search){
+
+            SearchManager searchManager = (SearchManager) HomeActivity.this.getSystemService(Context.SEARCH_SERVICE);
+            SearchView searchView = (SearchView) item.getActionView();
+
+
+            if (searchView != null) {
+                searchView.setSearchableInfo(searchManager.getSearchableInfo(HomeActivity.this.getComponentName()));
+                searchView.setIconified(false);
+                searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                    @Override
+                    public boolean onQueryTextSubmit(String query) {
+                        Toast.makeText(getApplicationContext(),query,Toast.LENGTH_LONG).show();
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onQueryTextChange(String newText) {
+                        //GetSuggestions(newText);
+                        return false;
+                    }
+                });
+
+            }
+
+        }
+
 
         return super.onOptionsItemSelected(item);
     }
+
+
 
     private void setProfileInfo(){
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users");
@@ -242,6 +291,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+
     public class CountDown extends CountDownTimer {
 
         /**
@@ -267,4 +317,5 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             finish();
         }
     }
+
 }
