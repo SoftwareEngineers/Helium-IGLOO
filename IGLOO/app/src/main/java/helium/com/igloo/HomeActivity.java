@@ -230,13 +230,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         intent.putExtra("key", model.getId());
                         intent.putExtra("archiveID", model.getArchive_id());
                         startActivity(intent);
-                        finish();
+
                     }
                     else if (!model.getAvailable() && model.getLive()){
                         intent = new Intent(HomeActivity.this, ViewLectureActivity.class);
                         intent.putExtra("key", model.getId());
                         startActivity(intent);
-                        finish();
                     }
                 }
             });
