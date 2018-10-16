@@ -1,6 +1,7 @@
 package helium.com.igloo;
 
 
+import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Context;
 import android.app.ProgressDialog;
@@ -9,11 +10,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -26,6 +29,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -49,6 +54,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import helium.com.igloo.Adapters.LectureSearchAdapter;
 import helium.com.igloo.Fragments.HomeFragment;
 import helium.com.igloo.Fragments.SubscriptionsFragment;
+import helium.com.igloo.Models.LectureModel;
+import helium.com.igloo.Models.QuestionModel;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
@@ -63,6 +70,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private FirebaseAuth auth;
     private FirebaseStorage storage;
     private ImageButton mCreateLecture;
+    private SearchView searchView;
+    private SearchView.SearchAutoComplete   mSearchAutoComplete;
+    private ArrayAdapter<String> adapter;
+    private List<LectureModel> lectures;
+    private List<String> dummy;
+
 
 
     private boolean doubleBackToExitPressedOnce = false;
@@ -79,9 +92,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.setItemBackgroundResource(R.drawable.item_highlight);
 
-        ///adapter = new LectureSearchAdapter(HomeActivity.this,getDummyList());
+        dummy = getDummyList(); ////// DUMMY DATA
+        lectures = new ArrayList<>(); ////// DATABASE DATA
 
-
+        getTitlesAndIDs();
 
         View headerLayout = navigationView.getHeaderView(0);
         mTabPic = (CircleImageView) headerLayout.findViewById(R.id.tab_profile_pic);
@@ -168,12 +182,32 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         });
     }
 
+    //// ADDED SEARCH VIEW
+
+    @SuppressLint("RestrictedApi")
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_tool, menu);
+        MenuItem item = menu.findItem(R.id.menu_search);
+
+        searchView = (SearchView) MenuItemCompat.getActionView(item);
+        mSearchAutoComplete =  searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+
+        //mSearchAutoComplete.setDropDownBackgroundResource(R.drawable.background_white);
+        //mSearchAutoComplete.setBackgroundColor(Color.WHITE);
+        mSearchAutoComplete.setDropDownAnchor(R.id.menu_search);
+        mSearchAutoComplete.setThreshold(1);
+
+        adapter = new ArrayAdapter<>(HomeActivity.this, android.R.layout.simple_list_item_1,dummy);
+        mSearchAutoComplete.setAdapter(adapter);
+        mSearchAutoComplete.showDropDown();
         return true;
     }
+
+
+
+    ////// IMPLEMENTED SEARCH
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -183,34 +217,84 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
         else if (id == R.id.menu_search){
 
-            SearchManager searchManager = (SearchManager) HomeActivity.this.getSystemService(Context.SEARCH_SERVICE);
-            SearchView searchView = (SearchView) item.getActionView();
+            mSearchAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    String item = (String) parent.getItemAtPosition(position);
+                    int index = dummy.indexOf(item);
+                    LectureModel model = lectures.get(index);
 
-
-            if (searchView != null) {
-                searchView.setSearchableInfo(searchManager.getSearchableInfo(HomeActivity.this.getComponentName()));
-                searchView.setIconified(false);
-                searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                    @Override
-                    public boolean onQueryTextSubmit(String query) {
-                        Toast.makeText(getApplicationContext(),query,Toast.LENGTH_LONG).show();
-                        return false;
+                    Intent intent;
+                    if(model.getAvailable() && !model.getLive()) {
+                        intent = new Intent(HomeActivity.this, ViewArchiveActivity.class);
+                        intent.putExtra("key", model.getId());
+                        intent.putExtra("archiveID", model.getArchive_id());
+                        startActivity(intent);
+                        finish();
                     }
-
-                    @Override
-                    public boolean onQueryTextChange(String newText) {
-                        //GetSuggestions(newText);
-                        return false;
+                    else if (!model.getAvailable() && model.getLive()){
+                        intent = new Intent(HomeActivity.this, ViewLectureActivity.class);
+                        intent.putExtra("key", model.getId());
+                        startActivity(intent);
+                        finish();
                     }
-                });
-
+                }
+            });
             }
 
-        }
 
 
         return super.onOptionsItemSelected(item);
     }
+
+
+    ///////// JUST SOME DUMMY DATA
+
+    public List<String> getDummyList() {
+
+        List<String> list = new ArrayList<>();
+        list.add("james D");
+        list.add("jess A");
+        list.add("paul");
+        list.add("ren dave");
+        list.add("mary joy");
+        list.add("maria");
+        list.add("renz");
+        list.add("rodel");
+        list.add("maharlika");
+        list.add("maya");
+
+        return list;
+    }
+
+
+    ///////// GET DATA FROM DATABASE
+
+    public void getTitlesAndIDs(){
+
+        final LectureModel[] model = new LectureModel[1];
+         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Lectures");
+         reference.addValueEventListener(new ValueEventListener() {
+             @Override
+             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                 lectures.clear();
+                 dummy.clear();
+                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
+                     //Toast.makeText(HomeActivity.this,childSnapshot.child("lecture").getValue(String.class), Toast.LENGTH_SHORT).show();
+                     model[0] = childSnapshot.getValue(LectureModel.class);
+                     lectures.add(model[0]);
+                     dummy.add(model[0].getTitle());
+                 }
+             }
+
+             @Override
+             public void onCancelled(@NonNull DatabaseError databaseError) {
+
+             }
+         });
+    }
+
 
 
 
