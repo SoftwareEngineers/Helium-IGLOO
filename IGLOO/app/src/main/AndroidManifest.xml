@@ -23,6 +23,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service android:name=".SpeechRecognition.SpeechService"/>
         <activity android:name=".CreatePrivateLectureActivity" />
         <activity android:name=".CreatePublicLectureActivity" />
         <activity android:name=".LectureActivity" />
