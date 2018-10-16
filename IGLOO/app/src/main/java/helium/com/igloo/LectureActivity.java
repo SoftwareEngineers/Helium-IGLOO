@@ -1,7 +1,9 @@
 package helium.com.igloo;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -177,7 +179,7 @@ public class LectureActivity extends AppCompatActivity implements Session.Sessio
                 questions.clear();
                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                     Toast.makeText(LectureActivity.this,childSnapshot.child("lecture").getValue(String.class) + " == " + key, Toast.LENGTH_SHORT).show();
-                    if(childSnapshot.child("lecture").getValue(String.class).equals(key)){
+                    if(childSnapshot.child("lecture").getValue(String.class).equals(key) && !childSnapshot.child("is_answered").getValue(Boolean.class)){
                         QuestionModel question = childSnapshot.getValue(QuestionModel.class);
                         questions.add(question);
                         questionAdapter.notifyDataSetChanged();
@@ -209,13 +211,6 @@ public class LectureActivity extends AppCompatActivity implements Session.Sessio
     }
 
     @Override
-    public void onStop() {
-        mSession.unpublish(mPublisher);
-        mSession.disconnect();
-        super.onStop();
-    }
-
-    @Override
     public void onArchiveStarted(Session session, String archiveID, String archiveName) {
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Lectures");
         databaseReference.child(key).child("archive_id").setValue(archiveID);
@@ -223,5 +218,25 @@ public class LectureActivity extends AppCompatActivity implements Session.Sessio
 
     @Override
     public void onArchiveStopped(Session session, String s) {
+    }
+
+    @Override
+    public void onBackPressed() {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(LectureActivity.this);
+        alertDialog.setTitle("Warning!");
+        alertDialog.setMessage("Your lecture will be terminated. Are you sure you want to continue?");
+        alertDialog.setPositiveButton("Confirm",new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(LectureActivity.this, HomeActivity.class);
+                startActivity(intent);
+                LectureActivity.this.finish();
+            }
+        });
+        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which){
+                dialog.cancel();
+            }
+        });
+        alertDialog.show();
     }
 }

@@ -70,6 +70,7 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.LectureV
                 else{
                     Intent intent = new Intent(context,ViewArchiveActivity.class);
                     intent.putExtra("archiveID", p.getArchive_id());
+                    intent.putExtra("key", p.getId());
                     context.startActivity(intent);
                 }
             }
