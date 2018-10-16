@@ -42,6 +42,7 @@ public class ArchiveLectureFragment extends Fragment {
     private List<LectureModel> lectures;
     private LectureAdapter lectureAdapter;
     private ProgressBar progressBar;
+    private Context context;
 
     public ArchiveLectureFragment() {
         // Required empty public constructor
@@ -51,13 +52,14 @@ public class ArchiveLectureFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_archive_lecture, container, false);
+        context = super.getContext();
         progressBar = (ProgressBar)view.findViewById(R.id.pro_archive_lectures);
         progressBar.setVisibility(View.VISIBLE);
         recyclerView = (RecyclerView)view.findViewById(R.id.rec_archive_lectures);
         lectures = new ArrayList<>();
-        lectureAdapter = new LectureAdapter(lectures, super.getContext());
+        lectureAdapter = new LectureAdapter(lectures, context);
         recyclerView.setAdapter(lectureAdapter);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(super.getContext());
+        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
         loadLectures();
@@ -108,7 +110,6 @@ public class ArchiveLectureFragment extends Fragment {
     }
 
     public void checkStatus(final DatabaseReference databaseReference, final String key, String archiveID){
-        final Context context = super.getContext();
         RequestQueue reqQueue = Volley.newRequestQueue(context);
         reqQueue.add(new JsonObjectRequest(Request.Method.GET,
                 "https://iglov2.herokuapp.com/videos/"+archiveID,

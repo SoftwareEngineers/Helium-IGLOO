@@ -27,6 +27,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.opentok.android.BaseVideoRenderer;
 import com.opentok.android.OpentokError;
 import com.opentok.android.PublisherKit;
@@ -59,6 +61,7 @@ public class LectureActivity extends AppCompatActivity implements Session.Sessio
     private Publisher mPublisher;
     private Session mSession;
     private ProgressBar progressBar;
+    private StorageReference storageReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +97,7 @@ public class LectureActivity extends AppCompatActivity implements Session.Sessio
 
             }
         });
+        storageReference = FirebaseStorage.getInstance().getReference("Lectures");
         recyclerView = (RecyclerView)findViewById(R.id.rec_questions);
         questions = new ArrayList<>();
         questionAdapter = new QuestionAdapter(questions, this);
@@ -107,7 +111,7 @@ public class LectureActivity extends AppCompatActivity implements Session.Sessio
     public void startLecture(){
         RequestQueue reqQueue = Volley.newRequestQueue(this);
         reqQueue.add(new JsonObjectRequest(Request.Method.GET,
-                "https://iglov2.herokuapp.com" + "/create_session",
+                "https://iglov2.herokuapp.com/create_session",
                 null, new Response.Listener<JSONObject>() {
 
             @Override
@@ -218,6 +222,13 @@ public class LectureActivity extends AppCompatActivity implements Session.Sessio
 
     @Override
     public void onArchiveStopped(Session session, String s) {
+    }
+
+    @Override
+    public void onStop() {
+        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Lectures");
+        databaseReference.child(key).child("live").setValue(false);
+        super.onStop();
     }
 
     @Override

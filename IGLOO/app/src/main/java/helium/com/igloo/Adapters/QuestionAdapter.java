@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import helium.com.igloo.Models.QuestionModel;
@@ -64,6 +69,15 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.Questi
             public void onClick(View v) {
                 final DatabaseReference databaseReference1 = FirebaseDatabase.getInstance().getReference("Questions");
                 databaseReference1.child(p.getId()).child("is_answered").setValue(true);
+                DateFormat format = new SimpleDateFormat("hh:mm a MMM-dd-yyyy");
+                try {
+                    Date date = format.parse(p.getTime());
+                    long lo =  new Date().getTime()-date.getTime();
+                    Toast.makeText(context, lo + "", Toast.LENGTH_SHORT).show();
+                    Log.e("dsdsdsdsd", lo + "dsds");
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }

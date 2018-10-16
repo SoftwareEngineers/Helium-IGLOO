@@ -25,7 +25,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.opentok.android.Session;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -57,26 +56,7 @@ public class ViewArchiveActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String archiveID = intent.getStringExtra("archiveID");
         mKey = intent.getStringExtra("key");
-        Log.e("Opentok Archive", "Arvhie klskdlskld" + archiveID);
-        try {
-            Log.e("Opentok Archive", "Archive starting");
-            mediaController = new MediaController(this);
-            mediaController.setAnchorView(videoView);
-            videoView.setMediaController(mediaController);
-            getUrl(archiveID);
-            videoView.setVideoURI(mUrl);
-
-            videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-
-                public void onPrepared(MediaPlayer mp) {
-                    progressBar.setVisibility(View.GONE);
-                    videoView.start();
-                    Log.e("Opentok Archive", "Archive started");
-                }
-            });
-        } catch (Exception e) {
-            System.out.println("Video Play Error :" + e.getMessage());
-        }
+        playArchive(archiveID);
         mRecycleViewQuestions = (RecyclerView)findViewById(R.id.rec_questions);
         questions = new ArrayList<>();
         questionAdapter = new QuestionAdapter(questions, this);
@@ -87,7 +67,7 @@ public class ViewArchiveActivity extends AppCompatActivity {
         loadQuestions();
     }
 
-    public void getUrl(String archiveID){
+    public void playArchive(String archiveID){
         RequestQueue reqQueue = Volley.newRequestQueue(this);
         reqQueue.add(new JsonObjectRequest(Request.Method.GET,
                 "https://iglov2.herokuapp.com/videos/" + archiveID,
@@ -96,11 +76,24 @@ public class ViewArchiveActivity extends AppCompatActivity {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    String[] url = response.getString("url").split("\\?");
-                    mUrl = Uri.parse(url[0]);
-                    Toast.makeText(ViewArchiveActivity.this, url[0], Toast.LENGTH_SHORT).show();
-                } catch (JSONException error) {
-                    Toast.makeText(ViewArchiveActivity.this, "Error : " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    mediaController = new MediaController(ViewArchiveActivity.this);
+                    mediaController.setAnchorView(videoView);
+                    Uri video = Uri.parse( response.getString("url"));
+                    Log.e("Opentok Archive", "Archive starting");
+                    videoView.setMediaController(mediaController);
+                    videoView.setVideoURI(video);
+
+                    videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+
+                        public void onPrepared(MediaPlayer mp) {
+                            progressBar.setVisibility(View.GONE);
+                            videoView.start();
+                            Log.e("Opentok Archive", "Archive started");
+                        }
+                    });
+
+                } catch (Exception e) {
+                    System.out.println("Video Play Error :" + e.getMessage());
                 }
             }
         }, new Response.ErrorListener() {
@@ -118,7 +111,7 @@ public class ViewArchiveActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 questions.clear();
                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
-                    if(childSnapshot.child("lecture").getValue(String.class).equals(mKey)){
+                    if(childSnapshot.child("lecture").getValue(String.class).equals(mKey) && childSnapshot.child("is_answered").getValue(Boolean.class)){
                         QuestionModel question = childSnapshot.getValue(QuestionModel.class);
                         questions.add(question);
                         questionAdapter.notifyDataSetChanged();

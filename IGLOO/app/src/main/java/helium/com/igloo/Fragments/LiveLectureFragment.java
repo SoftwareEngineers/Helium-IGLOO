@@ -55,6 +55,12 @@ public class LiveLectureFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onStart(){
+        super.onStart();
+        loadLectures();
+    }
+
     public void loadLectures(){
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Lectures");
         databaseReference.orderByChild("time_created").addValueEventListener(new ValueEventListener() {
