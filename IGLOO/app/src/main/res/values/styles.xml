@@ -22,7 +22,7 @@
 
     <style name="menuItem" parent="TextAppearance.AppCompat">
         <item name="android:fontFamily">@font/montserrat</item>
-        <item name="android:textSize">@dimen/twelve</item>
+        <item name="android:textSize">@dimen/fourteen</item>
     </style>
 
     <style name="tabItem" parent="TextAppearance.AppCompat">
