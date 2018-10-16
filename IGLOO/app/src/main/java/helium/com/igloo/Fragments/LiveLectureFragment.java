@@ -1,5 +1,6 @@
 package helium.com.igloo.Fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -31,6 +32,7 @@ public class LiveLectureFragment extends Fragment {
     private List<LectureModel> lectures;
     private LectureAdapter lectureAdapter;
     private ProgressBar progressBar;
+    private Context context;
 
     public LiveLectureFragment() {
         // Required empty public constructor
@@ -41,6 +43,7 @@ public class LiveLectureFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_live_lecture, container, false);
+        context = super.getContext();
         progressBar = (ProgressBar)view.findViewById(R.id.pro_live_lectures);
         progressBar.setVisibility(View.VISIBLE);
         recyclerView = (RecyclerView)view.findViewById(R.id.rec_live_lectures);
@@ -56,6 +59,13 @@ public class LiveLectureFragment extends Fragment {
         loadLectures();
 
         return view;
+    }
+
+    @Override
+    public void onStart(){
+        Toast.makeText(context, "called live", Toast.LENGTH_SHORT).show();
+        super.onStart();
+        loadLectures();
     }
 
     public void loadLectures(){
