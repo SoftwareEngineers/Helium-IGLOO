@@ -320,7 +320,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-<<<<<<< HEAD
     @Override
     public void onBackPressed() {
         if (doubleBackToExitPressedOnce) {
@@ -339,6 +338,4 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             }
         }, 2000);
     }
-=======
->>>>>>> 24d1aee43940c8a2df02ddcd4225ce120a7ff671
 }
