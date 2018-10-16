@@ -59,6 +59,13 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.Questi
             questionViewHolder.textOwner.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_settings_phone_black_24dp, 0);
         }
         questionViewHolder.textQuestion.setText(p.getQuestion());
+        questionViewHolder.view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final DatabaseReference databaseReference1 = FirebaseDatabase.getInstance().getReference("Questions");
+                databaseReference1.child(p.getId()).child("is_answered").setValue(true);
+            }
+        });
     }
 
     @Override
@@ -74,9 +81,11 @@ public QuestionAdapter.QuestionViewHolder onCreateViewHolder(ViewGroup viewGroup
         protected TextView textOwner;
         protected EditText textQuestion;
         protected ImageView imageView;
+        protected View view;
 
         public QuestionViewHolder(View v) {
             super(v);
+            view = v;
             textOwner = (TextView) v.findViewById(R.id.txt_question_owner);
             textQuestion = (EditText) v.findViewById(R.id.txt_question);
             imageView  = (ImageView)v.findViewById(R.id.imageView);
