@@ -21,6 +21,7 @@
                 android:layout_height="50dp"
                 android:background="@color/white"
                 app:tabMode="fixed"
+                android:textAlignment="center"
                 app:tabTextAppearance="@style/tabItem"
                 app:tabSelectedTextColor="@color/colorPrimary"
                 app:tabGravity="fill"
