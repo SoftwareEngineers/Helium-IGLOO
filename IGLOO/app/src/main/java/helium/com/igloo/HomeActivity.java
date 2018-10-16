@@ -1,16 +1,23 @@
 package helium.com.igloo;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
+import android.database.MatrixCursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,6 +25,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,7 +38,11 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import de.hdodenhof.circleimageview.CircleImageView;
+import helium.com.igloo.Adapters.LectureSearchAdapter;
 import helium.com.igloo.Fragments.HomeFragment;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
@@ -45,6 +57,16 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private FirebaseStorage storage;
     private ImageButton mCreateLecture;
 
+    private LectureSearchAdapter adapter;
+    private LinearLayoutManager layoutManager;
+
+    private static final String[] SUGGESTIONS = {
+            "Bauru", "Sao Paulo", "Rio de Janeiro",
+            "Bahia", "Mato Grosso", "Minas Gerais",
+            "Tocantins", "Rio Grande do Sul"
+    };
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,12 +78,17 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        ///adapter = new LectureSearchAdapter(HomeActivity.this,getDummyList());
+        layoutManager = new LinearLayoutManager(this);
+
+
         View headerLayout = navigationView.getHeaderView(0);
         mTabPic = (CircleImageView)headerLayout.findViewById(R.id.tab_profile_pic);
         mName = (TextView)headerLayout.findViewById(R.id.tab_profile_name);
         mTokens = (TextView)headerLayout.findViewById(R.id.tab_profile_token);
         mCreateLecture = (ImageButton)headerLayout.findViewById(R.id.imgbtn_create_lecture);
         mCreateLecture.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder mBuilder = new AlertDialog.Builder(HomeActivity.this);
@@ -88,9 +115,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
+
         auth = FirebaseAuth.getInstance();
         storage = FirebaseStorage.getInstance();
-
         authListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -144,9 +171,38 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
             setProfileInfo();
         }
+        else if (id == R.id.menu_search){
+
+            SearchManager searchManager = (SearchManager) HomeActivity.this.getSystemService(Context.SEARCH_SERVICE);
+            SearchView searchView = (SearchView) item.getActionView();
+
+
+            if (searchView != null) {
+                searchView.setSearchableInfo(searchManager.getSearchableInfo(HomeActivity.this.getComponentName()));
+                searchView.setIconified(false);
+                searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                    @Override
+                    public boolean onQueryTextSubmit(String query) {
+                        Toast.makeText(getApplicationContext(),query,Toast.LENGTH_LONG).show();
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onQueryTextChange(String newText) {
+                        GetSuggestions(newText);
+                        return false;
+                    }
+                });
+
+            }
+
+        }
+
 
         return super.onOptionsItemSelected(item);
     }
+
+
 
     private void setProfileInfo(){
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users");
@@ -224,4 +280,63 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             auth.removeAuthStateListener(authListener);
         }
     }
+
+
+
+    public List<String> getDummyList()
+    {
+        List<String> list = new ArrayList<>();
+        list.add("rohit");
+        list.add("Amanda");
+        list.add("Triple H");
+        list.add("Barack Obama");
+        list.add("Kesha");
+        list.add("Ganguly");
+        list.add("Tomatino");
+        list.add("rohit");
+        list.add("Amanda");
+        list.add("Triple H");
+        list.add("Barack Obama");
+        list.add("Kesha");
+        list.add("Ganguly");
+        list.add("Tomatino");
+        list.add("rohit");
+        list.add("Amanda");
+        list.add("Triple H");
+        list.add("Barack Obama");
+        list.add("Kesha");
+        list.add("Ganguly");
+        list.add("Tomatino");
+
+        return list;
+    }
+
+
+
+    private void GetSuggestions(String query) {
+
+        // Cursor
+        Object[] temp;
+        String current;
+        final MatrixCursor cursor = new MatrixCursor(new String[] {  BaseColumns._ID, "LectureTitles"});
+        StringBuilder output = new StringBuilder();
+        for(int i = 0; i < SUGGESTIONS.length;i++) {
+            current = SUGGESTIONS[i];
+            //if(current.toLowerCase().startsWith(query.toLowerCase())) {
+            if(current.toLowerCase().contains(query.toLowerCase())){
+                output.append(current);
+                output.append("\n");
+                temp = new Object[]{i, current};
+                cursor.addRow(temp);
+            }
+
+        }
+
+        adapter = new LectureSearchAdapter(HomeActivity.this, cursor, SUGGESTIONS);
+        //search.setSuggestionsAdapter(adapter);
+        Toast.makeText(this,output.toString(),Toast.LENGTH_LONG).show();
+
+    }
+
+
 }
