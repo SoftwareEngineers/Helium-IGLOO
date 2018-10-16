@@ -79,10 +79,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.setItemBackgroundResource(R.drawable.item_highlight);
 
-        ///adapter = new LectureSearchAdapter(HomeActivity.this,getDummyList());
-
-
-
         View headerLayout = navigationView.getHeaderView(0);
         mTabPic = (CircleImageView) headerLayout.findViewById(R.id.tab_profile_pic);
         mName = (TextView) headerLayout.findViewById(R.id.tab_profile_name);
