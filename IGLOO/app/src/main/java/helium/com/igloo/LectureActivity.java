@@ -2,6 +2,7 @@ package helium.com.igloo;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Icon;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -27,6 +28,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.opentok.android.BaseVideoRenderer;
 import com.opentok.android.OpentokError;
 import com.opentok.android.PublisherKit;
@@ -59,6 +62,7 @@ public class LectureActivity extends AppCompatActivity implements Session.Sessio
     private Publisher mPublisher;
     private Session mSession;
     private ProgressBar progressBar;
+    private StorageReference storageReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +98,7 @@ public class LectureActivity extends AppCompatActivity implements Session.Sessio
 
             }
         });
+        storageReference = FirebaseStorage.getInstance().getReference("Lectures");
         recyclerView = (RecyclerView)findViewById(R.id.rec_questions);
         questions = new ArrayList<>();
         questionAdapter = new QuestionAdapter(questions, this);
@@ -107,7 +112,7 @@ public class LectureActivity extends AppCompatActivity implements Session.Sessio
     public void startLecture(){
         RequestQueue reqQueue = Volley.newRequestQueue(this);
         reqQueue.add(new JsonObjectRequest(Request.Method.GET,
-                "https://iglov2.herokuapp.com" + "/create_session",
+                "https://iglov2.herokuapp.com/create_session",
                 null, new Response.Listener<JSONObject>() {
 
             @Override
@@ -221,12 +226,25 @@ public class LectureActivity extends AppCompatActivity implements Session.Sessio
     }
 
     @Override
+    public void onStop() {
+        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Lectures");
+        databaseReference.child(key).child("live").setValue(false);
+        super.onStop();
+    }
+
+    @Override
     public void onBackPressed() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(LectureActivity.this);
         alertDialog.setTitle("Warning!");
+        alertDialog.setIcon(R.drawable.warning);
         alertDialog.setMessage("Your lecture will be terminated. Are you sure you want to continue?");
         alertDialog.setPositiveButton("Confirm",new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
+                if(mSession != null){
+                    if(mPublisher != null)
+                        mSession.unpublish(mPublisher);
+                    mSession.disconnect();
+                }
                 Intent intent = new Intent(LectureActivity.this, HomeActivity.class);
                 startActivity(intent);
                 LectureActivity.this.finish();

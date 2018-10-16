@@ -200,7 +200,6 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
             question.setLecture(key);
             question.setId(questionId);
             question.setIs_answered(false);
-//            question.setTime(String.valueOf(new Date()));
             DateFormat dateFormat = new DateFormat();
             question.setTime(String.valueOf(dateFormat.format("hh:mm a MMM-dd-yyyy", new Date())));
             question.setOwner_id(auth.getCurrentUser().getUid());
