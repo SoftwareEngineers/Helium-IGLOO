@@ -184,8 +184,6 @@ public class ViewArchiveActivity extends AppCompatActivity {
         });
     }
 
-
-
     public void InitializeTranscripts(){
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Lectures").child(mKey);

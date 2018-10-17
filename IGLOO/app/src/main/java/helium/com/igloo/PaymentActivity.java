@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,10 +28,11 @@ import org.w3c.dom.Text;
 import helium.com.igloo.Models.UserModel;
 
 public class PaymentActivity extends AppCompatActivity {
-    private TextView mTopup_amount;
+    private EditText mTopup_amount;
     private TextView mAccount_balance;
     private FirebaseAuth auth;
     private String PaymentOption;
+    private UserModel model;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,12 +54,12 @@ public class PaymentActivity extends AppCompatActivity {
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                UserModel model =  dataSnapshot.getValue(UserModel.class);
+                model =  dataSnapshot.getValue(UserModel.class);
                 //int pTokens = dataSnapshot.child("tokens").getValue(Integer.class);
                 int pTokens = (int)model.getTokens();
 
                 mAccount_balance.setText(String.valueOf(pTokens));
-                Toast.makeText(getApplicationContext(),model.getName(),Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(),model.getName(),Toast.LENGTH_LONG).show();
             }
 
             @Override
@@ -78,17 +80,25 @@ public class PaymentActivity extends AppCompatActivity {
         ShowDialog(0);
     }
 
+    private int calculateRemainingBalance(){
+        int balance = Integer.parseInt(mAccount_balance.getText().toString());
+        int deduction = Integer.parseInt(mTopup_amount.getText().toString());
+        int remaining_balance  = balance % deduction;
+
+       return remaining_balance;
+
+    }
+
+
     private double computeMoneyFromTokens(){
         int tokens = Integer.parseInt(mAccount_balance.getText().toString());
         int cashAmount = Integer.parseInt(mTopup_amount.getText().toString());
         if(tokens > 0 && tokens > cashAmount) {
-            double amount = (double) tokens / cashAmount;
-            return amount;
+            return (double) tokens / cashAmount;
         }
         else{
             return  0;
         }
-
     }
 
     public void ShowDialog(final int command) {
@@ -111,11 +121,13 @@ public class PaymentActivity extends AppCompatActivity {
                                     double total_amount = computeMoneyFromTokens();
                                     if(total_amount >0){
                                         Toast.makeText(getApplicationContext(), "Success fully Recieved Money To Token", Toast.LENGTH_LONG).show();
+                                        int balance = Integer.parseInt(mTopup_amount.getText().toString());
+                                        model.setTokens(balance);
+                                        UpdateUserBalance(balance);
                                     }
                                 }
                                 else {
-
-
+                                    Toast.makeText(getApplicationContext(), "Token To Cash", Toast.LENGTH_LONG).show();
 
                                 }
                                 dialog.dismiss();
@@ -135,7 +147,12 @@ public class PaymentActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    public void UpdateUserBalance(){
-
+    public void UpdateUserBalance(int balance){
+        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users");
+        DatabaseReference userRef = databaseReference.child(auth.getCurrentUser().getUid());
+        double current_balance = model.getTokens();
+        double final_balance = current_balance + balance;
+        userRef.child("tokens").setValue(final_balance);
+        mAccount_balance.setText(String.valueOf(final_balance));
     }
 }

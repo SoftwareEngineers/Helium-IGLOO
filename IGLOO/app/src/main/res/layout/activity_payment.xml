@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@mipmap/tutorial_background"
     tools:context=".PaymentActivity">
 
     <LinearLayout
@@ -24,21 +25,27 @@
             android:orientation="horizontal">
 
             <TextView
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:layout_weight="1"
                 android:text="@string/current_balance"
-                android:textColor="@color/lightGrey" />
+                android:fontFamily="@font/montserrat"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/sixteen"
+                />
 
             <TextView
+                android:fontFamily="@font/montserrat"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/sixteen"
                 android:id="@+id/txt_account_balance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="@string/account_balance"
-                android:textColor="@color/lightGrey" />
+                android:text="@string/account_balance" />
         </LinearLayout>
 
 
@@ -54,18 +61,24 @@
                 android:layout_marginStart="20dp"
                 android:layout_weight="1"
                 android:text="@string/top_up_label"
-                android:textColor="@color/lightGrey" />
+                android:fontFamily="@font/montserrat"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/sixteen" />
 
 
-            <TextView
+            <EditText
                 android:id="@+id/txt_topup_amount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:layout_weight="1"
                 android:gravity="center"
+                android:inputType="number"
                 android:text="@string/top_up_amount"
-                android:textColor="@color/lightGrey" />
+                android:fontFamily="@font/montserrat"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/sixteen" />
+
         </LinearLayout>
 
         <LinearLayout
