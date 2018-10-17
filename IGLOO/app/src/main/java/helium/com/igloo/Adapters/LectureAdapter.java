@@ -75,7 +75,7 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.LectureV
                 String name = dataSnapshot.child(p.getOwnerId()).child("name").getValue(String.class);
                 String ownerUrl = dataSnapshot.child(p.getOwnerId()).child("profileUrl").getValue(String.class);
 
-                String description = name + " " + Html.fromHtml("&#8226;") + " ";
+                String description = name + " " + Html.fromHtml("&#8226;") + " " + p.getViews() + " VIEWS";
                 lectureViewHolder.textOwner.setText(description);
 
                 StorageReference storageRef1 = storage.getReferenceFromUrl("gs://igloo-0830.appspot.com/images/").child(ownerUrl);
@@ -103,7 +103,7 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.LectureV
 
             }
         });
-        if(p.getPublic() != true){
+        if(!p.getPublic()){
             lectureViewHolder.imagePrivate.setVisibility(View.VISIBLE);
         }
         lectureViewHolder.view.setOnClickListener(new View.OnClickListener() {

@@ -7,6 +7,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -16,6 +19,7 @@ import android.os.PowerManager;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.MediaController;
@@ -37,11 +41,14 @@ import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
 import com.github.hiteshsondhi88.libffmpeg.LoadBinaryResponseHandler;
 import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegCommandAlreadyRunningException;
 import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedException;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -139,6 +146,32 @@ public class ViewArchiveActivity extends AppCompatActivity {
         archiveID = intent.getStringExtra("archiveID");
         mKey = intent.getStringExtra("key");
 
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Lectures");
+        final FirebaseStorage storage = FirebaseStorage.getInstance();;
+
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String url = dataSnapshot.child(mKey).child("thumbnail").getValue(String.class);
+
+                StorageReference storageRef = storage.getReferenceFromUrl("gs://igloo-0830.appspot.com/images/").child(url);
+                final long ONE_MEGABYTE = 1024 * 1024;
+                storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                    @Override
+                    public void onSuccess(byte[] bytes) {
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                        BitmapDrawable bitmapDrawable = new BitmapDrawable(bitmap);
+                        videoView.setBackground(bitmapDrawable);
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
 
 
         playArchive(archiveID);
@@ -177,10 +210,12 @@ public class ViewArchiveActivity extends AppCompatActivity {
                         public void onPrepared(MediaPlayer mp) {
                             questionAdapter.getMediaPlayer(mp);
                             progressBar.setVisibility(View.GONE);
-                            //videoView.start();
+                            videoView.start();
                             Log.e("Opentok Archive", "Archive started");
                         }
                     });
+
+                    videoView.setBackground(null);
 
                 } catch (Exception e) {
                     System.out.println("Video Play Error :" + e.getMessage());
