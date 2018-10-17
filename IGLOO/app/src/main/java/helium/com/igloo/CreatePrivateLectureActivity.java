@@ -72,19 +72,25 @@ public class CreatePrivateLectureActivity extends AppCompatActivity {
         mTextPassword = (EditText)findViewById(R.id.txt_private_lecture_password);
         mButtonCreate = (Button)findViewById(R.id.btn_create_private_lecture);
         mDatabase = FirebaseDatabase.getInstance().getReference("Lectures");
-        mClose = (ImageButton) findViewById(R.id.close_public);
+        mClose = (ImageButton) findViewById(R.id.close_private);
         mThumbnail = (ImageView) findViewById(R.id.private_thumbnail_image);
         mAddThumbnail = (ImageButton) findViewById(R.id.private_thumbnail_button);
         mThumbnailName = (TextView) findViewById(R.id.private_thumbnail_name);
 
         mTextPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         mTextPassword.setTextAppearance(R.style.passwordFields);
-        mButtonCreate.setEnabled(false);
 
         mAddThumbnail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivityForResult(new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI), GET_FROM_GALLERY);
+            }
+        });
+
+        mClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
 
@@ -103,6 +109,8 @@ public class CreatePrivateLectureActivity extends AppCompatActivity {
                     lectureModel.setPublic(false);
                     lectureModel.setAvailable(false);
                     lectureModel.setLive(false);
+                    lectureModel.setIs_transcribed(false);
+                    lectureModel.setTranscription("");
 
                     StorageReference mStorageRef = storage.getReferenceFromUrl("gs://igloo-0830.appspot.com/images/");;
                     if (selectedImage != null) {

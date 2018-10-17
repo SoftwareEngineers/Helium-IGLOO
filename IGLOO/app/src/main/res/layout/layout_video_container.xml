@@ -37,7 +37,7 @@
                 android:layout_height="45dp"/>
 
             <LinearLayout
-                android:layout_width="280dp"
+                android:layout_width="240dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_marginStart="8dp">
@@ -70,12 +70,12 @@
 
             <ImageView
                 android:id="@+id/img_private"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:src="@drawable/ic_lock_solid"
                 android:layout_marginTop="20dp"
                 android:layout_marginStart="10dp"
-                android:visibility="gone"/>
+                android:visibility="invisible"/>
 
         </LinearLayout>
 
