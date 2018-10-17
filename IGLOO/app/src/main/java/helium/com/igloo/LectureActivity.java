@@ -2,6 +2,8 @@ package helium.com.igloo;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Icon;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
@@ -9,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -45,6 +48,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import helium.com.igloo.Adapters.QuestionAdapter;
 import helium.com.igloo.Models.LectureModel;
 import helium.com.igloo.Models.QuestionModel;
@@ -54,6 +58,7 @@ public class LectureActivity extends AppCompatActivity implements Session.Sessio
     private TextView textLectureTitle;
     private TextView textLectureDescription;
     private Button buttonStartLecture;
+    private CircleImageView mLecturer;
     private RecyclerView recyclerView;
     private List<QuestionModel> questions;
     private QuestionAdapter questionAdapter;
@@ -64,9 +69,13 @@ public class LectureActivity extends AppCompatActivity implements Session.Sessio
     private ProgressBar progressBar;
     private StorageReference storageReference;
 
+
+    private String ownerID;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         Intent intent = getIntent();
         key = intent.getStringExtra("key");
         setContentView(R.layout.activity_lecture_view);
@@ -75,6 +84,8 @@ public class LectureActivity extends AppCompatActivity implements Session.Sessio
         textLectureTitle = (TextView)findViewById(R.id.txt_lecture_title);
         textLectureDescription = (TextView)findViewById(R.id.txt_lecture_description);
         buttonStartLecture = (Button)findViewById(R.id.btn_start_lecture);
+        mLecturer = (CircleImageView) findViewById(R.id.lecturer_on_live_image);
+
         buttonStartLecture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,6 +93,8 @@ public class LectureActivity extends AppCompatActivity implements Session.Sessio
                 startLecture();
             }
         });
+
+
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Lectures");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -89,6 +102,7 @@ public class LectureActivity extends AppCompatActivity implements Session.Sessio
                 LectureModel mLectureModel = dataSnapshot.child(key).getValue(LectureModel.class);
                 textLectureTitle.setText(mLectureModel.getTitle());
                 textLectureDescription.setText(mLectureModel.getDescription());
+                ownerID = mLectureModel.getOwnerId();
             }
 
             @Override
@@ -96,7 +110,6 @@ public class LectureActivity extends AppCompatActivity implements Session.Sessio
 
             }
         });
-        storageReference = FirebaseStorage.getInstance().getReference("Lectures");
         recyclerView = (RecyclerView)findViewById(R.id.rec_questions);
         questions = new ArrayList<>();
         questionAdapter = new QuestionAdapter(questions, this);
@@ -105,6 +118,31 @@ public class LectureActivity extends AppCompatActivity implements Session.Sessio
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
         loadQuestions();
+
+        final DatabaseReference lecReference = FirebaseDatabase.getInstance().getReference("Users");
+        final FirebaseStorage storage = FirebaseStorage.getInstance();;
+
+        lecReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String url = dataSnapshot.child(ownerID).child("profileUrl").getValue(String.class);
+
+                StorageReference storageRef1 = storage.getReferenceFromUrl("gs://igloo-0830.appspot.com/images/").child(url);
+                final long ONE_MEGABYTE = 1024 * 1024;
+                storageRef1.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                    @Override
+                    public void onSuccess(byte[] bytes) {
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                        mLecturer.setImageBitmap(bitmap);
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     public void startLecture(){

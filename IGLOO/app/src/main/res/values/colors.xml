@@ -13,4 +13,5 @@
     <color name="greyWhite">#F0F2F7</color>
     <color name="yellowCorn">#F4BF1A</color>
     <color name="shadow">#dddddd</color>
+    <color name="backlight">#4e4c5264</color>
 </resources>
