@@ -133,6 +133,7 @@ public class SigningInActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             startActivity(new Intent(SigningInActivity.this, SigningUpActivity.class));
+            overridePendingTransition(R.transition.slide_in_right,R.transition.slide_out_left);
         }
     }
 
@@ -158,7 +159,7 @@ public class SigningInActivity extends AppCompatActivity {
         public void onFinish() {
             mProgressDialog.dismiss();
             startActivity(new Intent(SigningInActivity.this, HomeActivity.class));
-
+            overridePendingTransition(R.transition.slide_in_right,R.transition.slide_out_left);
         }
     }
 
