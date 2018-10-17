@@ -133,7 +133,7 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
     public void fetchSessionConnectionData(final String sessionID) {
         RequestQueue reqQueue = Volley.newRequestQueue(ViewLectureActivity.this);
         reqQueue.add(new JsonObjectRequest(Request.Method.GET,
-                "https://iglov2.herokuapp.com" + "/subscribe_session/" + sessionID,
+                "https://iglov2.herokuapp.com/subscribe_session/" + sessionID,
                 null, new Response.Listener<JSONObject>() {
 
             @Override

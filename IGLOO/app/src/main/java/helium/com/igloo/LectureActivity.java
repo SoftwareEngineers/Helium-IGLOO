@@ -75,10 +75,9 @@ public class LectureActivity extends AppCompatActivity implements Session.Sessio
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setContentView(R.layout.activity_lecture_view);
         Intent intent = getIntent();
         key = intent.getStringExtra("key");
-        setContentView(R.layout.activity_lecture_view);
         progressBar = (ProgressBar)findViewById(R.id.prog_lecture);
         mLectureView = (FrameLayout) findViewById(R.id.frm_lecture_view);
         textLectureTitle = (TextView)findViewById(R.id.txt_lecture_title);
