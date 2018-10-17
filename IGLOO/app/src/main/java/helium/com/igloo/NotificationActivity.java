@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,11 @@ public class NotificationActivity extends AppCompatActivity {
         notificationRecycleView = findViewById(R.id.notification_recyclerview);
         notifications = new ArrayList<>();
         notifications =  (List<NotificationModel>) getIntent().getSerializableExtra("notifications");
+        if(notifications.size()>0){
+            Toast.makeText(this,"not empty",Toast.LENGTH_SHORT).show();
+        }else {
+            Toast.makeText(this,"empty notifications",Toast.LENGTH_SHORT).show();
+        }
         adapter = new NotificationAdapter(notifications,this);
         adapter.notifyDataSetChanged();
         notificationRecycleView.smoothScrollToPosition(0);
