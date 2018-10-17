@@ -158,10 +158,42 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.LectureV
                     }
                 }
                 else{
-                    Intent intent = new Intent(context,ViewArchiveActivity.class);
-                    intent.putExtra("archiveID", p.getArchive_id());
-                    intent.putExtra("key", p.getId());
-                    context.startActivity(intent);
+                    if(p.getPublic()){
+                        Intent intent = new Intent(context,ViewArchiveActivity.class);
+                        intent.putExtra("archiveID", p.getArchive_id());
+                        intent.putExtra("key", p.getId());
+                        context.startActivity(intent);
+                    }
+                    else{
+                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+                        LinearLayout layout = new LinearLayout(context);
+                        layout.setOrientation(LinearLayout.VERTICAL);
+                        final EditText password = new EditText(context);
+                        password.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                        alertDialog.setTitle("Enter password");
+                        layout.addView(password);
+                        alertDialog.setView(layout);
+                        alertDialog.setPositiveButton("Confirm",new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                if(password.getText().toString().equals(p.getPassword())){
+                                    Intent intent = new Intent(context,ViewArchiveActivity.class);
+                                    intent.putExtra("archiveID", p.getArchive_id());
+                                    intent.putExtra("key", p.getId());
+                                    context.startActivity(intent);
+                                }
+                                else{
+                                    Toast.makeText(context, "Wrong password", Toast.LENGTH_SHORT).show();
+                                    dialog.dismiss();
+                                }
+                            }
+                        });
+                        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which){
+                                dialog.cancel();
+                            }
+                        });
+                        alertDialog.show();
+                    }
                 }
             }
         });
