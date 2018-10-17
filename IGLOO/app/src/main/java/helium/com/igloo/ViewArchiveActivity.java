@@ -78,21 +78,9 @@ public class ViewArchiveActivity extends AppCompatActivity {
     private ProgressDialog AudioExtractiondialog,DownloadDialog;
     private File sdCard;
     private LectureModel lecture;
-    private static final int REQUEST_RECORD_AUDIO_PERMISSION = 1;
 
     private SpeechService mSpeechService;
-
-    private final SpeechService.Listener mSpeechServiceListener =
-            new SpeechService.Listener() {
-                @Override
-                public void onSpeechRecognized(final String text, final boolean isFinal) {
-                    //recognized text
-                    //Toast.makeText(getApplicationContext(),text,Toast.LENGTH_LONG).show();
-                    lecture.setTranscription(text);
-                    lecture.setIs_transcribed(true);
-                    updateLecture();
-                }
-            };
+    
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
 
         @Override
@@ -100,16 +88,33 @@ public class ViewArchiveActivity extends AppCompatActivity {
 
             mSpeechService = SpeechService.from(binder);
             mSpeechService.addListener(mSpeechServiceListener);
-            Toast.makeText(getApplicationContext(),"Service Connected",Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(),"Service Connected",Toast.LENGTH_SHORT).show();
         }
 
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
-
-
+            Toast.makeText(getApplicationContext(),"Service disConnected",Toast.LENGTH_SHORT).show();
         }
 
     };
+    private final SpeechService.Listener mSpeechServiceListener =
+            new SpeechService.Listener() {
+                @Override
+                public void onSpeechRecognized(final String text, final boolean isFinal) {
+                    //recognized text
+                    if(isFinal) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }else{
+                    }
+                }
+            };
+
+
 
 
     @Override
@@ -511,7 +516,6 @@ public class ViewArchiveActivity extends AppCompatActivity {
             if (result != null)
                 Toast.makeText(context, "Download error: " + result, Toast.LENGTH_LONG).show();
             else {
-                Toast.makeText(context, "File downloaded", Toast.LENGTH_SHORT).show();
                 File video = new File(sdCard.getAbsolutePath(),"Iglo/video.mp4");
                 ExtractAudio(video);
             }
@@ -530,7 +534,6 @@ public class ViewArchiveActivity extends AppCompatActivity {
             if (mSpeechService != null) {
                 FileInputStream fis = new FileInputStream(audio);
                 mSpeechService.recognizeInputStream(fis);
-                Toast.makeText(getApplicationContext(),"start recognize",Toast.LENGTH_LONG).show();
             } else {
 
             }
