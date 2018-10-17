@@ -96,6 +96,7 @@ public class ViewArchiveActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String archiveID = intent.getStringExtra("archiveID");
         mKey = intent.getStringExtra("key");
+
         playArchive(archiveID);
         mRecycleViewQuestions = (RecyclerView)findViewById(R.id.rec_questions);
         questions = new ArrayList<>();
@@ -264,7 +265,7 @@ public class ViewArchiveActivity extends AppCompatActivity {
 
 
 
-        
+
     /////// DOWNLOADING VIDEO FROM SERVER
 
     private void DownloadVideoFromWeb(String url){
