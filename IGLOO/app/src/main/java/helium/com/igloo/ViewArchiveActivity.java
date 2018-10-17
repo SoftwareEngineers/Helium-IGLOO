@@ -80,7 +80,7 @@ public class ViewArchiveActivity extends AppCompatActivity {
     private LectureModel lecture;
 
     private SpeechService mSpeechService;
-
+    
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
 
         @Override
@@ -148,9 +148,7 @@ public class ViewArchiveActivity extends AppCompatActivity {
         mKey = intent.getStringExtra("key");
 
 
-
-        playArchive(archiveID);
-        mRecycleViewQuestions = (RecyclerView)findViewById(R.id.rec_questions);
+        mRecycleViewQuestions = (RecyclerView) findViewById(R.id.rec_questions);
         questions = new ArrayList<>();
         questionAdapter = new QuestionAdapter(questions, this, videoView);
         mRecycleViewQuestions.setAdapter(questionAdapter);
@@ -158,8 +156,12 @@ public class ViewArchiveActivity extends AppCompatActivity {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecycleViewQuestions.setLayoutManager(layoutManager);
         loadQuestions();
-
-        InitializeTranscripts();
+        LoadLecture();
+        if (lecture.getIs_transcribed()) {
+            playArchive(archiveID);
+        } else {
+            InitializeTranscripts();
+        }
     }
 
 
@@ -224,7 +226,7 @@ public class ViewArchiveActivity extends AppCompatActivity {
         });
     }
 
-    public void InitializeTranscripts(){
+    public void LoadLecture(){
         Toast.makeText(getApplicationContext(),"im here",Toast.LENGTH_LONG).show();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Lectures").child(mKey);
         reference.addValueEventListener(new ValueEventListener() {
@@ -239,6 +241,10 @@ public class ViewArchiveActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    public void InitializeTranscripts(){
+
 
         RequestQueue reqQueue = Volley.newRequestQueue(this);
         reqQueue.add(new JsonObjectRequest(Request.Method.GET,
@@ -255,7 +261,23 @@ public class ViewArchiveActivity extends AppCompatActivity {
 
                     DownloadVideoFromWeb(url);
 
+                    mediaController = new MediaController(ViewArchiveActivity.this);
+                    mediaController.setAnchorView(videoView);
+                    Uri video = Uri.parse(url);
 
+                    Log.e("Opentok Archive", "Archive starting");
+                    videoView.setMediaController(mediaController);
+                    videoView.setVideoURI(video);
+
+                    videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+
+                        public void onPrepared(MediaPlayer mp) {
+                            questionAdapter.getMediaPlayer(mp);
+                            progressBar.setVisibility(View.GONE);
+                            videoView.start();
+                            Log.e("Opentok Archive", "Archive started");
+                        }
+                    });
 
 
                 } catch (Exception e) {
@@ -306,7 +328,6 @@ public class ViewArchiveActivity extends AppCompatActivity {
         }catch (Exception e){
             Toast.makeText(getApplicationContext(),e.toString(),Toast.LENGTH_LONG).show();
         }
-
 
     }
 
@@ -520,4 +541,14 @@ public class ViewArchiveActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(),e.toString(),Toast.LENGTH_LONG).show();
         }
     }
+
+
+    private void updateLecture(){
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Lectures").child(mKey);
+        reference.child("transcription").setValue(lecture.getTranscription());
+        reference.child("is_transcribed").setValue(lecture.getIs_transcribed());
+
+    }
+
 }

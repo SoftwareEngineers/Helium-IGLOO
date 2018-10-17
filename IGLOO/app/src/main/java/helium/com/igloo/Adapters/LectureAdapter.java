@@ -1,19 +1,29 @@
 package helium.com.igloo.Adapters;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.LinearGradient;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -26,7 +36,9 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import helium.com.igloo.HomeActivity;
+import helium.com.igloo.LectureActivity;
 import helium.com.igloo.Models.LectureModel;
+import helium.com.igloo.Models.ViewModel;
 import helium.com.igloo.ProfileActivity;
 import helium.com.igloo.R;
 import helium.com.igloo.ViewArchiveActivity;
@@ -35,10 +47,12 @@ import helium.com.igloo.ViewLectureActivity;
 public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.LectureViewHolder> {
     private List<LectureModel> lectures;
     private Context context;
+    private FirebaseAuth auth;
 
     public LectureAdapter(List<LectureModel> lectures, Context context) {
         this.lectures = lectures;
         this.context = context;
+        auth = FirebaseAuth.getInstance();
     }
 
     @Override
@@ -53,7 +67,7 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.LectureV
         lectureViewHolder.textDate.setText(p.getTime_created());
 
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users");
-        final FirebaseStorage storage = FirebaseStorage.getInstance();
+        final FirebaseStorage storage = FirebaseStorage.getInstance();;
 
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -95,16 +109,91 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.LectureV
         lectureViewHolder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("");
+                databaseReference.child("Views").child(p.getId()).child(auth.getCurrentUser().getUid()).setValue(true);
+                databaseReference.child("Views").child(p.getId()).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        databaseReference.child("Lectures").child(p.getId()).child("views").setValue(dataSnapshot.getChildrenCount());
+                        p.setViews((int)dataSnapshot.getChildrenCount());
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
                 if(p.getLive()){
-                    Intent intent = new Intent(context,ViewLectureActivity.class);
-                    intent.putExtra("key", p.getId());
-                    context.startActivity(intent);
+                    if(p.getPublic()){
+                        Intent intent = new Intent(context,ViewLectureActivity.class);
+                        intent.putExtra("key", p.getId());
+                        context.startActivity(intent);
+                    }
+                    else{
+                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+                        LinearLayout layout = new LinearLayout(context);
+                        layout.setOrientation(LinearLayout.VERTICAL);
+                        final EditText password = new EditText(context);
+                        password.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                        alertDialog.setTitle("Enter password");
+                        alertDialog.setPositiveButton("Confirm",new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                if(password.getText().toString().equals(p.getPassword())){
+                                    Intent intent = new Intent(context,ViewLectureActivity.class);
+                                    intent.putExtra("key", p.getId());
+                                    context.startActivity(intent);
+                                }
+                                else{
+                                    Toast.makeText(context, "Wrong password", Toast.LENGTH_SHORT).show();
+                                    dialog.dismiss();
+                                }
+                            }
+                        });
+                        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which){
+                                dialog.cancel();
+                            }
+                        });
+                        alertDialog.show();
+                    }
                 }
                 else{
-                    Intent intent = new Intent(context,ViewArchiveActivity.class);
-                    intent.putExtra("archiveID", p.getArchive_id());
-                    intent.putExtra("key", p.getId());
-                    context.startActivity(intent);
+                    if(p.getPublic()){
+                        Intent intent = new Intent(context,ViewArchiveActivity.class);
+                        intent.putExtra("archiveID", p.getArchive_id());
+                        intent.putExtra("key", p.getId());
+                        context.startActivity(intent);
+                    }
+                    else{
+                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+                        LinearLayout layout = new LinearLayout(context);
+                        layout.setOrientation(LinearLayout.VERTICAL);
+                        final EditText password = new EditText(context);
+                        password.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                        alertDialog.setTitle("Enter password");
+                        layout.addView(password);
+                        alertDialog.setView(layout);
+                        alertDialog.setPositiveButton("Confirm",new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                if(password.getText().toString().equals(p.getPassword())){
+                                    Intent intent = new Intent(context,ViewArchiveActivity.class);
+                                    intent.putExtra("archiveID", p.getArchive_id());
+                                    intent.putExtra("key", p.getId());
+                                    context.startActivity(intent);
+                                }
+                                else{
+                                    Toast.makeText(context, "Wrong password", Toast.LENGTH_SHORT).show();
+                                    dialog.dismiss();
+                                }
+                            }
+                        });
+                        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which){
+                                dialog.cancel();
+                            }
+                        });
+                        alertDialog.show();
+                    }
                 }
             }
         });
