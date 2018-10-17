@@ -1,5 +1,6 @@
 package helium.com.igloo;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,7 +23,7 @@ public class NotificationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_notification);
         notificationRecycleView = findViewById(R.id.notification_recyclerview);
         notifications = new ArrayList<>();
-        notifications.add(new NotificationModel("asdas","asdas","asdasdasd","asdsa","asdas","dsadas","sdasdasd"));
+        notifications =  (List<NotificationModel>) getIntent().getSerializableExtra("notifications");
         adapter = new NotificationAdapter(notifications,this);
         adapter.notifyDataSetChanged();
         notificationRecycleView.smoothScrollToPosition(0);
