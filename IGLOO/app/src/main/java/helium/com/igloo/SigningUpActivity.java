@@ -1,5 +1,6 @@
 package helium.com.igloo;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -39,6 +40,7 @@ public class SigningUpActivity extends AppCompatActivity {
     private TextInputEditText mPassword;
     private Button mSignUpButton;
     private TextView mSwitch;
+    private ProgressDialog mProgressDialog;
 
     private FirebaseAuth auth;
 
@@ -59,6 +61,7 @@ public class SigningUpActivity extends AppCompatActivity {
         mPassword = (TextInputEditText) findViewById(R.id.password_signup_input);
         mSignUpButton = (Button) findViewById(R.id.sign_up_button);
         mSwitch = (TextView) findViewById(R.id.switch_sign_in_button);
+        mProgressDialog = new ProgressDialog(this);
 
         mPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         mPassword.setTextAppearance(R.style.passwordFields);
@@ -105,6 +108,9 @@ public class SigningUpActivity extends AppCompatActivity {
 
                     }
                     else {
+                        mProgressDialog.setMessage("Signing in please wait....");
+                        mProgressDialog.show();
+
                         Toast.makeText(SigningUpActivity.this, "You have registered successfully", Toast.LENGTH_SHORT).show();
                         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users");
 
@@ -156,6 +162,7 @@ public class SigningUpActivity extends AppCompatActivity {
 
         @Override
         public void onFinish() {
+            mProgressDialog.dismiss();
             startActivity(new Intent(SigningUpActivity.this, TutorialActivity.class));
             overridePendingTransition(R.transition.slide_in_right,R.transition.slide_out_left);
         }
