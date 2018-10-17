@@ -157,6 +157,7 @@ public class SigningUpActivity extends AppCompatActivity {
         @Override
         public void onFinish() {
             startActivity(new Intent(SigningUpActivity.this, TutorialActivity.class));
+            overridePendingTransition(R.transition.slide_in_right,R.transition.slide_out_left);
         }
     }
 
@@ -164,6 +165,7 @@ public class SigningUpActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             startActivity(new Intent(SigningUpActivity.this, SigningInActivity.class));
+            overridePendingTransition(R.transition.slide_in_left, R.transition.slide_out_right);
         }
     }
 }

@@ -2,6 +2,8 @@ package helium.com.igloo;
 
 
 import android.annotation.SuppressLint;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.SearchManager;
 import android.content.Context;
 import android.app.ProgressDialog;
@@ -15,6 +17,7 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.media.app.NotificationCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.CursorAdapter;
@@ -168,7 +171,16 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         subscriptionModelList.add(subscriptionModel);
                     }
                 }
-
+                for(int i=0;i<subscriptionModelList.size();i++){
+                    Notification noti = new Notification.Builder(HomeActivity.this)
+                            .setContentTitle("name has subscribed to you")
+                            .setContentText("")
+                            .setSmallIcon(R.drawable.ic_coin)
+                            .build();
+                    NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                    noti.flags |= Notification.FLAG_AUTO_CANCEL;
+                    nm.notify(0,noti);
+                }
             }
 
             @Override
@@ -235,6 +247,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         if (id == R.id.menu_notification) {
+            startActivity(new Intent(HomeActivity.this,NotificationActivity.class));
+            overridePendingTransition(R.transition.slide_in_right,R.transition.slide_out_left);
         }
         else if (id == R.id.menu_search){
 

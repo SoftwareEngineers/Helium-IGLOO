@@ -34,7 +34,7 @@
     <string name="public_lecture">Public Lecture</string>
     <string name="private_lecture">Private Lecture</string>
     <string name="public_desc">Create lectures that is accessible for everybody</string>
-    <string name="private_desc">Create and pay lecture that only selected people can access</string>
+    <string name="private_desc"><Crea></Crea>te and pay lecture that only selected people can access</string>
     <string name="create">CREATE</string>
     <string name="title">TITLE</string>
     <string name="desc">DESCRIPTION</string>
@@ -45,6 +45,10 @@
     <string name ="account_balance">0</string>
     <string name="subscribe">SUBSCRIBE</string>
     <string name="start">START</string>
+    <string name ="top_up_amount">50</string>
+    <string name ="top_up_label">Top up amount</string>
+    <string name ="money_to_token_dialog">Are you sure that you want \nto exchange your cash into tokens?</string>
+    <string name ="token_to_money_dialog">Are you sure that you want \nto exchange your tokens into cash?</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
