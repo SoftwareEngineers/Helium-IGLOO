@@ -37,14 +37,14 @@
                 android:layout_height="45dp"/>
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="280dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_marginStart="8dp">
 
                 <TextView
                     android:id="@+id/video_title"
-                    android:layout_width="280dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/montserrat"
                     android:textColor="@color/textColor"
@@ -52,7 +52,7 @@
 
                 <TextView
                     android:id="@+id/video_description"
-                    android:layout_width="280dp"
+                    android:layout_width="match_parent"
                     android:layout_height="21dp"
                     android:fontFamily="@font/montserrat"
                     android:textColor="@color/lightGrey"
@@ -60,13 +60,22 @@
 
                 <TextView
                     android:id="@+id/video_date_created"
-                    android:layout_width="280dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/montserrat"
                     android:textColor="@color/lightGrey"
                     android:textSize="@dimen/twelve"/>
 
             </LinearLayout>
+
+            <ImageView
+                android:id="@+id/img_private"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_lock_solid"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="10dp"
+                android:visibility="gone"/>
 
         </LinearLayout>
 
