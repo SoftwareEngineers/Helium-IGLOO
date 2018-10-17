@@ -216,8 +216,6 @@ public class ViewArchiveActivity extends AppCompatActivity {
         });
     }
 
-
-
     public void InitializeTranscripts(){
         Toast.makeText(getApplicationContext(),"im here",Toast.LENGTH_LONG).show();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Lectures").child(mKey);
