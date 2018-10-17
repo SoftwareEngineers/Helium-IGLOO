@@ -273,8 +273,8 @@ public class ViewArchiveActivity extends AppCompatActivity {
 
                 @Override
                 public void onSuccess() {
-                }
 
+                }
                 @Override
                 public void onFinish() {
                     //lblView.setText("Finished loading library!");
