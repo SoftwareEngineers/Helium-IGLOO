@@ -41,6 +41,8 @@
     <string name="create_public">Create public lecture</string>
     <string name="create_private">Create private lecture</string>
     <string name="questions">QUESTIONS</string>
+    <string name ="current_balance">Current Balance</string>
+    <string name ="account_balance">0</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

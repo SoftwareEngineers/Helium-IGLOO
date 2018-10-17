@@ -69,7 +69,6 @@ public class LectureActivity extends AppCompatActivity implements Session.Sessio
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         key = intent.getStringExtra("key");
-        Toast.makeText(this, key, Toast.LENGTH_SHORT).show();
         setContentView(R.layout.activity_lecture_view);
         progressBar = (ProgressBar)findViewById(R.id.prog_lecture);
         mLectureView = (FrameLayout) findViewById(R.id.frm_lecture_view);
@@ -90,7 +89,6 @@ public class LectureActivity extends AppCompatActivity implements Session.Sessio
                 LectureModel mLectureModel = dataSnapshot.child(key).getValue(LectureModel.class);
                 textLectureTitle.setText(mLectureModel.getTitle());
                 textLectureDescription.setText(mLectureModel.getDescription());
-                Toast.makeText(LectureActivity.this, mLectureModel.getTitle(),Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -183,7 +181,6 @@ public class LectureActivity extends AppCompatActivity implements Session.Sessio
             public void onDataChange(DataSnapshot dataSnapshot) {
                 questions.clear();
                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
-                    Toast.makeText(LectureActivity.this,childSnapshot.child("lecture").getValue(String.class) + " == " + key, Toast.LENGTH_SHORT).show();
                     if(childSnapshot.child("lecture").getValue(String.class).equals(key) && !childSnapshot.child("is_answered").getValue(Boolean.class)){
                         QuestionModel question = childSnapshot.getValue(QuestionModel.class);
                         questions.add(question);

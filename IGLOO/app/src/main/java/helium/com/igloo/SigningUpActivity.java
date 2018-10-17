@@ -23,6 +23,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -111,7 +113,12 @@ public class SigningUpActivity extends AppCompatActivity {
 
                         databaseReference.child(userID).setValue(user);
                         saveUser(email, password);
-
+                        FirebaseUser tempuser = auth.getCurrentUser();
+                        if(user!=null){
+                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                    .setDisplayName(name).build();
+                            tempuser.updateProfile(profileUpdates);
+                        }
                         CountDown cd = new CountDown(100, 100);
                         cd.start();
                     }

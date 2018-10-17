@@ -3,6 +3,9 @@ package helium.com.igloo.Adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.media.MediaDescrambler;
+import android.media.MediaPlayer;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -11,8 +14,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.MediaController;
 import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.VideoView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -33,6 +37,14 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.Questi
     private List<QuestionModel> questions;
     private Context context;
     private Drawable drawable;
+    private VideoView videoView;
+    private MediaPlayer mp;
+
+    public QuestionAdapter(List<QuestionModel> questions, Context context, VideoView videoView) {
+        this.questions = questions;
+        this.context = context;
+        this.videoView = videoView;
+    }
 
     public QuestionAdapter(List<QuestionModel> questions, Context context) {
         this.questions = questions;
@@ -42,6 +54,10 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.Questi
     @Override
     public int getItemCount() {
         return questions.size();
+    }
+
+    public void getMediaPlayer(MediaPlayer mediaPlayer){
+        this.mp = mediaPlayer;
     }
 
     @Override
@@ -68,15 +84,19 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.Questi
             @Override
             public void onClick(View v) {
                 final DatabaseReference databaseReference1 = FirebaseDatabase.getInstance().getReference("Questions");
-                databaseReference1.child(p.getId()).child("is_answered").setValue(true);
-                DateFormat format = new SimpleDateFormat("hh:mm a MMM-dd-yyyy");
-                try {
-                    Date date = format.parse(p.getTime());
-                    long lo =  new Date().getTime()-date.getTime();
-                    Toast.makeText(context, lo + "", Toast.LENGTH_SHORT).show();
-                    Log.e("dsdsdsdsd", lo + "dsds");
-                } catch (ParseException e) {
-                    e.printStackTrace();
+                if(!p.getIs_answered()) {
+                    databaseReference1.child(p.getId()).child("is_answered").setValue(true);
+                    DateFormat format = new SimpleDateFormat("hh:mm a MMM-dd-yyyy");
+                    try {
+                        Date date = format.parse(p.getTime());
+                        long milli = new Date().getTime() - date.getTime();
+                        databaseReference1.child(p.getId()).child("time_answered").setValue(milli);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else {
+                    mp.seekTo((int)p.getTime_answered());
                 }
             }
         });

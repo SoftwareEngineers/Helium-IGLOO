@@ -1,5 +1,9 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.protobuf'
+ext {
 
+    grpcVersion = '1.4.0'
+}
 android {
     compileSdkVersion 27
     defaultConfig {
@@ -12,16 +16,44 @@ android {
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
-        release {
+        debug {
             minifyEnabled false
+            multiDexEnabled true
+        }
+        release {
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
     productFlavors {
     }
 
 }
-
+protobuf {
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.3.0'
+    }
+    plugins {
+        javalite {
+            artifact = "com.google.protobuf:protoc-gen-javalite:3.0.0"
+        }
+        grpc {
+            artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}"
+        }
+    }
+    generateProtoTasks {
+        all().each { task ->
+            task.plugins {
+                javalite {}
+                grpc {
+                    // Options added to --grpc_out
+                    option 'lite'
+                }
+            }
+        }
+    }
+}
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation fileTree(dir: 'libs', include: ['*.aar'])
@@ -44,6 +76,26 @@ dependencies {
     implementation 'de.hdodenhof:circleimageview:2.1.0'
     implementation 'com.android.volley:volley:1.0.0'
     implementation 'com.opentok.android:opentok-android-sdk:2.14.0'
-}
 
+    implementation "io.grpc:grpc-okhttp:$grpcVersion"
+    implementation "io.grpc:grpc-protobuf-lite:$grpcVersion"
+    implementation "io.grpc:grpc-stub:$grpcVersion"
+    implementation 'javax.annotation:javax.annotation-api:1.2'
+    implementation 'net.sourceforge.javaflacencoder:java-flac-encoder:0.3.7'
+    protobuf 'com.google.protobuf:protobuf-java:3.3.1'
+    // OAuth2 for Google API
+
+    implementation('com.google.auth:google-auth-library-oauth2-http:0.7.0') {
+        exclude module: 'httpclient'
+    }
+
+}
+task copySecretKey(type: Copy) {
+    def File secretKey = file "$System.env.GOOGLE_APPLICATION_CREDENTIALS"
+    from secretKey.getParent()
+    include secretKey.getName()
+    into 'src/main/res/raw'
+    rename secretKey.getName(), "credential.json"
+}
+preBuild.dependsOn(copySecretKey)
 apply plugin: 'com.google.gms.google-services'
