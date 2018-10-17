@@ -48,6 +48,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -55,6 +57,7 @@ import helium.com.igloo.Adapters.LectureSearchAdapter;
 import helium.com.igloo.Fragments.HomeFragment;
 import helium.com.igloo.Fragments.SubscriptionsFragment;
 import helium.com.igloo.Models.LectureModel;
+import helium.com.igloo.Models.NotificationModel;
 import helium.com.igloo.Models.QuestionModel;
 import helium.com.igloo.Models.SubscriptionModel;
 
@@ -82,6 +85,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private DatabaseReference databaseReference;
     private List<SubscriptionModel> subscriptionModelList;
     private SubscriptionModel subscriptionModel;
+    private List<NotificationModel> notifications;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +101,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         titles = new ArrayList<>(); ////// DATA FOR DISLPAYING SEARCH RESULTS
         lectures = new ArrayList<>(); ////// DATABASE DATA
+        notifications = new ArrayList<>();
 
         getTitlesAndIDs();
 
@@ -173,13 +178,17 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 }
                 for(int i=0;i<subscriptionModelList.size();i++){
                     Notification noti = new Notification.Builder(HomeActivity.this)
-                            .setContentTitle("name has subscribed to you")
+                            .setContentTitle(subscriptionModelList.get(i).getSubscriber()+" has subscribed to you")
                             .setContentText("")
                             .setSmallIcon(R.drawable.ic_coin)
                             .build();
                     NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
                     noti.flags |= Notification.FLAG_AUTO_CANCEL;
                     nm.notify(0,noti);
+                    NotificationModel n = new NotificationModel();
+                    n.setNotification_title(subscriptionModelList.get(i).getSubscriber()+" has subscribed to you");
+                    n.setNotification_description("");
+                    notifications.add(n);
                 }
             }
 
@@ -247,7 +256,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         if (id == R.id.menu_notification) {
-            startActivity(new Intent(HomeActivity.this,NotificationActivity.class));
+            Intent i = new Intent(HomeActivity.this,NotificationActivity.class);
+            i.putExtra("notifications",(Serializable) notifications);
+            startActivity(i);
             overridePendingTransition(R.transition.slide_in_right,R.transition.slide_out_left);
         }
         else if (id == R.id.menu_search){

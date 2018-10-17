@@ -1,6 +1,8 @@
 package helium.com.igloo.Models;
 
-public class NotificationModel {
+import java.io.Serializable;
+
+public class NotificationModel implements Serializable{
 
 
     private String streamer;
@@ -10,6 +12,8 @@ public class NotificationModel {
     private String status;
     private String notification_title;
     private String notification_description;
+
+    public  NotificationModel(){ }
 
     public NotificationModel(String streamer, String subscriber, String streamer_id, String subscriber_id, String status, String notification_title, String notification_description) {
         this.streamer = streamer;
