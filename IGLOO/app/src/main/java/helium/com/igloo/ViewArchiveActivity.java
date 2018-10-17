@@ -324,7 +324,6 @@ public class ViewArchiveActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(),e.toString(),Toast.LENGTH_LONG).show();
         }
 
-
     }
 
     private void loadFFmpeg() {
@@ -387,7 +386,7 @@ public class ViewArchiveActivity extends AppCompatActivity {
                 @Override
                 public void onFinish() {
                     AudioExtractiondialog.dismiss();
-                    //videoView.start();
+                    videoView.start();
                     Recognize();
 
                 }
