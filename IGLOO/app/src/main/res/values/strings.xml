@@ -38,6 +38,9 @@
     <string name="create">CREATE</string>
     <string name="title">TITLE</string>
     <string name="desc">DESCRIPTION</string>
+    <string name="create_public">Create public lecture</string>
+    <string name="create_private">Create private lecture</string>
+    <string name="questions">QUESTIONS</string>
     <string name ="current_balance">Current Balance</string>
     <string name ="account_balance">0</string>
 

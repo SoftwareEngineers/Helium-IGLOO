@@ -18,6 +18,7 @@ import android.text.style.ImageSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,17 +28,6 @@ import helium.com.igloo.R;
 public class HomeFragment extends Fragment {
 
     private TabLayout tabLayout;
-
-    private int[] activeTabIcons = {
-            R.drawable.ic_active_video,
-            R.drawable.ic_active_live,
-    };
-
-    private int[] icons = {
-            R.drawable.ic_inactive_video,
-            R.drawable.ic_inactive_live
-    };
-    private int activeTab;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -55,10 +45,6 @@ public class HomeFragment extends Fragment {
 
         tabLayout = (TabLayout) v.findViewById(R.id.home_tab);
         tabLayout.setupWithViewPager(viewPager);
-
-        tabLayout.getTabAt(0).setIcon(icons[0]);
-        tabLayout.getTabAt(1).setIcon(icons[1]);
-
 
         return v;
     }
@@ -81,7 +67,6 @@ public class HomeFragment extends Fragment {
 
         @Override
         public Fragment getItem(int position) {
-            activeTab = position;
             return mFragmentList.get(position);
         }
 
