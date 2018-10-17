@@ -248,6 +248,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         if (id == R.id.menu_notification) {
             startActivity(new Intent(HomeActivity.this,NotificationActivity.class));
+            overridePendingTransition(R.transition.slide_in_right,R.transition.slide_out_left);
         }
         else if (id == R.id.menu_search){
 

@@ -2,17 +2,21 @@ package helium.com.igloo;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.os.IBinder;
 import android.os.PowerManager;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.MediaController;
 import android.support.v7.app.AppCompatActivity;
@@ -43,6 +47,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -56,6 +61,7 @@ import helium.com.igloo.Adapters.QuestionAdapter;
 import helium.com.igloo.Models.LectureModel;
 import helium.com.igloo.Models.QuestionModel;
 import helium.com.igloo.Models.UserModel;
+import helium.com.igloo.SpeechRecognition.SpeechService;
 
 
 public class ViewArchiveActivity extends AppCompatActivity {
@@ -72,7 +78,35 @@ public class ViewArchiveActivity extends AppCompatActivity {
     private ProgressDialog AudioExtractiondialog,DownloadDialog;
     private File sdCard;
     private LectureModel lecture;
-    private boolean isDoneLoadingArchive,isDoneDownloading;
+    private static final int REQUEST_RECORD_AUDIO_PERMISSION = 1;
+
+    private SpeechService mSpeechService;
+
+    private final SpeechService.Listener mSpeechServiceListener =
+            new SpeechService.Listener() {
+                @Override
+                public void onSpeechRecognized(final String text, final boolean isFinal) {
+                    //recognized text
+                    Toast.makeText(getApplicationContext(),text,Toast.LENGTH_LONG).show();
+                }
+            };
+    private final ServiceConnection mServiceConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder binder) {
+
+            mSpeechService = SpeechService.from(binder);
+            mSpeechService.addListener(mSpeechServiceListener);
+            Toast.makeText(getApplicationContext(),"Service Connected",Toast.LENGTH_LONG).show();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+
+
+        }
+
+    };
 
 
     @Override
@@ -83,7 +117,7 @@ public class ViewArchiveActivity extends AppCompatActivity {
         //DIALOG FOR DOWNLOADING VIEO FROM SERVER
 
         DownloadDialog = new ProgressDialog(ViewArchiveActivity.this);
-        DownloadDialog.setMessage("Downloading....");
+        DownloadDialog.setMessage("Processing....");
         DownloadDialog.setIndeterminate(true);
         DownloadDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         DownloadDialog.setCancelable(false);
@@ -97,8 +131,6 @@ public class ViewArchiveActivity extends AppCompatActivity {
         sdCard = Environment.getExternalStorageDirectory();
         loadFFmpeg();
 
-        isDoneDownloading = false;
-        isDoneLoadingArchive = false;
 
         videoView = findViewById(R.id.view_lecture);
         progressBar = findViewById(R.id.prog_archive);
@@ -135,7 +167,7 @@ public class ViewArchiveActivity extends AppCompatActivity {
                     mediaController = new MediaController(ViewArchiveActivity.this);
                     mediaController.setAnchorView(videoView);
                     Uri video = Uri.parse(response.getString("url"));
-                    isDoneLoadingArchive = true;
+
                     Log.e("Opentok Archive", "Archive starting");
                     videoView.setMediaController(mediaController);
                     videoView.setVideoURI(video);
@@ -145,7 +177,7 @@ public class ViewArchiveActivity extends AppCompatActivity {
                         public void onPrepared(MediaPlayer mp) {
                             questionAdapter.getMediaPlayer(mp);
                             progressBar.setVisibility(View.GONE);
-                            videoView.start();
+                            //videoView.start();
                             Log.e("Opentok Archive", "Archive started");
                         }
                     });
@@ -187,7 +219,7 @@ public class ViewArchiveActivity extends AppCompatActivity {
 
 
     public void InitializeTranscripts(){
-
+        Toast.makeText(getApplicationContext(),"im here",Toast.LENGTH_LONG).show();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Lectures").child(mKey);
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -215,7 +247,6 @@ public class ViewArchiveActivity extends AppCompatActivity {
                     //Toast.makeText(getApplicationContext(),url,Toast.LENGTH_LONG).show();
                     Log.d("Sample",url);
 
-                    //Toast.makeText(getApplicationContext(),URL,Toast.LENGTH_LONG).show();
                     DownloadVideoFromWeb(url);
 
 
@@ -241,10 +272,24 @@ public class ViewArchiveActivity extends AppCompatActivity {
 
 
     /////// EXTRACTING AUDIO FROM VIDEO
+    @Override
+    public void onStart(){
+        super.onStart();
+        if(this.bindService(new Intent(this, SpeechService.class), mServiceConnection, BIND_AUTO_CREATE)){
 
+        }else{
+
+        }
+    }
+    @Override
+    public void onStop(){
+        super.onStop();
+        unbindService(mServiceConnection);
+    }
     private void ExtractAudio(File video) {
         try {
             File audio = new File(sdCard.getAbsolutePath(), "Iglo/audio.flac");
+
             if (audio.exists()) {
                 audio.getCanonicalFile().delete();
             }
@@ -319,6 +364,9 @@ public class ViewArchiveActivity extends AppCompatActivity {
                 @Override
                 public void onFinish() {
                     AudioExtractiondialog.dismiss();
+                    videoView.start();
+                    Recognize();
+
                 }
             });
         } catch (FFmpegCommandAlreadyRunningException e) {
@@ -445,6 +493,27 @@ public class ViewArchiveActivity extends AppCompatActivity {
                 File video = new File(sdCard.getAbsolutePath(),"Iglo/video.mp4");
                 ExtractAudio(video);
             }
+        }
+    }
+
+
+
+
+    /////// SPEECH RECOGNITION
+
+    private void Recognize(){
+
+        try {
+            File audio = new File(sdCard.getAbsolutePath()+ "/Iglo/audio.flac");
+            if (mSpeechService != null) {
+                FileInputStream fis = new FileInputStream(audio);
+                mSpeechService.recognizeInputStream(fis);
+                Toast.makeText(getApplicationContext(),"start recognize",Toast.LENGTH_LONG).show();
+            } else {
+
+            }
+        }catch (Exception e){
+            Toast.makeText(getApplicationContext(),e.toString(),Toast.LENGTH_LONG).show();
         }
     }
 }

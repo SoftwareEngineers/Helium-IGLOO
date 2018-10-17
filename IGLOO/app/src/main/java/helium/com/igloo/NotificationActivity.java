@@ -34,4 +34,9 @@ public class NotificationActivity extends AppCompatActivity {
 
 
     }
+    @Override
+    public void onBackPressed(){
+        super.onBackPressed();
+        overridePendingTransition(R.transition.slide_in_left, R.transition.slide_out_right);
+    }
 }
