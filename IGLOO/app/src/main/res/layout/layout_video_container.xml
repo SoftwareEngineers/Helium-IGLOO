@@ -48,7 +48,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/montserrat"
                     android:textColor="@color/textColor"
-                    android:textSize="@dimen/sixteen"/>
+                    android:textSize="@dimen/sixteen" />
 
                 <TextView
                     android:id="@+id/video_description"
