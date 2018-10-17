@@ -149,7 +149,6 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
 
     @Override
     public void onConnected(Session session) {
-        Toast.makeText(ViewLectureActivity.this, "successfull", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -160,7 +159,6 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
     @Override
     public void onStreamReceived(Session session, Stream stream) {
         progressBar.setVisibility(View.GONE);
-        Toast.makeText(ViewLectureActivity.this, "subsciber", Toast.LENGTH_SHORT).show();
         if (mSubscriber == null) {
             mSubscriber = new Subscriber.Builder(ViewLectureActivity.this, stream).build();
             mSession.subscribe(mSubscriber);
@@ -217,7 +215,6 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
     }
 
     @Override
-
     public void onBackPressed() {
         if(mSession != null) {
             mSession.disconnect();
