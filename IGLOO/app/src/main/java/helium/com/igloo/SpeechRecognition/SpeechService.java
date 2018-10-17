@@ -14,6 +14,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.auth.Credentials;
 import com.google.auth.oauth2.AccessToken;
@@ -45,6 +46,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import helium.com.igloo.R;
+import helium.com.igloo.ViewArchiveActivity;
 import io.grpc.CallOptions;
 import io.grpc.Channel;
 import io.grpc.ClientCall;
@@ -143,11 +145,11 @@ public class SpeechService extends Service {
                     text += wordInfo.getWord()+ " " + wordInfo.getStartTime().getSeconds()+":"+wordInfo.getStartTime().getNanos()/100000000+"\n";
                 }
             }
-            if (!text.equals("")) {
+            //if (!text.equals("")) {
                 for (Listener listener : mListeners) {
                     listener.onSpeechRecognized(text, true);
                 }
-            }
+            //}
         }
 
         @Override

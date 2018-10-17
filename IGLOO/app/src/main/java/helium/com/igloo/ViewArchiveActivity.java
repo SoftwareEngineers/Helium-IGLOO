@@ -78,18 +78,9 @@ public class ViewArchiveActivity extends AppCompatActivity {
     private ProgressDialog AudioExtractiondialog,DownloadDialog;
     private File sdCard;
     private LectureModel lecture;
-    private static final int REQUEST_RECORD_AUDIO_PERMISSION = 1;
 
     private SpeechService mSpeechService;
-
-    private final SpeechService.Listener mSpeechServiceListener =
-            new SpeechService.Listener() {
-                @Override
-                public void onSpeechRecognized(final String text, final boolean isFinal) {
-                    //recognized text
-                    Toast.makeText(getApplicationContext(),text,Toast.LENGTH_LONG).show();
-                }
-            };
+    
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
 
         @Override
@@ -97,16 +88,33 @@ public class ViewArchiveActivity extends AppCompatActivity {
 
             mSpeechService = SpeechService.from(binder);
             mSpeechService.addListener(mSpeechServiceListener);
-            Toast.makeText(getApplicationContext(),"Service Connected",Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(),"Service Connected",Toast.LENGTH_SHORT).show();
         }
 
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
-
-
+            Toast.makeText(getApplicationContext(),"Service disConnected",Toast.LENGTH_SHORT).show();
         }
 
     };
+    private final SpeechService.Listener mSpeechServiceListener =
+            new SpeechService.Listener() {
+                @Override
+                public void onSpeechRecognized(final String text, final boolean isFinal) {
+                    //recognized text
+                    if(isFinal) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }else{
+                    }
+                }
+            };
+
+
 
 
     @Override
@@ -140,9 +148,7 @@ public class ViewArchiveActivity extends AppCompatActivity {
         mKey = intent.getStringExtra("key");
 
 
-
-        playArchive(archiveID);
-        mRecycleViewQuestions = (RecyclerView)findViewById(R.id.rec_questions);
+        mRecycleViewQuestions = (RecyclerView) findViewById(R.id.rec_questions);
         questions = new ArrayList<>();
         questionAdapter = new QuestionAdapter(questions, this, videoView);
         mRecycleViewQuestions.setAdapter(questionAdapter);
@@ -150,8 +156,12 @@ public class ViewArchiveActivity extends AppCompatActivity {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecycleViewQuestions.setLayoutManager(layoutManager);
         loadQuestions();
-
-        InitializeTranscripts();
+        LoadLecture();
+        if (lecture.getIs_transcribed()) {
+            playArchive(archiveID);
+        } else {
+            InitializeTranscripts();
+        }
     }
 
 
@@ -216,7 +226,7 @@ public class ViewArchiveActivity extends AppCompatActivity {
         });
     }
 
-    public void InitializeTranscripts(){
+    public void LoadLecture(){
         Toast.makeText(getApplicationContext(),"im here",Toast.LENGTH_LONG).show();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Lectures").child(mKey);
         reference.addValueEventListener(new ValueEventListener() {
@@ -231,6 +241,10 @@ public class ViewArchiveActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    public void InitializeTranscripts(){
+
 
         RequestQueue reqQueue = Volley.newRequestQueue(this);
         reqQueue.add(new JsonObjectRequest(Request.Method.GET,
@@ -247,7 +261,23 @@ public class ViewArchiveActivity extends AppCompatActivity {
 
                     DownloadVideoFromWeb(url);
 
+                    mediaController = new MediaController(ViewArchiveActivity.this);
+                    mediaController.setAnchorView(videoView);
+                    Uri video = Uri.parse(url);
 
+                    Log.e("Opentok Archive", "Archive starting");
+                    videoView.setMediaController(mediaController);
+                    videoView.setVideoURI(video);
+
+                    videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+
+                        public void onPrepared(MediaPlayer mp) {
+                            questionAdapter.getMediaPlayer(mp);
+                            progressBar.setVisibility(View.GONE);
+                            videoView.start();
+                            Log.e("Opentok Archive", "Archive started");
+                        }
+                    });
 
 
                 } catch (Exception e) {
@@ -298,7 +328,6 @@ public class ViewArchiveActivity extends AppCompatActivity {
         }catch (Exception e){
             Toast.makeText(getApplicationContext(),e.toString(),Toast.LENGTH_LONG).show();
         }
-
 
     }
 
@@ -487,7 +516,6 @@ public class ViewArchiveActivity extends AppCompatActivity {
             if (result != null)
                 Toast.makeText(context, "Download error: " + result, Toast.LENGTH_LONG).show();
             else {
-                Toast.makeText(context, "File downloaded", Toast.LENGTH_SHORT).show();
                 File video = new File(sdCard.getAbsolutePath(),"Iglo/video.mp4");
                 ExtractAudio(video);
             }
@@ -506,7 +534,6 @@ public class ViewArchiveActivity extends AppCompatActivity {
             if (mSpeechService != null) {
                 FileInputStream fis = new FileInputStream(audio);
                 mSpeechService.recognizeInputStream(fis);
-                Toast.makeText(getApplicationContext(),"start recognize",Toast.LENGTH_LONG).show();
             } else {
 
             }
@@ -514,4 +541,14 @@ public class ViewArchiveActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(),e.toString(),Toast.LENGTH_LONG).show();
         }
     }
+
+
+    private void updateLecture(){
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Lectures").child(mKey);
+        reference.child("transcription").setValue(lecture.getTranscription());
+        reference.child("is_transcribed").setValue(lecture.getIs_transcribed());
+
+    }
+
 }
