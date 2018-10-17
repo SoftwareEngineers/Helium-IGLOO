@@ -5,7 +5,7 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorPrimary</item>
+        <item name="colorAccent">@color/yellowCorn</item>
     </style>
 
     <style name="passwordFields" parent="TextAppearance.AppCompat">
@@ -32,11 +32,6 @@
 
     <style name="navigationTheme" parent="AppTheme">
         <item name="listPreferredItemHeightSmall">60dp</item>
-    </style>
-
-    <style name="AppThemeRatingBar" parent="Theme.AppCompat">
-        <item name="colorAccent">@color/yellowCorn</item>
-        <item name="android:colorControlNormal">@color/shadow</item>
     </style>
 
 </resources>
