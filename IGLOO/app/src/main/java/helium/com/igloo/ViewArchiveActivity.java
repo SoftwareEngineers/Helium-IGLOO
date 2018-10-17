@@ -150,11 +150,12 @@ public class ViewArchiveActivity extends AppCompatActivity {
         mKey = intent.getStringExtra("key");
 
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Lectures");
-        final FirebaseStorage storage = FirebaseStorage.getInstance();;
+        final FirebaseStorage storage = FirebaseStorage.getInstance();
 
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                lecture = dataSnapshot.child(mKey).getValue(LectureModel.class);
                 String url = dataSnapshot.child(mKey).child("thumbnail").getValue(String.class);
 
                 StorageReference storageRef = storage.getReferenceFromUrl("gs://igloo-0830.appspot.com/images/").child(url);
@@ -167,6 +168,11 @@ public class ViewArchiveActivity extends AppCompatActivity {
                         videoView.setBackground(bitmapDrawable);
                     }
                 });
+                if (lecture.getIs_transcribed()) {
+                    playArchive(archiveID);
+                } else {
+                    InitializeTranscripts();
+                }
             }
 
             @Override
@@ -184,12 +190,6 @@ public class ViewArchiveActivity extends AppCompatActivity {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecycleViewQuestions.setLayoutManager(layoutManager);
         loadQuestions();
-        LoadLecture();
-        if (lecture.getIs_transcribed()) {
-            playArchive(archiveID);
-        } else {
-            InitializeTranscripts();
-        }
     }
 
 
@@ -256,23 +256,6 @@ public class ViewArchiveActivity extends AppCompatActivity {
         });
     }
 
-    public void LoadLecture(){
-        Toast.makeText(getApplicationContext(),"im here",Toast.LENGTH_LONG).show();
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Lectures").child(mKey);
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                lecture = dataSnapshot.getValue(LectureModel.class);
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
-
     public void InitializeTranscripts(){
 
 
@@ -327,9 +310,6 @@ public class ViewArchiveActivity extends AppCompatActivity {
 
     }
 
-
-
-    /////// EXTRACTING AUDIO FROM VIDEO
     @Override
     public void onStart(){
         super.onStart();
@@ -431,12 +411,6 @@ public class ViewArchiveActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(),e.toString(),Toast.LENGTH_LONG).show();
         }
     }
-
-
-
-
-
-    /////// DOWNLOADING VIDEO FROM SERVER
 
     private void DownloadVideoFromWeb(String url){
 
@@ -553,11 +527,6 @@ public class ViewArchiveActivity extends AppCompatActivity {
             }
         }
     }
-
-
-
-
-    /////// SPEECH RECOGNITION
 
     private void Recognize(){
 

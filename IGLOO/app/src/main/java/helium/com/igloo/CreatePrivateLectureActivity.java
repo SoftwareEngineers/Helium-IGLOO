@@ -109,6 +109,8 @@ public class CreatePrivateLectureActivity extends AppCompatActivity {
                     lectureModel.setPublic(false);
                     lectureModel.setAvailable(false);
                     lectureModel.setLive(false);
+                    lectureModel.setIs_transcribed(false);
+                    lectureModel.setTranscription("");
 
                     StorageReference mStorageRef = storage.getReferenceFromUrl("gs://igloo-0830.appspot.com/images/");;
                     if (selectedImage != null) {
