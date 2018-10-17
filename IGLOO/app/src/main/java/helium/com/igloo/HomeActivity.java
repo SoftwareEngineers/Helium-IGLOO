@@ -224,8 +224,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         });
     }
 
-    //// ADDED SEARCH VIEW
-
     @SuppressLint("RestrictedApi")
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -246,10 +244,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         mSearchAutoComplete.showDropDown();
         return true;
     }
-
-
-
-    ////// IMPLEMENTED SEARCH
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -292,10 +286,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         return super.onOptionsItemSelected(item);
     }
 
-
-
-    ///////// GET DATA FROM DATABASE
-
     public void getTitlesAndIDs(){
 
         final LectureModel[] model = new LectureModel[1];
@@ -320,9 +310,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
              }
          });
     }
-
-
-
 
     private void setProfileInfo(){
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users");
@@ -402,7 +389,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             auth.removeAuthStateListener(authListener);
         }
     }
-
 
     public class CountDown extends CountDownTimer {
 

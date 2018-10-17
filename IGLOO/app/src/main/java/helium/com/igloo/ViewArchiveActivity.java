@@ -304,10 +304,6 @@ public class ViewArchiveActivity extends AppCompatActivity {
             }
         }));
 
-
-
-
-
     }
 
     @Override
