@@ -150,8 +150,10 @@ public class PaymentActivity extends AppCompatActivity {
     public void UpdateUserBalance(int balance){
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users");
         DatabaseReference userRef = databaseReference.child(auth.getCurrentUser().getUid());
+
         double current_balance = model.getTokens();
         double final_balance = current_balance + balance;
+
         userRef.child("tokens").setValue(final_balance);
         mAccount_balance.setText(String.valueOf(final_balance));
     }
