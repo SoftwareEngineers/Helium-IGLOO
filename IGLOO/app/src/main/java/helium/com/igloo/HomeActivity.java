@@ -5,16 +5,19 @@ import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.SearchManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.media.app.NotificationCompat;
@@ -60,6 +63,7 @@ import helium.com.igloo.Models.LectureModel;
 import helium.com.igloo.Models.NotificationModel;
 import helium.com.igloo.Models.QuestionModel;
 import helium.com.igloo.Models.SubscriptionModel;
+import helium.com.igloo.SpeechRecognition.SpeechService;
 
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{

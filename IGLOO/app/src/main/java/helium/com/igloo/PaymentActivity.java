@@ -59,7 +59,7 @@ public class PaymentActivity extends AppCompatActivity {
                 int pTokens = (int)model.getTokens();
 
                 mAccount_balance.setText(String.valueOf(pTokens));
-                //Toast.makeText(getApplicationContext(),model.getName(),Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(),String.valueOf(model.getTokens()),Toast.LENGTH_LONG).show();
             }
 
             @Override
@@ -83,7 +83,8 @@ public class PaymentActivity extends AppCompatActivity {
     private int calculateRemainingBalance(){
         int balance = Integer.parseInt(mAccount_balance.getText().toString());
         int deduction = Integer.parseInt(mTopup_amount.getText().toString());
-        int remaining_balance  = balance % deduction;
+        deduction *= 5;
+        int remaining_balance  = balance - deduction;
 
        return remaining_balance;
 
@@ -93,8 +94,10 @@ public class PaymentActivity extends AppCompatActivity {
     private double computeMoneyFromTokens(){
         int tokens = Integer.parseInt(mAccount_balance.getText().toString());
         int cashAmount = Integer.parseInt(mTopup_amount.getText().toString());
+        cashAmount *= 5;
         if(tokens > 0 && tokens > cashAmount) {
-            return (double) tokens / cashAmount;
+
+            return (double) tokens - cashAmount;
         }
         else{
             return  0;
@@ -117,17 +120,23 @@ public class PaymentActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int id) {
                                 //UpdateUserTokens(5);
                                 if (command == 1){
-                                    Toast.makeText(getApplicationContext(), "Money To Token", Toast.LENGTH_LONG).show();
-                                    double total_amount = computeMoneyFromTokens();
-                                    if(total_amount >0){
-                                        Toast.makeText(getApplicationContext(), "Success fully Recieved Money To Token", Toast.LENGTH_LONG).show();
-                                        int balance = Integer.parseInt(mTopup_amount.getText().toString());
-                                        model.setTokens(balance);
-                                        UpdateUserBalance(balance);
-                                    }
+
+
+                                    int balance = Integer.parseInt(mTopup_amount.getText().toString());
+                                    Toast.makeText(getApplicationContext(), "Successfully Topped up tokens!", Toast.LENGTH_LONG).show();
+                                    UpdateUserBalance(balance,1);
+
                                 }
                                 else {
-                                    Toast.makeText(getApplicationContext(), "Token To Cash", Toast.LENGTH_LONG).show();
+                                    double remaining_tokens = calculateRemainingBalance();
+                                    double total_amount = computeMoneyFromTokens();
+                                    if(total_amount >0){
+                                        Toast.makeText(getApplicationContext(), "Successfully redeemed Cash!", Toast.LENGTH_LONG).show();
+                                        UpdateUserBalance((int)remaining_tokens,2);
+                                    }
+                                    else {
+                                        Toast.makeText(getApplicationContext(),"Not enough tokens to Convert!",Toast.LENGTH_LONG).show();
+                                    }
 
                                 }
                                 dialog.dismiss();
@@ -147,14 +156,18 @@ public class PaymentActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    public void UpdateUserBalance(int balance){
+    public void UpdateUserBalance(int balance,int command){
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users");
         DatabaseReference userRef = databaseReference.child(auth.getCurrentUser().getUid());
-
-        double current_balance = model.getTokens();
-        double final_balance = current_balance + balance;
-
+        double final_balance;
+        if(command == 1) {
+            double current_balance = model.getTokens();
+            final_balance = current_balance + balance;
+        }
+        else{
+            final_balance = balance;
+        }
         userRef.child("tokens").setValue(final_balance);
-        mAccount_balance.setText(String.valueOf(final_balance));
+        mAccount_balance.setText(String.valueOf((int)final_balance));
     }
 }
