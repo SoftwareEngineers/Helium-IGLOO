@@ -38,8 +38,6 @@ public class NotificationActivity extends AppCompatActivity {
         notificationRecycleView.smoothScrollToPosition(0);
         notificationRecycleView.setLayoutManager(layoutManager);
         notificationRecycleView.setAdapter(adapter);
-
-
     }
     @Override
     public void onBackPressed(){
