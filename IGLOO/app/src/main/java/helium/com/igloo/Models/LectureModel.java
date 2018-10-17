@@ -13,9 +13,11 @@ public class LectureModel {
     private String time_created;
     private String session_id;
     private String archive_id;
+    private String thumbnail;
     private String owner_name;
 
     public LectureModel(String id, String owner_id, String title, String description, String password, Boolean isPublic, Boolean isAvailable, Boolean isLive, String time_created, String session_id, String archive_id, String owner_name) {
+
         this.id = id;
         this.owner_id = owner_id;
         this.title = title;
@@ -27,8 +29,8 @@ public class LectureModel {
         this.time_created = time_created;
         this.session_id = session_id;
         this.archive_id = archive_id;
+        this.thumbnail = thumbnail;
         this.owner_name = owner_name;
-
     }
 
     public LectureModel() {
@@ -128,6 +130,14 @@ public class LectureModel {
 
     public void setLive(Boolean live) {
         isLive = live;
+    }
+
+    public String getThumbnail() {
+        return thumbnail;
+    }
+
+    public void setThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
     }
 
     public String getOwner_name() {

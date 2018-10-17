@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Fragments.HomeFragment">
 
@@ -13,10 +14,9 @@
         <android.support.design.widget.TabLayout
             android:id="@+id/home_tab"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:background="@color/white"
             app:tabMode="fixed"
-            android:textAlignment="center"
             app:tabTextAppearance="@style/tabItem"
             app:tabSelectedTextColor="@color/colorPrimary"
             app:tabGravity="fill"
@@ -33,4 +33,4 @@
         app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior"/>
 
 
-</FrameLayout>
+</LinearLayout>

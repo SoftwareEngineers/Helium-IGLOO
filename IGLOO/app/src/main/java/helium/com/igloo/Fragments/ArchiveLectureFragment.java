@@ -3,6 +3,8 @@ package helium.com.igloo.Fragments;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,6 +20,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -43,6 +46,7 @@ public class ArchiveLectureFragment extends Fragment {
     private LectureAdapter lectureAdapter;
     private ProgressBar progressBar;
     private Context context;
+    DatabaseReference databaseReference;
 
     public ArchiveLectureFragment() {
         // Required empty public constructor
@@ -53,6 +57,7 @@ public class ArchiveLectureFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_archive_lecture, container, false);
         context = super.getContext();
+        databaseReference = FirebaseDatabase.getInstance().getReference("Lectures");
         progressBar = (ProgressBar)view.findViewById(R.id.pro_archive_lectures);
         progressBar.setVisibility(View.VISIBLE);
         recyclerView = (RecyclerView)view.findViewById(R.id.rec_archive_lectures);
@@ -67,15 +72,7 @@ public class ArchiveLectureFragment extends Fragment {
         return view;
     }
 
-    @Override
-    public void onResume(){
-        Toast.makeText(context, "called archived", Toast.LENGTH_SHORT).show();
-        loadLectures();
-        super.onResume();
-    }
-
     public void loadLectures(){
-        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Lectures");
         final Context context = super.getContext();
         databaseReference.orderByChild("time_created").addValueEventListener(new ValueEventListener() {
             @Override
@@ -91,9 +88,7 @@ public class ArchiveLectureFragment extends Fragment {
                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                     if(childSnapshot.child("available").getValue(Boolean.class) == true){
                         LectureModel lecture = childSnapshot.getValue(LectureModel.class);
-//                        lecture.setOwner(childSnapshot.child("owner").getValue(String.class));
-//                        lecture.setTitle(childSnapshot.child("title").getValue(String.class));
-//                        lecture.setTime_created(childSnapshot.child("time_created").getValue(String.class));
+
                         lectures.add(lecture);
                         Collections.reverse(lectures);
                         lectureAdapter.notifyDataSetChanged();
@@ -104,6 +99,32 @@ public class ArchiveLectureFragment extends Fragment {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        databaseReference.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });
