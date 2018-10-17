@@ -162,13 +162,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 subscriptionModelList.clear();
-                String text = "";
                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                     subscriptionModel = childSnapshot.getValue(SubscriptionModel.class);
-                    text += childSnapshot.hashCode()+"-";
-                    subscriptionModelList.add(subscriptionModel);
+                    if(subscriptionModel.getStatus().equals("pending")){
+                        subscriptionModelList.add(subscriptionModel);
+                    }
                 }
-                mName.setText(text);
+
             }
 
             @Override
