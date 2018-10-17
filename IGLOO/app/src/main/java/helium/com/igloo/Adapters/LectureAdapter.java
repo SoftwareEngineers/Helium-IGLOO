@@ -67,7 +67,7 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.LectureV
         lectureViewHolder.textDate.setText(p.getTime_created());
 
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users");
-        final FirebaseStorage storage = FirebaseStorage.getInstance();;
+        final FirebaseStorage storage = FirebaseStorage.getInstance();
 
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
