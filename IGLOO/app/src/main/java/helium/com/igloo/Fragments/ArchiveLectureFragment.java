@@ -91,9 +91,7 @@ public class ArchiveLectureFragment extends Fragment {
                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                     if(childSnapshot.child("available").getValue(Boolean.class) == true){
                         LectureModel lecture = childSnapshot.getValue(LectureModel.class);
-//                        lecture.setOwner(childSnapshot.child("owner").getValue(String.class));
-//                        lecture.setTitle(childSnapshot.child("title").getValue(String.class));
-//                        lecture.setTime_created(childSnapshot.child("time_created").getValue(String.class));
+
                         lectures.add(lecture);
                         Collections.reverse(lectures);
                         lectureAdapter.notifyDataSetChanged();

@@ -35,7 +35,6 @@ import helium.com.igloo.ViewLectureActivity;
 public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.LectureViewHolder> {
     private List<LectureModel> lectures;
     private Context context;
-    private String ownerUrl = null;
 
     public LectureAdapter(List<LectureModel> lectures, Context context) {
         this.lectures = lectures;
@@ -60,18 +59,27 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.LectureV
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String name = dataSnapshot.child(p.getOwnerId()).child("name").getValue(String.class);
-                ownerUrl = dataSnapshot.child(p.getOwnerId()).child("profileUrl").getValue(String.class);
+                String ownerUrl = dataSnapshot.child(p.getOwnerId()).child("profileUrl").getValue(String.class);
 
                 String description = name + " " + Html.fromHtml("&#8226;") + " ";
                 lectureViewHolder.textOwner.setText(description);
 
-                StorageReference storageRef = storage.getReferenceFromUrl("gs://igloo-0830.appspot.com/images/").child(ownerUrl);
+                StorageReference storageRef1 = storage.getReferenceFromUrl("gs://igloo-0830.appspot.com/images/").child(ownerUrl);
                 final long ONE_MEGABYTE = 1024 * 1024;
-                storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                storageRef1.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
                     @Override
                     public void onSuccess(byte[] bytes) {
                     Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                     lectureViewHolder.imageOwner.setImageBitmap(bitmap);
+                    }
+                });
+
+                StorageReference storageRef2 = storage.getReferenceFromUrl("gs://igloo-0830.appspot.com/images/").child(p.getThumbnail());
+                storageRef2.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                    @Override
+                    public void onSuccess(byte[] bytes) {
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                        lectureViewHolder.imageView.setImageBitmap(bitmap);
                     }
                 });
             }
