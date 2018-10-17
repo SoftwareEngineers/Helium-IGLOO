@@ -62,6 +62,7 @@ public class CreatePrivateLectureActivity extends AppCompatActivity {
                     lectureModel.setTime_created(String.valueOf(dateFormat.format("hh:mm a MMM-dd-yyyy", new Date())));
                     final String key = mDatabase.push().getKey();
                     lectureModel.setId(key);
+                    lectureModel.setOwner_name(auth.getCurrentUser().getDisplayName());
                     mDatabase.child(key).setValue(lectureModel).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {

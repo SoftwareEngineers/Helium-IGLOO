@@ -14,20 +14,31 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import helium.com.igloo.Models.SubscriptionModel;
 import helium.com.igloo.Models.UserModel;
 
 public class LandingActivity extends AppCompatActivity {
 
     private FirebaseAuth auth;
-
+    private DatabaseReference databaseReference;
+    private List<SubscriptionModel> subscriptionModelList;
+    private SubscriptionModel subscriptionModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_landing);
 
         auth = FirebaseAuth.getInstance();
-
+        subscriptionModelList = new ArrayList<>();
         Thread timer = new Thread(){
 
             public void run(){

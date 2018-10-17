@@ -112,7 +112,7 @@ public class ViewArchiveActivity extends AppCompatActivity {
         playArchive(archiveID);
         mRecycleViewQuestions = (RecyclerView)findViewById(R.id.rec_questions);
         questions = new ArrayList<>();
-        questionAdapter = new QuestionAdapter(questions, this);
+        questionAdapter = new QuestionAdapter(questions, this, videoView);
         mRecycleViewQuestions.setAdapter(questionAdapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -143,6 +143,7 @@ public class ViewArchiveActivity extends AppCompatActivity {
                     videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
 
                         public void onPrepared(MediaPlayer mp) {
+                            questionAdapter.getMediaPlayer(mp);
                             progressBar.setVisibility(View.GONE);
                             videoView.start();
                             Log.e("Opentok Archive", "Archive started");
@@ -268,13 +269,10 @@ public class ViewArchiveActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure() {
-                    //lblView.setText("Failed!");
                 }
 
                 @Override
                 public void onSuccess() {
-                    //Toast.makeText(getApplicationContext(),"Successfullu Loaded Library",Toast.LENGTH_LONG).show();
-
                 }
 
                 @Override
@@ -296,7 +294,6 @@ public class ViewArchiveActivity extends AppCompatActivity {
                 @Override
                 public void onStart() {
                     Log.d("Sample text", "Started: " + cmd);
-                    Toast.makeText(getApplicationContext(),"Starting",Toast.LENGTH_LONG).show();
                     AudioExtractiondialog.setMessage("Processing...");
                     AudioExtractiondialog.setTitle("Extracting Audio");
                     AudioExtractiondialog.setCancelable(false);
@@ -306,20 +303,17 @@ public class ViewArchiveActivity extends AppCompatActivity {
                 @Override
                 public void onProgress(String message) {
                     AudioExtractiondialog.setMessage("Processing\n"+message);
-                    //Log.d("Sample Text", "Progress "+ message);
-                    Toast.makeText(getApplicationContext(),"Progress",Toast.LENGTH_LONG).show();
+                    Log.d("Sample Text", "Progress "+ message);
                 }
 
                 @Override
                 public void onFailure(String message) {
                     Log.d("Sample Text", "Failed: "+ message);
-                    //Toast.makeText(getApplicationContext(),"Success",Toast.LENGTH_LONG).show();
                 }
 
                 @Override
                 public void onSuccess(String message) {
                     Log.d("Sample Text", "Success: "+ message);
-                    Toast.makeText(getApplicationContext(),"Finished",Toast.LENGTH_LONG).show();
                 }
 
                 @Override
