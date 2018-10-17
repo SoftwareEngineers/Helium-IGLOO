@@ -28,6 +28,9 @@ import java.util.List;
 
 import helium.com.igloo.R;
 
+
+////////////// THIS CLASS IS NOT USED ANYMORE
+
 public class LectureSearchAdapter extends CursorAdapter {
 
     private String[] items;

@@ -15,9 +15,11 @@ public class LectureModel {
     private String archive_id;
     private String thumbnail;
     private String owner_name;
+    private Boolean is_transcribed;
+    private String transcription;
     private int views;
 
-    public LectureModel(String id, String owner_id, String title, String description, String password, Boolean isPublic, Boolean isAvailable, Boolean isLive, String time_created, String session_id, String archive_id, String owner_name, String thumbnail, int views) {
+    public LectureModel(String id, String owner_id, String title, String description, String password, Boolean isPublic, Boolean isAvailable, Boolean isLive, String time_created, String session_id, String archive_id, String owner_name,Boolean is_transcribed, String transcription,int views) {
 
         this.id = id;
         this.owner_id = owner_id;
@@ -32,6 +34,10 @@ public class LectureModel {
         this.archive_id = archive_id;
         this.thumbnail = thumbnail;
         this.owner_name = owner_name;
+
+        this.is_transcribed = is_transcribed;
+        this.transcription = transcription;
+
         this.views = views;
     }
 
@@ -157,4 +163,12 @@ public class LectureModel {
     public void setOwner_name(String owner_name) {
         this.owner_name = owner_name;
     }
+
+    public Boolean getIs_transcribed(){return  is_transcribed;}
+
+    public void setIs_transcribed(Boolean is_transcribed){this.is_transcribed = is_transcribed;}
+
+    public String getTranscription(){return transcription;}
+
+    public void setTranscription(String transcription){this.transcription = transcription;}
 }
