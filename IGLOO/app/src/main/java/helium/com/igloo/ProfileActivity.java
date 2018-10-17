@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,10 +27,13 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ProfileActivity extends AppCompatActivity {
 
+    private ImageButton mProfileBack;
     private CircleImageView mProfilePic;
     private TextView mProfileName;
     private TextView mProfileEmail;
     private RatingBar mRating;
+    private TextView mSubscribers;
+    private TextView mLectures;
 
     private FirebaseAuth auth;
     private FirebaseStorage storage;
@@ -42,10 +46,14 @@ public class ProfileActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         storage = FirebaseStorage.getInstance();
 
+        mProfileBack = (ImageButton)findViewById(R.id.profile_back);
         mProfilePic = (CircleImageView) findViewById(R.id.profile_picture);
         mProfileName = (TextView) findViewById(R.id.profile_name);
         mProfileEmail = (TextView) findViewById(R.id.profile_email);
         mRating = (RatingBar)findViewById(R.id.profile_rating);
+        mSubscribers = (TextView) findViewById(R.id.profile__subscribers);
+        mLectures = (TextView) findViewById(R.id.profile_lectures);
+
         mRating.setNumStars(5);
 
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users");
@@ -57,6 +65,8 @@ public class ProfileActivity extends AppCompatActivity {
                 String name = dataSnapshot.child("name").getValue(String.class);
                 String email = dataSnapshot.child("email").getValue(String.class);
                 String url = dataSnapshot.child("profileUrl").getValue(String.class);
+                double subscribers = dataSnapshot.child("numberOfSubscribers").getValue(Double.class);
+                double lectures = dataSnapshot.child("numberOfLectures").getValue(Double.class);
                 double rating = dataSnapshot.child("rating").getValue(Double.class);
 
                 storage = FirebaseStorage.getInstance();
@@ -73,12 +83,21 @@ public class ProfileActivity extends AppCompatActivity {
                 mProfileName.setText(name);
                 mProfileEmail.setText(email);
                 mRating.setRating((float) rating);
+                mSubscribers.setText(Integer.toString((int)subscribers));
+                mLectures.setText(Integer.toString((int)lectures));
 
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
+            }
+        });
+
+        mProfileBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
     }
