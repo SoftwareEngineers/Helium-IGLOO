@@ -176,7 +176,8 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
 
     @Override
     public void onStreamDropped(Session session, Stream stream) {
-
+        Intent intent = new Intent(ViewLectureActivity.this, HomeActivity.class);
+        startActivity(intent);
     }
 
     @Override
