@@ -25,7 +25,6 @@ public class LectureRateActivity extends AppCompatActivity {
     private CheckBox mCheckBoxAverage;
     private CheckBox mCheckBoxNotGood;
     private CheckBox mCheckBoxTerrible;
-    private LectureModel mLecture;
     private boolean isRated;
     private FirebaseAuth auth;
     private double mTotalRatings;
@@ -44,36 +43,13 @@ public class LectureRateActivity extends AppCompatActivity {
         mCheckBoxNotGood = findViewById(R.id.rating_notgood);
         mCheckBoxTerrible = findViewById(R.id.rating_terrible);
         mRating = 0;
-        Intent intent = getIntent();
 
-        String mKey = intent.getStringExtra("key");
-        mLecture = loadLecture(mKey);
         loadLecturerRatingDetails();
-
         isRated = false;
-
         auth = FirebaseAuth.getInstance();
 
 
 
-    }
-
-    public LectureModel loadLecture(final String key){
-        final LectureModel[] lecture = new LectureModel[1];
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Lectures");
-
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                lecture[0] = dataSnapshot.child(key).getValue(LectureModel.class);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-        return lecture[0];
     }
 
     private void loadLecturerRatingDetails(){
@@ -94,8 +70,6 @@ public class LectureRateActivity extends AppCompatActivity {
             }
         });
     }
-
-
 
     public void ExecuteRateLecture(View view) {
         try{
@@ -132,12 +106,13 @@ public class LectureRateActivity extends AppCompatActivity {
     public void onBackPressed(){
         if(isRated){
             finish();
+            super.onBackPressed();
+
         }
         else {
             Toast.makeText(getApplicationContext(),"please rate first",Toast.LENGTH_LONG).show();
         }
     }
-
 
     public void CheckOutsdanding(View view) {
        mRating = 5;

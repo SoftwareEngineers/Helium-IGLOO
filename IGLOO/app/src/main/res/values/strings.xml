@@ -65,5 +65,5 @@
     <string name="label_rating_average">Average</string>
     <string name="label_rating_notgood">Not Good</string>
     <string name="label_rating_terrible">Terrible</string>
-    <string name="permision_message">Please enable all permissions</string> 
+    <string name="permision_message">Please enable all permissions</string>
 </resources>

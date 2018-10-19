@@ -252,7 +252,7 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
         super.onStop();
 
         LayoutInflater lay = LayoutInflater.from(ViewLectureActivity.this);
-        View promptsView = lay.inflate(R.layout.payment_alertdialog, null);
+        View promptsView = lay.inflate(R.layout.layout_payment_dialog, null);
         AlertDialog.Builder builder = new AlertDialog.Builder(ViewLectureActivity.this);
         builder.setView(promptsView);
 
