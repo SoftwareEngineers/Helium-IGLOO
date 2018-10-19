@@ -4,32 +4,23 @@ package helium.com.igloo;
 import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.SearchManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.v4.media.app.NotificationCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -56,14 +47,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
-import helium.com.igloo.Adapters.LectureSearchAdapter;
 import helium.com.igloo.Fragments.HomeFragment;
 import helium.com.igloo.Fragments.SubscriptionsFragment;
 import helium.com.igloo.Models.LectureModel;
 import helium.com.igloo.Models.NotificationModel;
-import helium.com.igloo.Models.QuestionModel;
 import helium.com.igloo.Models.SubscriptionModel;
-import helium.com.igloo.SpeechRecognition.SpeechService;
 
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
@@ -123,7 +111,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             public void onClick(View v) {
 
                 AlertDialog.Builder mBuilder = new AlertDialog.Builder(HomeActivity.this);
-                View mView = getLayoutInflater().inflate(R.layout.choose_lecture_type_layout, null);
+                View mView = getLayoutInflater().inflate(R.layout.layout_choose_lectute, null);
 
                 Button buttonPublicLecture = (Button) mView.findViewById(R.id.btn_public_lecture);
                 Button buttonPrivateLecture = (Button) mView.findViewById(R.id.btn_private_lecture);
@@ -343,7 +331,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 mTabPic.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        startActivity(new Intent(HomeActivity.this, ProfileActivity.class));
+                        Intent intent = new Intent(HomeActivity.this, ProfileActivity.class);
+                        intent.putExtra("profileID", auth.getCurrentUser().getUid());
+                        startActivity(intent);
+
                     }
                 });
             }

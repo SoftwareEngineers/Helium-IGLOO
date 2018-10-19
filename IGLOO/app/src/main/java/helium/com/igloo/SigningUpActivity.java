@@ -23,6 +23,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
@@ -103,9 +104,25 @@ public class SigningUpActivity extends AppCompatActivity {
                 public void onComplete(@NonNull Task<AuthResult> task) {
 
                     if (!task.isSuccessful()) {
-                        Toast.makeText(SigningUpActivity.this, "Sign Up failed." + task.getException(),
-                                Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(SigningUpActivity.this, "Sign Up failed." + task.getException(),
+//                                Toast.LENGTH_SHORT).show();
 
+                        String errorCode = ((FirebaseAuthException) task.getException()).getErrorCode();
+
+                        switch (errorCode) {
+
+                            case "ERROR_INVALID_EMAIL":
+                                Toast.makeText(SigningUpActivity.this, "The email address is invalid.", Toast.LENGTH_LONG).show();
+                                break;
+
+                            case "ERROR_EMAIL_ALREADY_IN_USE":
+                                Toast.makeText(SigningUpActivity.this, "The email address already exist.", Toast.LENGTH_LONG).show();
+                                break;
+
+                            case "ERROR_WEAK_PASSWORD":
+                                Toast.makeText(SigningUpActivity.this, "The password is invalid it must 6 characters at least.", Toast.LENGTH_LONG).show();
+                                break;
+                        }
                     }
                     else {
                         mProgressDialog.setMessage("Signing in please wait....");

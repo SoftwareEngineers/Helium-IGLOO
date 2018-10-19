@@ -14,6 +14,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.support.annotation.NonNull;
@@ -261,12 +262,11 @@ public class ViewArchiveActivity extends AppCompatActivity {
                         public void onPrepared(MediaPlayer mp) {
                             questionAdapter.getMediaPlayer(mp);
                             progressBar.setVisibility(View.GONE);
+                            videoView.setBackground(null);
                             videoView.start();
                             Log.e("Opentok Archive", "Archive started");
                         }
                     });
-
-                    videoView.setBackground(null);
 
                 } catch (Exception e) {
                     System.out.println("Video Play Error :" + e.getMessage());
@@ -583,13 +583,17 @@ public class ViewArchiveActivity extends AppCompatActivity {
         }
     }
 
-
     private void updateLecture(){
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Lectures").child(mKey);
         reference.child("transcription").setValue(lecture.getTranscription());
         reference.child("is_transcribed").setValue(lecture.getIs_transcribed());
 
+    }
+
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 
 }
