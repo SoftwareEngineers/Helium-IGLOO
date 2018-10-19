@@ -26,6 +26,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ProgressBar;
+import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -158,8 +159,7 @@ public class ViewArchiveActivity extends AppCompatActivity {
 
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("");
         final FirebaseStorage storage = FirebaseStorage.getInstance();
-
-        databaseReference.child("Lectures").addValueEventListener(new ValueEventListener() {
+        databaseReference.child("Lectures").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 lecture = dataSnapshot.child(mKey).getValue(LectureModel.class);
@@ -623,7 +623,7 @@ public class ViewArchiveActivity extends AppCompatActivity {
                         transcribedText += wordInfo.getWord()+" "+(wordInfo.getStartTime().getSeconds()*1000)+(wordInfo.getStartTime().getNanos()/100000000)+" ";
                     }
                 }
-                lecture.setTranscription(transcribedText);
+                lecture.setTranscription(transcribedText.trim());
                 lecture.setIs_transcribed(true);
                 updateLecture();
             }catch (Exception e){
@@ -639,7 +639,7 @@ public class ViewArchiveActivity extends AppCompatActivity {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Lectures").child(mKey);
         reference.child("transcription").setValue(lecture.getTranscription());
         reference.child("is_transcribed").setValue(lecture.getIs_transcribed());
-
+        Toast.makeText(this,"transcribe", Toast.LENGTH_LONG).show();
     }
 
     public void onBackPressed() {
