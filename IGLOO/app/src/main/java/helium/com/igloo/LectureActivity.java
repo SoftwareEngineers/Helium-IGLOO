@@ -319,4 +319,14 @@ public class LectureActivity extends AppCompatActivity implements Session.Sessio
         });
         alertDialog.show();
     }
+
+    @Override
+    public void onDestroy(){
+        if(mSession != null){
+            if(mPublisher != null)
+                mSession.unpublish(mPublisher);
+            mSession.disconnect();
+        }
+        super.onDestroy();
+    }
 }

@@ -36,7 +36,8 @@
         <activity android:name=".SettingsActivity" />
         <activity android:name=".PaymentActivity" />
         <activity android:name=".ViewArchiveActivity" />
-        <activity android:name=".NotificationActivity"></activity>
+        <activity android:name=".NotificationActivity" />
+        <activity android:name=".PendingLecturesActivity"></activity>
     </application>
 
 </manifest>
