@@ -248,8 +248,10 @@ public class ViewArchiveActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Subscriptions");
+                final DatabaseReference subscriptionReference = databaseReference.child(auth.getCurrentUser().getUid());
+
                 SubscriptionModel subscription = new SubscriptionModel(lecture.getOwner_name(), auth.getCurrentUser().getDisplayName(), lecture.getOwner_id(),auth.getCurrentUser().getUid(),"pending");
-                databaseReference.child(lecture.getOwner_id()).child(auth.getCurrentUser().getUid()).setValue(subscription);
+                subscriptionReference.child(lecture.getOwner_id()).setValue(subscription);
 
                 final DatabaseReference userReference = FirebaseDatabase.getInstance().getReference("Users");
                 final DatabaseReference profileReference = userReference.child(lecture.getOwner_id());
