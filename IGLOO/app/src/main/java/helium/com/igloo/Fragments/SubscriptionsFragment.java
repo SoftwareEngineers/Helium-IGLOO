@@ -55,16 +55,14 @@ public class SubscriptionsFragment extends Fragment {
 
     private void loadSubscriptions() {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Subscriptions");
+        DatabaseReference userReference = databaseReference.child(auth.getCurrentUser().getUid());
 
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        userReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (final DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                     SubscriptionModel subscriptions = new SubscriptionModel();
-                    Log.e("dfdfdffdfdfdfdfdfdf",childSnapshot.getKey());
-                    if (childSnapshot.getKey().equals(auth.getCurrentUser().getUid())) {
-                        subscriptions = childSnapshot.getValue(SubscriptionModel.class);
-                    }
+                    subscriptions = childSnapshot.getValue(SubscriptionModel.class);
 
                     mSubscriptions.add(subscriptions);
                     mSubscriptionAdapter.notifyDataSetChanged();

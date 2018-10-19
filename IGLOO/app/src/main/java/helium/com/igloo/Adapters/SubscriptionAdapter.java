@@ -31,6 +31,7 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import helium.com.igloo.Models.SubscriptionModel;
+import helium.com.igloo.ProfileActivity;
 import helium.com.igloo.R;
 
 public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapter.SubscriptionViewHolder> {
@@ -53,7 +54,7 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
     public void onBindViewHolder(final SubscriptionViewHolder subscriptionViewHolder, int i) {
         storage = FirebaseStorage.getInstance();
         final SubscriptionModel subscription = subscriptions.get(i);
-        String streamerID = subscription.getStreamer_id();
+        final String streamerID = subscription.getStreamer_id();
 
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users");
         final DatabaseReference userRef = databaseReference.child(streamerID);
@@ -66,9 +67,9 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
                 String url = dataSnapshot.child("profileUrl").getValue(String.class);
 
                 subscriptionViewHolder.userName.setText(name);
-                subscriptionViewHolder.userRating.setRating((int)rating);
+                subscriptionViewHolder.userRating.setRating((float)rating);
 
-                StorageReference storageRef = storage.getReferenceFromUrl("gs://igloo-0830.appspot.com/images/").child(url);
+                StorageReference storageRef = storage.getReferenceFromUrl("gs://helium-igloo0830.appspot.com/images/").child(url);
                 final long ONE_MEGABYTE = 1024 * 1024;
                 storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
                     @Override
@@ -84,6 +85,16 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
 
             }
         });
+
+        subscriptionViewHolder.view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, ProfileActivity.class);
+                intent.putExtra("profileID", streamerID);
+                intent.putExtra("profileName", subscription.getStreamer());
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -97,18 +108,20 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
 
 
     public static class SubscriptionViewHolder extends RecyclerView.ViewHolder {
-        public CircleImageView userPic;
-        public TextView userName;
-        public RatingBar userRating;
+        protected CircleImageView userPic;
+        protected TextView userName;
+        protected RatingBar userRating;
+        protected View view;
 
         public SubscriptionViewHolder(View v) {
             super(v);
-
-            userRating.setNumStars(5);
+            view = v;
 
             userPic = (CircleImageView) v.findViewById(R.id.subscriptions_pic);
             userName = (TextView) v.findViewById(R.id.subscriptions_name);
             userRating = (RatingBar) v.findViewById(R.id.subscriptions_rating);
+
+            userRating.setNumStars(5);
         }
     }
 }
