@@ -363,6 +363,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         else if (id == R.id.payment) {
             startActivity(new Intent(HomeActivity.this, PaymentActivity.class));
         }
+        else if(id == R.id.pending_lectures){
+            startActivity(new Intent(HomeActivity.this, PendingLecturesActivity.class));
+        }
         else {
             startActivity(new Intent(HomeActivity.this, SettingsActivity.class));
         }

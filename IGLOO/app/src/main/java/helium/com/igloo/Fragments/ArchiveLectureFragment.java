@@ -81,15 +81,8 @@ public class ArchiveLectureFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 lectures.clear();
-
                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
-                    if(!childSnapshot.child("available").getValue(Boolean.class)){
-                        checkStatus(databaseReference, childSnapshot.getKey(), childSnapshot.child("archive_id").getValue(String.class));
-                    }
-                }
-
-                for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
-                    if(childSnapshot.child("available").getValue(Boolean.class) == true){
+                    if(childSnapshot.child("available").getValue(Boolean.class)){
                         LectureModel lecture = childSnapshot.getValue(LectureModel.class);
 
                         lectures.add(lecture);
@@ -106,30 +99,6 @@ public class ArchiveLectureFragment extends Fragment {
             }
         });
         progressBar.setVisibility(View.GONE);
-    }
-
-    public void checkStatus(final DatabaseReference databaseReference, final String key, String archiveID){
-        RequestQueue reqQueue = Volley.newRequestQueue(context);
-        reqQueue.add(new JsonObjectRequest(Request.Method.GET,
-                "https://iglov2.herokuapp.com/videos/"+archiveID,
-                null, new Response.Listener<JSONObject>() {
-
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    if(response.getString("status").toString().equals("available")){
-                        databaseReference.child(key).child("available").setValue(true);
-                    }
-                } catch (JSONException error) {
-                    Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        }));
     }
 
 }

@@ -256,7 +256,6 @@ public class ViewArchiveActivity extends AppCompatActivity {
             }
         });
 
-
         mRecycleViewQuestions = (RecyclerView) findViewById(R.id.rec_questions);
         questions = new ArrayList<>();
         questionAdapter = new QuestionAdapter(questions, this, videoView);
