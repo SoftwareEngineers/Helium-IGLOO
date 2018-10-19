@@ -20,15 +20,15 @@ import android.os.PowerManager;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
-import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.MediaController;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -44,6 +44,7 @@ import com.github.hiteshsondhi88.libffmpeg.LoadBinaryResponseHandler;
 import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegCommandAlreadyRunningException;
 import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedException;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -52,7 +53,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Console;
@@ -68,10 +68,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import helium.com.igloo.Adapters.QuestionAdapter;
 import helium.com.igloo.Adapters.TransciptionAdapter;
 import helium.com.igloo.Models.LectureModel;
 import helium.com.igloo.Models.QuestionModel;
+import helium.com.igloo.Models.SubscriptionModel;
 import helium.com.igloo.Models.TranscriptionModel;
 import helium.com.igloo.Models.UserModel;
 import helium.com.igloo.SpeechRecognition.SpeechService;
@@ -93,10 +95,20 @@ public class ViewArchiveActivity extends AppCompatActivity {
     private LectureModel lecture;
 
     private SpeechService mSpeechService;
+    private TextView textOwner;
+    private TextView textSubscribers;
+    private TextView textTitle;
+    private TextView textViews;
+    private FirebaseAuth auth;
+    private CircleImageView mLecturer;
+    private Button mSubscribe;
+
     private RecyclerView mRecycleViewTranscripts;
     private List<TranscriptionModel> transcripts;
     private TransciptionAdapter transciptionAdapter;
     private String transcribedText;
+
+    private double numberOfSubscribers = 0;
 
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
 
@@ -114,6 +126,7 @@ public class ViewArchiveActivity extends AppCompatActivity {
         }
 
     };
+
     private final SpeechService.Listener mSpeechServiceListener =
             new SpeechService.Listener() {
                 @Override
@@ -133,9 +146,6 @@ public class ViewArchiveActivity extends AppCompatActivity {
                     }
                 }
             };
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -167,13 +177,24 @@ public class ViewArchiveActivity extends AppCompatActivity {
         archiveID = intent.getStringExtra("archiveID");
         mKey = intent.getStringExtra("key");
 
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Lectures");
+        textOwner = (TextView)findViewById(R.id.txt_owner);
+        textSubscribers = (TextView)findViewById(R.id.txt_subscribers);
+        textTitle = (TextView)findViewById(R.id.txt_title);
+        textViews = (TextView)findViewById(R.id.txt_views);
+        mLecturer = (CircleImageView)findViewById(R.id.img_owner);
+        mSubscribe = (Button) findViewById(R.id.btn_archive_subscribe);
+
+        auth = FirebaseAuth.getInstance();
+
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("");
         final FirebaseStorage storage = FirebaseStorage.getInstance();
 
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        databaseReference.child("Lectures").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 lecture = dataSnapshot.child(mKey).getValue(LectureModel.class);
+                textTitle.setText(lecture.getTitle());
+                textViews.setText(lecture.getViews() + " Views");
                 String url = dataSnapshot.child(mKey).child("thumbnail").getValue(String.class);
 
                 StorageReference storageRef = storage.getReferenceFromUrl("gs://igloo-0830.appspot.com/images/").child(url);
@@ -188,22 +209,6 @@ public class ViewArchiveActivity extends AppCompatActivity {
                 });
                 if (lecture.getIs_transcribed()) {
                     playArchive(archiveID);
-                    transcribedText = lecture.getTranscription();
-                    StringTokenizer st = new StringTokenizer(transcribedText," ");
-                    mRecycleViewTranscripts = findViewById(R.id.rec_questions);
-                    transcripts = new ArrayList<>();
-                    while (st.hasMoreElements()){
-                        transcripts.add(new TranscriptionModel(st.nextElement().toString(),Double.parseDouble(st.nextElement().toString())));
-                    }
-                    try {
-                        transciptionAdapter = new TransciptionAdapter(transcripts, ViewArchiveActivity.this);
-                        mRecycleViewTranscripts.setAdapter(transciptionAdapter);
-                        LinearLayoutManager lm = new LinearLayoutManager(ViewArchiveActivity.this);
-                        lm.setOrientation(LinearLayoutManager.VERTICAL);
-                        mRecycleViewTranscripts.setLayoutManager(lm);
-                    }catch (Exception e){
-                        Log.e("errorrrrrrrrrr",e.toString());
-                    }
                 } else {
                     InitializeTranscripts();
                 }
@@ -215,6 +220,56 @@ public class ViewArchiveActivity extends AppCompatActivity {
             }
         });
 
+        databaseReference.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                UserModel user = dataSnapshot.child(lecture.getOwner_id()).getValue(UserModel.class);
+                textOwner.setText(user.getName());
+                textSubscribers.setText(user.getNumberOfSubscribers() + " Subscribers");
+
+                StorageReference storageRef = storage.getReferenceFromUrl("gs://igloo-0830.appspot.com/images/").child(user.getProfileUrl());
+                final long ONE_MEGABYTE = 1024 * 1024;
+                storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                    @Override
+                    public void onSuccess(byte[] bytes) {
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                        mLecturer.setImageBitmap(bitmap);
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        mSubscribe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Subscriptions");
+                SubscriptionModel subscription = new SubscriptionModel(lecture.getOwner_name(), auth.getCurrentUser().getDisplayName(), lecture.getOwner_id(),auth.getCurrentUser().getUid(),"pending");
+                databaseReference.child(lecture.getOwner_id()).child(auth.getCurrentUser().getUid()).setValue(subscription);
+
+                final DatabaseReference userReference = FirebaseDatabase.getInstance().getReference("Users");
+                final DatabaseReference profileReference = userReference.child(lecture.getOwner_id());
+
+                profileReference.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        numberOfSubscribers = dataSnapshot.child("numberOfSubscribers").getValue(Double.class);
+                        Toast.makeText(ViewArchiveActivity.this, numberOfSubscribers + "", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+                double num = numberOfSubscribers + 1;
+                profileReference.child("numberOfSubscribers").setValue(num);
+            }
+        });
 
         mRecycleViewQuestions = (RecyclerView) findViewById(R.id.rec_questions);
         questions = new ArrayList<>();
@@ -247,6 +302,18 @@ public class ViewArchiveActivity extends AppCompatActivity {
                     videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
 
                         public void onPrepared(MediaPlayer mp) {
+                            transcribedText = lecture.getTranscription();
+                            StringTokenizer st = new StringTokenizer(transcribedText," ");
+                            mRecycleViewTranscripts = findViewById(R.id.rec_questions);
+                            transcripts = new ArrayList<>();
+                            while (st.hasMoreElements()){
+                                transcripts.add(new TranscriptionModel(st.nextElement().toString(),Integer.parseInt(st.nextElement().toString())));
+                            }
+                            transciptionAdapter = new TransciptionAdapter(transcripts, ViewArchiveActivity.this, mp);
+                            mRecycleViewTranscripts.setAdapter(transciptionAdapter);
+                            LinearLayoutManager lm = new LinearLayoutManager(ViewArchiveActivity.this);
+                            lm.setOrientation(LinearLayoutManager.VERTICAL);
+                            mRecycleViewTranscripts.setLayoutManager(lm);
                             questionAdapter.getMediaPlayer(mp);
                             progressBar.setVisibility(View.GONE);
                             videoView.setBackground(null);

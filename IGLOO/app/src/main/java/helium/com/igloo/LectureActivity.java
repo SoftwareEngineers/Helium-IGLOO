@@ -4,14 +4,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Icon;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -44,8 +42,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -68,6 +64,7 @@ public class LectureActivity extends AppCompatActivity implements Session.Sessio
     private Session mSession;
     private ProgressBar progressBar;
     private StorageReference storageReference;
+    private Boolean flag;
 
 
     private String ownerID;
@@ -75,22 +72,48 @@ public class LectureActivity extends AppCompatActivity implements Session.Sessio
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setContentView(R.layout.activity_lecture_view);
         Intent intent = getIntent();
         key = intent.getStringExtra("key");
-        setContentView(R.layout.activity_lecture_view);
         progressBar = (ProgressBar)findViewById(R.id.prog_lecture);
         mLectureView = (FrameLayout) findViewById(R.id.frm_lecture_view);
-        textLectureTitle = (TextView)findViewById(R.id.txt_lecture_title);
+        textLectureTitle = (TextView)findViewById(R.id.txt_owner);
         textLectureDescription = (TextView)findViewById(R.id.txt_lecture_description);
         buttonStartLecture = (Button)findViewById(R.id.btn_start_lecture);
         mLecturer = (CircleImageView) findViewById(R.id.lecturer_on_live_image);
+        flag = false;
 
         buttonStartLecture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progressBar.setVisibility(View.VISIBLE);
-                startLecture();
+                if(!flag){
+                    progressBar.setVisibility(View.VISIBLE);
+                    startLecture();
+                }
+                else{
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(LectureActivity.this);
+                    alertDialog.setTitle("Warning!");
+                    alertDialog.setIcon(R.drawable.warning);
+                    alertDialog.setMessage("Your lecture will be terminated. Are you sure you want to continue?");
+                    alertDialog.setPositiveButton("Confirm",new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            if(mSession != null){
+                                if(mPublisher != null)
+                                    mSession.unpublish(mPublisher);
+                                mSession.disconnect();
+                            }
+                            Intent intent = new Intent(LectureActivity.this, HomeActivity.class);
+                            startActivity(intent);
+                            LectureActivity.this.finish();
+                        }
+                    });
+                    alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which){
+                            dialog.cancel();
+                        }
+                    });
+                    alertDialog.show();
+                }
             }
         });
 
@@ -171,6 +194,8 @@ public class LectureActivity extends AppCompatActivity implements Session.Sessio
                 Toast.makeText(LectureActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         }));
+        buttonStartLecture.setText("Stop");
+        buttonStartLecture.setEnabled(false);
 
     }
 
@@ -237,6 +262,8 @@ public class LectureActivity extends AppCompatActivity implements Session.Sessio
     @Override
     public void onStreamCreated(PublisherKit publisherKit, Stream stream) {
         Toast.makeText(LectureActivity.this, "Lecture started successfully", Toast.LENGTH_SHORT).show();
+        buttonStartLecture.setEnabled(true);
+        flag = true;
     }
 
     @Override

@@ -124,7 +124,7 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.LectureV
                     }
                 });
                 if(p.getLive()){
-                    if(p.getPublic()){
+                    if(p.getPublic() || p.getOwner_id().equals(auth.getCurrentUser().getUid())){
                         Intent intent = new Intent(context,ViewLectureActivity.class);
                         intent.putExtra("key", p.getId());
                         context.startActivity(intent);
@@ -158,7 +158,7 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.LectureV
                     }
                 }
                 else{
-                    if(p.getPublic()){
+                    if(p.getPublic() || p.getOwner_id().equals(auth.getCurrentUser().getUid())){
                         Intent intent = new Intent(context,ViewArchiveActivity.class);
                         intent.putExtra("archiveID", p.getArchive_id());
                         intent.putExtra("key", p.getId());
