@@ -78,7 +78,7 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.LectureV
                 String description = name + " " + Html.fromHtml("&#8226;") + " " + p.getViews() + " VIEWS";
                 lectureViewHolder.textOwner.setText(description);
 
-                StorageReference storageRef1 = storage.getReferenceFromUrl("gs://igloo-0830.appspot.com/images/").child(ownerUrl);
+                StorageReference storageRef1 = storage.getReferenceFromUrl("gs://helium-igloo0830.appspot.com/images/").child(ownerUrl);
                 final long ONE_MEGABYTE = 1024 * 1024;
                 storageRef1.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
                     @Override
@@ -88,7 +88,7 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.LectureV
                     }
                 });
 
-                StorageReference storageRef2 = storage.getReferenceFromUrl("gs://igloo-0830.appspot.com/images/").child(p.getThumbnail());
+                StorageReference storageRef2 = storage.getReferenceFromUrl("gs://helium-igloo0830.appspot.com/images/").child(p.getThumbnail());
                 storageRef2.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
                     @Override
                     public void onSuccess(byte[] bytes) {

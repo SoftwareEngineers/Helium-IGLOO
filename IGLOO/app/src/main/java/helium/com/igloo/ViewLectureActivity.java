@@ -93,14 +93,17 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
             @Override
             public void onClick(View v) {
                 if(lectureModel!=null){
-                    final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Subscription");
+                    final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Subscriptions");
+                    final DatabaseReference subscriptionReference = databaseReference.child(auth.getCurrentUser().getUid());
+
                     SubscriptionModel subscription = new SubscriptionModel(lectureModel.getOwner_name(), auth.getCurrentUser().getDisplayName(), lectureModel.getOwner_id(),auth.getCurrentUser().getUid(),"pending");
-                    databaseReference.child(lectureModel.getOwner_id()).child(auth.getCurrentUser().getUid()).setValue(subscription);
+                    subscriptionReference.child(lectureModel.getOwner_id()).setValue(subscription);
 
-                    final DatabaseReference userReference = FirebaseDatabase.getInstance().getReference("User");
-                    final DatabaseReference profilereference = userReference.child(auth.getCurrentUser().getUid());
 
-                    databaseReference.addValueEventListener(new ValueEventListener() {
+                    final DatabaseReference userReference = FirebaseDatabase.getInstance().getReference("Users");
+                    final DatabaseReference profileReference = userReference.child(lectureModel.getOwner_id());
+
+                    profileReference.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             numberOfSubscribers = dataSnapshot.child("numberOfSubscribers").getValue(Double.class);
@@ -111,7 +114,8 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
 
                         }
                     });
-                    profilereference.child("numberOfSubscribers").setValue(numberOfSubscribers++);
+                    double num = numberOfSubscribers + 1;
+                    profileReference.child("numberOfSubscribers").setValue(num);
                 }
             }
         });

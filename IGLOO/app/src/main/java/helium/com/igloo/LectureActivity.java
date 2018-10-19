@@ -150,7 +150,7 @@ public class LectureActivity extends AppCompatActivity implements Session.Sessio
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String url = dataSnapshot.child(ownerID).child("profileUrl").getValue(String.class);
 
-                StorageReference storageRef1 = storage.getReferenceFromUrl("gs://igloo-0830.appspot.com/images/").child(url);
+                StorageReference storageRef1 = storage.getReferenceFromUrl("gs://helium-igloo0830.appspot.com/images/").child(url);
                 final long ONE_MEGABYTE = 1024 * 1024;
                 storageRef1.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
                     @Override

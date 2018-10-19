@@ -56,4 +56,6 @@
     <string name="subscriber">Subscribers</string>
     <string name="lectures">Lectures</string>
     <string name="tokens">Tokens</string>
+    <string name="permision_message">Please enable all permissions</string>
+    <string name="unsubscribe">UNSUBSCRIBE</string>
 </resources>
