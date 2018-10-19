@@ -1,12 +1,10 @@
 package helium.com.igloo;
 
 import android.content.Intent;
-import android.provider.ContactsContract;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -39,7 +37,6 @@ import com.opentok.android.Subscriber;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.Date;
 
 import helium.com.igloo.Models.LectureModel;
@@ -80,7 +77,7 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
         more = findViewById(R.id.swi_more);
         progressBar = findViewById(R.id.prog_lecture);
         progressBar.setVisibility(View.VISIBLE);
-        textLectureTitle = findViewById(R.id.txt_lecture_title);
+        textLectureTitle = findViewById(R.id.txt_owner);
         viewLecture =  findViewById(R.id.view_lecture);
         textLectureDescription = findViewById(R.id.txt_lecture_description);
         textQuestion = findViewById(R.id.txt_question);
@@ -156,7 +153,7 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
     public void fetchSessionConnectionData(final String sessionID) {
         RequestQueue reqQueue = Volley.newRequestQueue(ViewLectureActivity.this);
         reqQueue.add(new JsonObjectRequest(Request.Method.GET,
-                "https://iglov2.herokuapp.com" + "/subscribe_session/" + sessionID,
+                "https://iglov2.herokuapp.com/subscribe_session/" + sessionID,
                 null, new Response.Listener<JSONObject>() {
 
             @Override
@@ -202,7 +199,8 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
 
     @Override
     public void onStreamDropped(Session session, Stream stream) {
-
+        Intent intent = new Intent(ViewLectureActivity.this, HomeActivity.class);
+        startActivity(intent);
     }
 
     @Override

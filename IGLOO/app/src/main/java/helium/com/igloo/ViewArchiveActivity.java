@@ -20,8 +20,6 @@ import android.os.PowerManager;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.MediaController;
@@ -29,6 +27,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -44,6 +43,7 @@ import com.github.hiteshsondhi88.libffmpeg.LoadBinaryResponseHandler;
 import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegCommandAlreadyRunningException;
 import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedException;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -52,7 +52,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Console;
@@ -68,6 +67,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import helium.com.igloo.Adapters.QuestionAdapter;
 import helium.com.igloo.Adapters.TransciptionAdapter;
 import helium.com.igloo.Models.LectureModel;
@@ -93,6 +93,13 @@ public class ViewArchiveActivity extends AppCompatActivity {
     private LectureModel lecture;
 
     private SpeechService mSpeechService;
+    private TextView textOwner;
+    private TextView textSubscribers;
+    private TextView textTitle;
+    private TextView textViews;
+    private FirebaseAuth auth;
+    private CircleImageView mLecturer;
+
     private RecyclerView mRecycleViewTranscripts;
     private List<TranscriptionModel> transcripts;
     private TransciptionAdapter transciptionAdapter;
@@ -167,13 +174,47 @@ public class ViewArchiveActivity extends AppCompatActivity {
         archiveID = intent.getStringExtra("archiveID");
         mKey = intent.getStringExtra("key");
 
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Lectures");
+        textOwner = (TextView)findViewById(R.id.txt_owner);
+        textSubscribers = (TextView)findViewById(R.id.txt_subscribers);
+        textTitle = (TextView)findViewById(R.id.txt_title);
+        textViews = (TextView)findViewById(R.id.txt_views);
+        mLecturer = (CircleImageView)findViewById(R.id.img_owner);
+
+        auth = FirebaseAuth.getInstance();
+
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("");
         final FirebaseStorage storage = FirebaseStorage.getInstance();
 
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        databaseReference.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                UserModel user = dataSnapshot.child(auth.getCurrentUser().getUid()).getValue(UserModel.class);
+                textOwner.setText(user.getName());
+                textSubscribers.setText(user.getNumberOfSubscribers() + " Subscribers");
+
+                StorageReference storageRef = storage.getReferenceFromUrl("gs://igloo-0830.appspot.com/images/").child(user.getProfileUrl());
+                final long ONE_MEGABYTE = 1024 * 1024;
+                storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                    @Override
+                    public void onSuccess(byte[] bytes) {
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                        mLecturer.setImageBitmap(bitmap);
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        databaseReference.child("Lectures").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 lecture = dataSnapshot.child(mKey).getValue(LectureModel.class);
+                textTitle.setText(lecture.getTitle());
+                textViews.setText(lecture.getViews() + " Views");
                 String url = dataSnapshot.child(mKey).child("thumbnail").getValue(String.class);
 
                 StorageReference storageRef = storage.getReferenceFromUrl("gs://igloo-0830.appspot.com/images/").child(url);
