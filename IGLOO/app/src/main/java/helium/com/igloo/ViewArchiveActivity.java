@@ -91,6 +91,7 @@ public class ViewArchiveActivity extends AppCompatActivity {
     private TextView textOwner;
     private TextView textSubscribers;
     private TextView textTitle;
+    private TextView textViews;
     private FirebaseAuth auth;
     private CircleImageView mLecturer;
 
@@ -163,6 +164,7 @@ public class ViewArchiveActivity extends AppCompatActivity {
         textOwner = (TextView)findViewById(R.id.txt_owner);
         textSubscribers = (TextView)findViewById(R.id.txt_subscribers);
         textTitle = (TextView)findViewById(R.id.txt_title);
+        textViews = (TextView)findViewById(R.id.txt_views);
         mLecturer = (CircleImageView)findViewById(R.id.img_owner);
 
         auth = FirebaseAuth.getInstance();
@@ -199,6 +201,7 @@ public class ViewArchiveActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 lecture = dataSnapshot.child(mKey).getValue(LectureModel.class);
                 textTitle.setText(lecture.getTitle());
+                textViews.setText(lecture.getViews() + " Views");
                 String url = dataSnapshot.child(mKey).child("thumbnail").getValue(String.class);
 
                 StorageReference storageRef = storage.getReferenceFromUrl("gs://igloo-0830.appspot.com/images/").child(url);

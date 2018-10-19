@@ -64,6 +64,7 @@ public class LectureActivity extends AppCompatActivity implements Session.Sessio
     private Session mSession;
     private ProgressBar progressBar;
     private StorageReference storageReference;
+    private Boolean flag;
 
 
     private String ownerID;
@@ -80,12 +81,39 @@ public class LectureActivity extends AppCompatActivity implements Session.Sessio
         textLectureDescription = (TextView)findViewById(R.id.txt_lecture_description);
         buttonStartLecture = (Button)findViewById(R.id.btn_start_lecture);
         mLecturer = (CircleImageView) findViewById(R.id.lecturer_on_live_image);
+        flag = false;
 
         buttonStartLecture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progressBar.setVisibility(View.VISIBLE);
-                startLecture();
+                if(!flag){
+                    progressBar.setVisibility(View.VISIBLE);
+                    startLecture();
+                }
+                else{
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(LectureActivity.this);
+                    alertDialog.setTitle("Warning!");
+                    alertDialog.setIcon(R.drawable.warning);
+                    alertDialog.setMessage("Your lecture will be terminated. Are you sure you want to continue?");
+                    alertDialog.setPositiveButton("Confirm",new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            if(mSession != null){
+                                if(mPublisher != null)
+                                    mSession.unpublish(mPublisher);
+                                mSession.disconnect();
+                            }
+                            Intent intent = new Intent(LectureActivity.this, HomeActivity.class);
+                            startActivity(intent);
+                            LectureActivity.this.finish();
+                        }
+                    });
+                    alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which){
+                            dialog.cancel();
+                        }
+                    });
+                    alertDialog.show();
+                }
             }
         });
 
@@ -166,6 +194,8 @@ public class LectureActivity extends AppCompatActivity implements Session.Sessio
                 Toast.makeText(LectureActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         }));
+        buttonStartLecture.setText("Stop");
+        buttonStartLecture.setEnabled(false);
 
     }
 
@@ -232,6 +262,8 @@ public class LectureActivity extends AppCompatActivity implements Session.Sessio
     @Override
     public void onStreamCreated(PublisherKit publisherKit, Stream stream) {
         Toast.makeText(LectureActivity.this, "Lecture started successfully", Toast.LENGTH_SHORT).show();
+        buttonStartLecture.setEnabled(true);
+        flag = true;
     }
 
     @Override
