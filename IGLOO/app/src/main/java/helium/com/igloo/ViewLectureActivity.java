@@ -1,12 +1,10 @@
 package helium.com.igloo;
 
 import android.content.Intent;
-import android.provider.ContactsContract;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -39,7 +37,6 @@ import com.opentok.android.Subscriber;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.Date;
 
 import helium.com.igloo.Models.LectureModel;
@@ -74,7 +71,7 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
         more = findViewById(R.id.swi_more);
         progressBar = findViewById(R.id.prog_lecture);
         progressBar.setVisibility(View.VISIBLE);
-        textLectureTitle = findViewById(R.id.txt_lecture_title);
+        textLectureTitle = findViewById(R.id.txt_owner);
         viewLecture =  findViewById(R.id.view_lecture);
         textLectureDescription = findViewById(R.id.txt_lecture_description);
         textQuestion = findViewById(R.id.txt_question);
@@ -87,11 +84,11 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
         buttonSubscribe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(lectureModel!=null){
-                    final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Subscription");
-                    SubscriptionModel subscription = new SubscriptionModel(lectureModel.getOwner_name(), auth.getCurrentUser().getDisplayName(), lectureModel.getOwner_id(),auth.getCurrentUser().getUid(),"pending");
-                    databaseReference.child(lectureModel.getOwner_id()).child(auth.getCurrentUser().getUid()).setValue(subscription);
-                }
+            if(lectureModel!=null){
+                final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Subscription");
+                SubscriptionModel subscription = new SubscriptionModel(lectureModel.getOwner_name(), auth.getCurrentUser().getDisplayName(), lectureModel.getOwner_id(),auth.getCurrentUser().getUid(),"pending");
+                databaseReference.child(lectureModel.getOwner_id()).child(auth.getCurrentUser().getUid()).setValue(subscription);
+            }
             }
         });
         buttonAsk.setOnClickListener(new Click());
