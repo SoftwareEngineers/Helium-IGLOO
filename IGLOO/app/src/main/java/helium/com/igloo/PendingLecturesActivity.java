@@ -40,8 +40,6 @@ public class PendingLecturesActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private List<LectureModel> lectures;
     private PendingLectureAdapter lectureAdapter;
-    private ProgressBar progressBar;
-    private Context context;
     private DatabaseReference databaseReference;
     private FirebaseAuth auth;
 
@@ -52,9 +50,9 @@ public class PendingLecturesActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         recyclerView = (RecyclerView)findViewById(R.id.rec_lectures);
         lectures = new ArrayList<>();
-        lectureAdapter = new PendingLectureAdapter(lectures, context);
+        lectureAdapter = new PendingLectureAdapter(lectures, this);
         recyclerView.setAdapter(lectureAdapter);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
         loadLectures();
@@ -93,7 +91,7 @@ public class PendingLecturesActivity extends AppCompatActivity {
     }
 
     public void checkStatus(final String key, String archiveID){
-        RequestQueue reqQueue = Volley.newRequestQueue(context);
+        RequestQueue reqQueue = Volley.newRequestQueue(this);
         reqQueue.add(new JsonObjectRequest(Request.Method.GET,
                 "https://iglov2.herokuapp.com/videos/"+archiveID,
                 null, new Response.Listener<JSONObject>() {
@@ -105,13 +103,13 @@ public class PendingLecturesActivity extends AppCompatActivity {
                         databaseReference.child(key).child("uploadable").setValue(true);
                     }
                 } catch (JSONException error) {
-                    Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PendingLecturesActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(PendingLecturesActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         }));
     }
