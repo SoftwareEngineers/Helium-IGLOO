@@ -98,8 +98,8 @@ public class LectureActivity extends AppCompatActivity implements Session.Sessio
                     alertDialog.setPositiveButton("Confirm",new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             if(mSession != null){
-                                if(mPublisher != null)
-                                    mSession.unpublish(mPublisher);
+//                                if(mPublisher != null)
+//                                    mSession.unpublish(mPublisher);
                                 mSession.disconnect();
                             }
                             Intent intent = new Intent(LectureActivity.this, HomeActivity.class);
@@ -323,8 +323,8 @@ public class LectureActivity extends AppCompatActivity implements Session.Sessio
     @Override
     public void onDestroy(){
         if(mSession != null){
-            if(mPublisher != null)
-                mSession.unpublish(mPublisher);
+//            if(mPublisher != null)
+//                mSession.unpublish(mPublisher);
             mSession.disconnect();
         }
         super.onDestroy();
