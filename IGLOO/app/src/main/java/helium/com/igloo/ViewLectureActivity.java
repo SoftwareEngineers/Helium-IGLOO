@@ -97,12 +97,13 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
                     databaseReference.child(lectureModel.getOwner_id()).child(auth.getCurrentUser().getUid()).setValue(subscription);
 
                     final DatabaseReference userReference = FirebaseDatabase.getInstance().getReference("Users");
-                    final DatabaseReference profilereference = userReference.child(lectureModel.getOwner_id());
+                    final DatabaseReference profileReference = userReference.child(lectureModel.getOwner_id());
 
-                    databaseReference.addValueEventListener(new ValueEventListener() {
+                    profileReference.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             numberOfSubscribers = dataSnapshot.child("numberOfSubscribers").getValue(Double.class);
+                            Toast.makeText(ViewLectureActivity.this, numberOfSubscribers + "", Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
@@ -110,7 +111,8 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
 
                         }
                     });
-                    profilereference.child("numberOfSubscribers").setValue(numberOfSubscribers++);
+                    double num = numberOfSubscribers + 1;
+                    profileReference.child("numberOfSubscribers").setValue(num);
                 }
             }
         });
