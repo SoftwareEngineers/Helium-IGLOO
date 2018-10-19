@@ -1,20 +1,15 @@
 package helium.com.igloo.Adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.media.MediaDescrambler;
 import android.media.MediaPlayer;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.VideoView;
 
@@ -106,7 +101,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.Questi
 public QuestionAdapter.QuestionViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View itemView = LayoutInflater.
                 from(viewGroup.getContext()).
-                inflate(R.layout.question_layout, viewGroup, false);
+                inflate(R.layout.layout_question, viewGroup, false);
         return new QuestionViewHolder(itemView);
     }
 

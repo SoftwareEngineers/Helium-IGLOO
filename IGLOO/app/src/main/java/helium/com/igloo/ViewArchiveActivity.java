@@ -14,6 +14,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.support.annotation.NonNull;
@@ -22,6 +23,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.MediaController;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -53,6 +55,7 @@ import com.google.firebase.storage.StorageReference;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Console;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -63,10 +66,13 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import helium.com.igloo.Adapters.QuestionAdapter;
+import helium.com.igloo.Adapters.TransciptionAdapter;
 import helium.com.igloo.Models.LectureModel;
 import helium.com.igloo.Models.QuestionModel;
+import helium.com.igloo.Models.TranscriptionModel;
 import helium.com.igloo.Models.UserModel;
 import helium.com.igloo.SpeechRecognition.SpeechService;
 
@@ -87,7 +93,11 @@ public class ViewArchiveActivity extends AppCompatActivity {
     private LectureModel lecture;
 
     private SpeechService mSpeechService;
-    
+    private RecyclerView mRecycleViewTranscripts;
+    private List<TranscriptionModel> transcripts;
+    private TransciptionAdapter transciptionAdapter;
+    private String transcribedText;
+
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
 
         @Override
@@ -110,6 +120,9 @@ public class ViewArchiveActivity extends AppCompatActivity {
                 public void onSpeechRecognized(final String text, final boolean isFinal) {
                     //recognized text
                     if(isFinal) {
+                        lecture.setIs_transcribed(true);
+                        lecture.setTranscription(text.trim());
+                        updateLecture();
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -175,6 +188,22 @@ public class ViewArchiveActivity extends AppCompatActivity {
                 });
                 if (lecture.getIs_transcribed()) {
                     playArchive(archiveID);
+                    transcribedText = lecture.getTranscription();
+                    StringTokenizer st = new StringTokenizer(transcribedText," ");
+                    mRecycleViewTranscripts = findViewById(R.id.rec_questions);
+                    transcripts = new ArrayList<>();
+                    while (st.hasMoreElements()){
+                        transcripts.add(new TranscriptionModel(st.nextElement().toString(),Double.parseDouble(st.nextElement().toString())));
+                    }
+                    try {
+                        transciptionAdapter = new TransciptionAdapter(transcripts, ViewArchiveActivity.this);
+                        mRecycleViewTranscripts.setAdapter(transciptionAdapter);
+                        LinearLayoutManager lm = new LinearLayoutManager(ViewArchiveActivity.this);
+                        lm.setOrientation(LinearLayoutManager.VERTICAL);
+                        mRecycleViewTranscripts.setLayoutManager(lm);
+                    }catch (Exception e){
+                        Log.e("errorrrrrrrrrr",e.toString());
+                    }
                 } else {
                     InitializeTranscripts();
                 }
@@ -220,12 +249,11 @@ public class ViewArchiveActivity extends AppCompatActivity {
                         public void onPrepared(MediaPlayer mp) {
                             questionAdapter.getMediaPlayer(mp);
                             progressBar.setVisibility(View.GONE);
+                            videoView.setBackground(null);
                             videoView.start();
                             Log.e("Opentok Archive", "Archive started");
                         }
                     });
-
-                    videoView.setBackground(null);
 
                 } catch (Exception e) {
                     System.out.println("Video Play Error :" + e.getMessage());
@@ -404,6 +432,7 @@ public class ViewArchiveActivity extends AppCompatActivity {
                 @Override
                 public void onFinish() {
                     AudioExtractiondialog.dismiss();
+
                     videoView.start();
                     Recognize();
 
@@ -544,13 +573,17 @@ public class ViewArchiveActivity extends AppCompatActivity {
         }
     }
 
-
     private void updateLecture(){
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Lectures").child(mKey);
         reference.child("transcription").setValue(lecture.getTranscription());
         reference.child("is_transcribed").setValue(lecture.getIs_transcribed());
 
+    }
+
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 
 }

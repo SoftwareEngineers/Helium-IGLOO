@@ -69,14 +69,18 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
     private ProgressBar progressBar;
     private Subscriber mSubscriber;
     private LectureModel lectureModel;
+    private double numberOfSubscribers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_lecture_view);
+
         Intent intent = getIntent();
+
         key = intent.getStringExtra("key");
         auth = FirebaseAuth.getInstance();
+
         more = findViewById(R.id.swi_more);
         progressBar = findViewById(R.id.prog_lecture);
         progressBar.setVisibility(View.VISIBLE);
@@ -90,6 +94,7 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
         buttonAsk = findViewById(R.id.btn_ask);
         buttonCall = findViewById(R.id.btn_call);
         buttonSubscribe = findViewById(R.id.btn_subscribe);
+
         buttonSubscribe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,6 +102,22 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
                     final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Subscription");
                     SubscriptionModel subscription = new SubscriptionModel(lectureModel.getOwner_name(), auth.getCurrentUser().getDisplayName(), lectureModel.getOwner_id(),auth.getCurrentUser().getUid(),"pending");
                     databaseReference.child(lectureModel.getOwner_id()).child(auth.getCurrentUser().getUid()).setValue(subscription);
+
+                    final DatabaseReference userReference = FirebaseDatabase.getInstance().getReference("User");
+                    final DatabaseReference profilereference = userReference.child(auth.getCurrentUser().getUid());
+
+                    databaseReference.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            numberOfSubscribers = dataSnapshot.child("numberOfSubscribers").getValue(Double.class);
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                    profilereference.child("numberOfSubscribers").setValue(numberOfSubscribers++);
                 }
             }
         });
