@@ -9,20 +9,90 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="220dp">
+        android:layout_height="match_parent">
 
-        <VideoView
-            android:id="@+id/view_lecture"
+        <LinearLayout
+            android:id="@+id/linearLayout2"
             android:layout_width="match_parent"
-            android:layout_height="250dp"/>
+            android:layout_height="wrap_content"
+            android:layout_margin="0dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0">
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/constraintLayout2"
+                android:layout_width="match_parent"
+                android:layout_height="210dp">
+
+                <VideoView
+                    android:id="@+id/view_lecture"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </android.support.constraint.ConstraintLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="78dp"
+                android:gravity="left|top"
+                android:orientation="horizontal"
+                android:padding="15dp">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/lecturer_on_live_image"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp" />
+
+                <LinearLayout
+                    android:layout_width="243dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/txt_lecture_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat"
+                        android:textColor="@color/textColor"
+                        android:textSize="@dimen/fourteen" />
+
+                    <TextView
+                        android:id="@+id/txt_lecture_description"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat"
+                        android:textColor="@color/lightGrey"
+                        android:textSize="@dimen/twelve" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
 
         <ImageButton
             android:id="@+id/archive_back_button"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@drawable/ic_arrow_back_white"
             android:background="@android:color/transparent"
-            android:contentDescription="@string/nothing" />
+            android:contentDescription="@string/nothing"
+            android:src="@drawable/ic_arrow_back_white" />
 
         <ProgressBar
             android:id="@+id/prog_archive"
@@ -39,11 +109,19 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-    </android.support.constraint.ConstraintLayout>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rec_questions"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rec_questions"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+    </android.support.constraint.ConstraintLayout>
 
 </LinearLayout>
