@@ -5,8 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.CheckBox;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -16,31 +15,35 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.List;
 
 import helium.com.igloo.Models.LectureModel;
 
 public class LectureRateActivity extends AppCompatActivity {
 
-    private TextView mTitleText;
-    private TextView mDescriptionText;
-    private EditText mRatingText;
+    private CheckBox mCheckBoxOutstanding;
+    private CheckBox mCheckBoxVeryGood;
+    private CheckBox mCheckBoxAverage;
+    private CheckBox mCheckBoxNotGood;
+    private CheckBox mCheckBoxTerrible;
     private LectureModel mLecture;
     private boolean isRated;
     private FirebaseAuth auth;
     private double mTotalRatings;
     private double mLecturerRating;
     private double mNumberofRatings;
+    private double mRating;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rate_lecture);
 
-        mTitleText = findViewById(R.id.lecture_title_rate);
-        mDescriptionText = findViewById(R.id.lecture_description_rate);
-        mRatingText = findViewById(R.id.lecture_input_rate);
-
+        mCheckBoxOutstanding = findViewById(R.id.rating_outstanding);
+        mCheckBoxVeryGood = findViewById(R.id.rating_verygood);
+        mCheckBoxAverage = findViewById(R.id.rating_average);
+        mCheckBoxNotGood = findViewById(R.id.rating_notgood);
+        mCheckBoxTerrible = findViewById(R.id.rating_terrible);
+        mRating = 0;
         Intent intent = getIntent();
 
         String mKey = intent.getStringExtra("key");
@@ -51,7 +54,8 @@ public class LectureRateActivity extends AppCompatActivity {
 
         auth = FirebaseAuth.getInstance();
 
-        displayLectureInformation();
+
+
     }
 
     public LectureModel loadLecture(final String key){
@@ -91,29 +95,28 @@ public class LectureRateActivity extends AppCompatActivity {
         });
     }
 
-    public void displayLectureInformation(){
-        mTitleText.setText(mLecture.getTitle());
-        mDescriptionText.setText(mLecture.getDescription());
-    }
 
 
     public void ExecuteRateLecture(View view) {
         try{
-            double rating = Double.parseDouble(mRatingText.getText().toString());
-            mLecturerRating = getAverageRating(rating);
+            if (mRating != 0) {
+                mLecturerRating = getAverageRating(mRating);
 
-            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users");
-            DatabaseReference userRef = databaseReference.child(auth.getCurrentUser().getUid());
+                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users");
+                DatabaseReference userRef = databaseReference.child(auth.getCurrentUser().getUid());
 
-            userRef.child("rating").setValue(mLecturerRating);
-            userRef.child("total_rating").setValue(mTotalRatings);
-            userRef.child("number_of_ratings").setValue(mNumberofRatings);
+                userRef.child("rating").setValue(mLecturerRating);
+                userRef.child("total_rating").setValue(mTotalRatings);
+                userRef.child("number_of_ratings").setValue(mNumberofRatings);
 
-            isRated = true;
-            Toast.makeText(getApplicationContext(),String.valueOf(mLecturerRating),Toast.LENGTH_LONG).show();
+                isRated = true;
+                Toast.makeText(getApplicationContext(), String.valueOf(mLecturerRating), Toast.LENGTH_LONG).show();
+            }
+            else {
+                Toast.makeText(getApplicationContext(),"Please rate first!",Toast.LENGTH_LONG).show();
+            }
 
         }catch (Exception e){
-            Toast.makeText(getApplicationContext(),"Please input a number!",Toast.LENGTH_LONG).show();
         }
     }
 
@@ -133,5 +136,56 @@ public class LectureRateActivity extends AppCompatActivity {
         else {
             Toast.makeText(getApplicationContext(),"please rate first",Toast.LENGTH_LONG).show();
         }
+    }
+
+
+    public void CheckOutsdanding(View view) {
+       mRating = 5;
+       mCheckBoxOutstanding.setChecked(true);
+       mCheckBoxVeryGood.setChecked(false);
+       mCheckBoxAverage.setChecked(false);
+       mCheckBoxNotGood.setChecked(false);
+       mCheckBoxTerrible.setChecked(false);
+
+    }
+
+    public void CheckVeryGood(View view) {
+        mRating = 4;
+        mCheckBoxOutstanding.setChecked(false);
+        mCheckBoxVeryGood.setChecked(true);
+        mCheckBoxAverage.setChecked(false);
+        mCheckBoxNotGood.setChecked(false);
+        mCheckBoxTerrible.setChecked(false);
+
+    }
+
+    public void CheckAverage(View view) {
+        mRating = 3;
+        mCheckBoxOutstanding.setChecked(false);
+        mCheckBoxVeryGood.setChecked(false);
+        mCheckBoxAverage.setChecked(true);
+        mCheckBoxNotGood.setChecked(false);
+        mCheckBoxTerrible.setChecked(false);
+
+    }
+
+    public void CheckNotGood(View view) {
+        mRating = 2;
+        mCheckBoxOutstanding.setChecked(false);
+        mCheckBoxVeryGood.setChecked(false);
+        mCheckBoxAverage.setChecked(false);
+        mCheckBoxNotGood.setChecked(true);
+        mCheckBoxTerrible.setChecked(false);
+
+    }
+
+    public void CheckTerrible(View view) {
+        mRating = 1;
+        mCheckBoxOutstanding.setChecked(false);
+        mCheckBoxVeryGood.setChecked(false);
+        mCheckBoxAverage.setChecked(false);
+        mCheckBoxNotGood.setChecked(false);
+        mCheckBoxTerrible.setChecked(true);
+
     }
 }

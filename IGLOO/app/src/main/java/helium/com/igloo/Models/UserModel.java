@@ -11,7 +11,7 @@ public class UserModel {
     private String profileUrl;
     private int tokens;
     private double rating;
-    private double numberOfSubscribers;
+    private int numberOfSubscribers;
     private List<String> subscriptions;
     private double numberOfLectures;
     private double totalRatings;
@@ -85,7 +85,7 @@ public class UserModel {
         return numberOfSubscribers;
     }
 
-    public void setNumberOfSubscribers(double numberOfSubscribers) {
+    public void setNumberOfSubscribers(int numberOfSubscribers) {
         this.numberOfSubscribers = numberOfSubscribers;
     }
 
