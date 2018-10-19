@@ -104,6 +104,7 @@ public class ViewArchiveActivity extends AppCompatActivity {
     private List<TranscriptionModel> transcripts;
     private TransciptionAdapter transciptionAdapter;
     private String transcribedText;
+    private static MediaPlayer mediaPlayer;
 
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
 
@@ -229,22 +230,6 @@ public class ViewArchiveActivity extends AppCompatActivity {
                 });
                 if (lecture.getIs_transcribed()) {
                     playArchive(archiveID);
-                    transcribedText = lecture.getTranscription();
-                    StringTokenizer st = new StringTokenizer(transcribedText," ");
-                    mRecycleViewTranscripts = findViewById(R.id.rec_questions);
-                    transcripts = new ArrayList<>();
-                    while (st.hasMoreElements()){
-                        transcripts.add(new TranscriptionModel(st.nextElement().toString(),Double.parseDouble(st.nextElement().toString())));
-                    }
-                    try {
-                        transciptionAdapter = new TransciptionAdapter(transcripts, ViewArchiveActivity.this);
-                        mRecycleViewTranscripts.setAdapter(transciptionAdapter);
-                        LinearLayoutManager lm = new LinearLayoutManager(ViewArchiveActivity.this);
-                        lm.setOrientation(LinearLayoutManager.VERTICAL);
-                        mRecycleViewTranscripts.setLayoutManager(lm);
-                    }catch (Exception e){
-                        Log.e("errorrrrrrrrrr",e.toString());
-                    }
                 } else {
                     InitializeTranscripts();
                 }
@@ -288,6 +273,18 @@ public class ViewArchiveActivity extends AppCompatActivity {
                     videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
 
                         public void onPrepared(MediaPlayer mp) {
+                            transcribedText = lecture.getTranscription();
+                            StringTokenizer st = new StringTokenizer(transcribedText," ");
+                            mRecycleViewTranscripts = findViewById(R.id.rec_questions);
+                            transcripts = new ArrayList<>();
+                            while (st.hasMoreElements()){
+                                transcripts.add(new TranscriptionModel(st.nextElement().toString(),Integer.parseInt(st.nextElement().toString())));
+                            }
+                            transciptionAdapter = new TransciptionAdapter(transcripts, ViewArchiveActivity.this, mp);
+                            mRecycleViewTranscripts.setAdapter(transciptionAdapter);
+                            LinearLayoutManager lm = new LinearLayoutManager(ViewArchiveActivity.this);
+                            lm.setOrientation(LinearLayoutManager.VERTICAL);
+                            mRecycleViewTranscripts.setLayoutManager(lm);
                             questionAdapter.getMediaPlayer(mp);
                             progressBar.setVisibility(View.GONE);
                             videoView.setBackground(null);

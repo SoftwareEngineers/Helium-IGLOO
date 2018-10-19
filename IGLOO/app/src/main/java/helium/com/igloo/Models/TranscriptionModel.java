@@ -2,9 +2,9 @@ package helium.com.igloo.Models;
 
 public class TranscriptionModel {
     private String word;
-    private double time;
+    private int time;
 
-    public TranscriptionModel(String word, double time) {
+    public TranscriptionModel(String word, int time) {
         this.word = word;
         this.time = time;
     }
@@ -17,11 +17,11 @@ public class TranscriptionModel {
         this.word = word;
     }
 
-    public double getTime() {
+    public int getTime() {
         return time;
     }
 
-    public void setTime(long time) {
+    public void setTime(int time) {
         this.time = time;
     }
 }
