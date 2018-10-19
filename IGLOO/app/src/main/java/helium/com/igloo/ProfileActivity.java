@@ -158,6 +158,10 @@ public class ProfileActivity extends AppCompatActivity {
         mSubscribe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+//                final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Subscriptions");
+//                SubscriptionModel subscription = new SubscriptionModel(lectureModel.getOwner_name(), auth.getCurrentUser().getDisplayName(), profileKey,auth.getCurrentUser().getUid(),"pending");
+//                databaseReference.child(profileKey).child(auth.getCurrentUser().getUid()).setValue(subscription);
+
                 final DatabaseReference userReference = FirebaseDatabase.getInstance().getReference("User");
                 final DatabaseReference profilereference = userReference.child(auth.getCurrentUser().getUid());
 
@@ -209,7 +213,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private boolean isSubscribe(){
 
-        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Subscription");
+        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Subscriptions");
         final DatabaseReference userReference = databaseReference.child(profileKey);
 
         userReference.addListenerForSingleValueEvent(new ValueEventListener() {
