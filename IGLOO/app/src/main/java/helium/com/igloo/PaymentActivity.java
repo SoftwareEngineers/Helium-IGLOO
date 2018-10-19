@@ -1,9 +1,6 @@
 package helium.com.igloo;
 
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,17 +10,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-
-import org.w3c.dom.Text;
 
 import helium.com.igloo.Models.UserModel;
 
@@ -106,7 +98,7 @@ public class PaymentActivity extends AppCompatActivity {
 
     public void ShowDialog(final int command) {
         LayoutInflater lay = LayoutInflater.from(PaymentActivity.this);
-        View promptsView = lay.inflate(R.layout.payment_alertdialog, null);
+        View promptsView = lay.inflate(R.layout.layout_payment_dialog, null);
         AlertDialog.Builder builder = new AlertDialog.Builder(PaymentActivity.this);
         builder.setView(promptsView);
 

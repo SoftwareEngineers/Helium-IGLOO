@@ -286,6 +286,6 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_lectures" />
+    <include layout="@layout/layout_content_lectures" />
 
 </android.support.design.widget.CoordinatorLayout>
