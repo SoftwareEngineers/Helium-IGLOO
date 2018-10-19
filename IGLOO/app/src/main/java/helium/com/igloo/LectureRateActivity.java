@@ -16,8 +16,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.List;
+
 import helium.com.igloo.Models.LectureModel;
-import helium.com.igloo.Models.UserModel;
 
 public class LectureRateActivity extends AppCompatActivity {
 
@@ -27,7 +28,10 @@ public class LectureRateActivity extends AppCompatActivity {
     private LectureModel mLecture;
     private boolean isRated;
     private FirebaseAuth auth;
-    private UserModel mLecturer;
+    private double mTotalRatings;
+    private double mLecturerRating;
+    private double mNumberofRatings;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +45,8 @@ public class LectureRateActivity extends AppCompatActivity {
 
         String mKey = intent.getStringExtra("key");
         mLecture = loadLecture(mKey);
+        loadLecturerRatingDetails();
+
         isRated = false;
 
         auth = FirebaseAuth.getInstance();
@@ -66,6 +72,25 @@ public class LectureRateActivity extends AppCompatActivity {
         return lecture[0];
     }
 
+    private void loadLecturerRatingDetails(){
+        final DatabaseReference userReference = FirebaseDatabase.getInstance().getReference("Users");
+        final DatabaseReference profilereference = userReference.child(auth.getCurrentUser().getUid());
+
+        profilereference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                mTotalRatings = dataSnapshot.child("total_ratings").getValue(Double.class);
+                mLecturerRating = dataSnapshot.child("rating").getValue(Double.class);
+                mNumberofRatings = dataSnapshot.child("number_of_ratings").getValue(Integer.class);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     public void displayLectureInformation(){
         mTitleText.setText(mLecture.getTitle());
         mDescriptionText.setText(mLecture.getDescription());
@@ -75,16 +100,29 @@ public class LectureRateActivity extends AppCompatActivity {
     public void ExecuteRateLecture(View view) {
         try{
             double rating = Double.parseDouble(mRatingText.getText().toString());
-            mLecturer.setRating(rating);
+            mLecturerRating = getAverageRating(rating);
+
             DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users");
             DatabaseReference userRef = databaseReference.child(auth.getCurrentUser().getUid());
 
-            userRef.child("rating").setValue(mLecturer.getRating());
+            userRef.child("rating").setValue(mLecturerRating);
+            userRef.child("total_rating").setValue(mTotalRatings);
+            userRef.child("number_of_ratings").setValue(mNumberofRatings);
+
             isRated = true;
-            Toast.makeText(getApplicationContext(),String.valueOf(mLecturer.getRating()),Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(),String.valueOf(mLecturerRating),Toast.LENGTH_LONG).show();
+
         }catch (Exception e){
             Toast.makeText(getApplicationContext(),"Please input a number!",Toast.LENGTH_LONG).show();
         }
+    }
+
+    private double getAverageRating(double rating){
+        mTotalRatings += rating;
+        mNumberofRatings++;
+        double final_rating = mTotalRatings/mNumberofRatings;
+
+        return final_rating;
     }
 
     @Override

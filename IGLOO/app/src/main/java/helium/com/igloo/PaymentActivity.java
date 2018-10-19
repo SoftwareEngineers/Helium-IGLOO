@@ -161,4 +161,10 @@ public class PaymentActivity extends AppCompatActivity {
         userRef.child("tokens").setValue(final_balance);
         mAccount_balance.setText(String.valueOf((int)final_balance));
     }
+
+    @Override
+    public void onBackPressed() {
+        PaymentActivity.this.finish();
+        super.onBackPressed();
+    }
 }

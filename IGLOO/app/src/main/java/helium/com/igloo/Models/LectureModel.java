@@ -19,7 +19,7 @@ public class LectureModel {
     private String transcription;
     private int views;
 
-    public LectureModel(String id, String owner_id, String title, String description, String password, Boolean isPublic, Boolean isAvailable, Boolean isLive, String time_created, String session_id, String archive_id, String owner_name,Boolean is_transcribed, String transcription,int views) {
+    public LectureModel(String id, String owner_id, String title, String description, String password, Boolean isPublic, Boolean isAvailable, Boolean isLive, String time_created, String session_id, String archive_id, String thumbnail, String owner_name,Boolean is_transcribed, String transcription,int views) {
 
         this.id = id;
         this.owner_id = owner_id;
