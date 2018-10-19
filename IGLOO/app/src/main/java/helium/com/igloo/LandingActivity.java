@@ -50,7 +50,8 @@ public class LandingActivity extends RequestPermission {
                     sleep(3000);
                     if(check() && checkPermissions()){
                         loadPreferences();
-                    }else {
+                    }
+                    else {
                         requestAppPermissions(new String[]{
                                         Manifest.permission.CAMERA,
                                         Manifest.permission.RECORD_AUDIO,

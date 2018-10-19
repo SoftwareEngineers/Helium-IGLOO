@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -58,8 +59,8 @@ public class ProfileActivity extends AppCompatActivity {
     private List<LectureModel> lectures;
     private LectureAdapter lectureAdapter;
     private String profileKey;
+    private String profileName;
     private double noOfSubscribers;
-    private boolean flag = false;
 
     private FirebaseAuth auth;
     private FirebaseStorage storage;
@@ -87,17 +88,12 @@ public class ProfileActivity extends AppCompatActivity {
 
         if(!intent.getStringExtra("profileID").equals(auth.getCurrentUser().getUid())){
             profileKey = intent.getStringExtra("profileID");
-
-            if(!isSubscribe()){
-                mUnsubscribe.setVisibility(View.VISIBLE);
-            }
-            else {
-                mSubscribe.setVisibility(View.VISIBLE);
-            }
+            isSubscribe();
         }
         else {
             profileKey = auth.getCurrentUser().getUid();
         }
+        profileName = intent.getStringExtra("profileName");
 
         lectures = new ArrayList<>();
         lectureAdapter = new LectureAdapter(lectures, this);
@@ -123,7 +119,7 @@ public class ProfileActivity extends AppCompatActivity {
                 int tokens = dataSnapshot.child("tokens").getValue(Integer.class);
 
                 storage = FirebaseStorage.getInstance();
-                StorageReference storageRef = storage.getReferenceFromUrl("gs://igloo-0830.appspot.com/images/").child(url);
+                StorageReference storageRef = storage.getReferenceFromUrl("gs://helium-igloo0830.appspot.com/images/").child(url);
                 final long ONE_MEGABYTE = 1024 * 1024;
                 storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
                     @Override
@@ -158,14 +154,16 @@ public class ProfileActivity extends AppCompatActivity {
         mSubscribe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Subscriptions");
-//                SubscriptionModel subscription = new SubscriptionModel(lectureModel.getOwner_name(), auth.getCurrentUser().getDisplayName(), profileKey,auth.getCurrentUser().getUid(),"pending");
-//                databaseReference.child(profileKey).child(auth.getCurrentUser().getUid()).setValue(subscription);
+                final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Subscriptions");
+                final DatabaseReference subscriptionReference = databaseReference.child(auth.getCurrentUser().getUid());
 
-                final DatabaseReference userReference = FirebaseDatabase.getInstance().getReference("User");
-                final DatabaseReference profilereference = userReference.child(auth.getCurrentUser().getUid());
+                SubscriptionModel subscription = new SubscriptionModel(profileName, auth.getCurrentUser().getDisplayName(), profileKey,auth.getCurrentUser().getUid(),"pending");
+                subscriptionReference.child(profileKey).setValue(subscription);
 
-                databaseReference.addValueEventListener(new ValueEventListener() {
+                final DatabaseReference userReference = FirebaseDatabase.getInstance().getReference("Users");
+                final DatabaseReference profilereference = userReference.child(profileKey);
+
+                profilereference.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         noOfSubscribers = dataSnapshot.child("numberOfSubscribers").getValue(Double.class);
@@ -176,7 +174,39 @@ public class ProfileActivity extends AppCompatActivity {
 
                     }
                 });
-                profilereference.child("numberOfSubscribers").setValue(noOfSubscribers++);
+                double num = noOfSubscribers + 1;
+
+                profilereference.child("numberOfSubscribers").setValue(num);
+                mSubscribe.setVisibility(View.INVISIBLE);
+                mUnsubscribe.setVisibility(View.VISIBLE);
+            }
+        });
+
+        mUnsubscribe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Subscriptions");
+                final DatabaseReference subscriptionReference = databaseReference.child(auth.getCurrentUser().getUid());
+                subscriptionReference.child(profileKey).getRef().removeValue();
+
+                final DatabaseReference userReference = FirebaseDatabase.getInstance().getReference("Users");
+                final DatabaseReference profilereference = userReference.child(profileKey);
+
+                profilereference.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        noOfSubscribers = dataSnapshot.child("numberOfSubscribers").getValue(Double.class);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+                double num = noOfSubscribers - 1;
+                profilereference.child("numberOfSubscribers").setValue(num);
+                mUnsubscribe.setVisibility(View.INVISIBLE);
+                mSubscribe.setVisibility(View.VISIBLE);
             }
         });
 
@@ -211,19 +241,18 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
-    private boolean isSubscribe(){
-
+    private void isSubscribe(){
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Subscriptions");
-        final DatabaseReference userReference = databaseReference.child(profileKey);
+        final DatabaseReference userReference = databaseReference.child(auth.getCurrentUser().getUid());
 
         userReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for(final DataSnapshot childSnapshot : dataSnapshot.getChildren()){
-                    if(childSnapshot.getKey().equals(auth.getCurrentUser().getUid())){
-                        flag = true;
-                        break;
-                    }
+                if(dataSnapshot.hasChild(profileKey)){
+                    mUnsubscribe.setVisibility(View.VISIBLE);
+                }
+                else {
+                    mSubscribe.setVisibility(View.VISIBLE);
                 }
             }
             @Override
@@ -231,7 +260,5 @@ public class ProfileActivity extends AppCompatActivity {
 
             }
         });
-
-        return flag;
     }
 }

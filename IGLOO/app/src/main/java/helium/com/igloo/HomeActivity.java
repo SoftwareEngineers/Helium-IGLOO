@@ -226,8 +226,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         searchView = (SearchView) MenuItemCompat.getActionView(item);
         mSearchAutoComplete =  searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
 
-        //mSearchAutoComplete.setDropDownBackgroundResource(R.drawable.background_white);
-        //mSearchAutoComplete.setBackgroundColor(Color.WHITE);
         mSearchAutoComplete.setDropDownAnchor(R.id.menu_search);
         mSearchAutoComplete.setThreshold(1);
 
@@ -315,7 +313,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 String url = dataSnapshot.child("profileUrl").getValue(String.class);
 
                 storage = FirebaseStorage.getInstance();
-                StorageReference storageRef = storage.getReferenceFromUrl("gs://igloo-0830.appspot.com/images/").child(url);
+                StorageReference storageRef = storage.getReferenceFromUrl("gs://helium-igloo0830.appspot.com/images/").child(url);
                 final long ONE_MEGABYTE = 1024 * 1024;
                 storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
                     @Override
@@ -355,10 +353,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         if (id == R.id.home) {
             android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.frame_container, new HomeFragment()).commit();
+            setTitle("IGLOO");
         }
         else if (id == R.id.subscriptions) {
             android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.frame_container, new SubscriptionsFragment()).commit();
+            setTitle("Subscriptions");
         }
         else if (id == R.id.payment) {
             startActivity(new Intent(HomeActivity.this, PaymentActivity.class));
