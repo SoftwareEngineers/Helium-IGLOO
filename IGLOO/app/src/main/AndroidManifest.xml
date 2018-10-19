@@ -38,6 +38,7 @@
         <activity android:name=".PaymentActivity" />
         <activity android:name=".ViewArchiveActivity" />
         <activity android:name=".NotificationActivity"></activity>
+        <activity android:name=".LectureRateActivity"></activity>
     </application>
 
 </manifest>

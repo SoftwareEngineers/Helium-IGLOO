@@ -320,11 +320,13 @@ public class ViewArchiveActivity extends AppCompatActivity {
 
         }
     }
+
     @Override
     public void onStop(){
         super.onStop();
         unbindService(mServiceConnection);
     }
+
     private void ExtractAudio(File video) {
         try {
             File audio = new File(sdCard.getAbsolutePath(), "Iglo/audio.flac");

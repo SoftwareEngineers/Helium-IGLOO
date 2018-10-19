@@ -51,6 +51,10 @@
     <string name ="token_to_money_dialog">Are you sure that you want \nto exchange your tokens into cash?</string>
     <string name ="token_label">Topup Tokens</string>
     <string name ="cash_label">Convert to cash</string>
+    <string name="question_to_rate">Would yo like to rate this lecture?</string>
+    <string name="label_lecture_title">Title</string>
+    <string name="button_label">Rate!</string>
+    <string name="label_lecture_description">Description</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@mipmap/tutorial_background"
+    tools:context=".LectureRateActivity">
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintHorizontal_bias="1.0"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
+        <TextView
+            android:layout_height="50dp"
+            android:layout_width="wrap_content"
+            android:text="@string/label_lecture_title"
+            android:textSize="@dimen/twentyfive"
+            android:layout_weight="1"
+            android:textAlignment="center"
+            android:layout_marginStart="50dp"
+            android:fontFamily="@font/montserrat"
+            android:textColor="@color/white"/>
+        <TextView
+            android:id="@+id/lecture_title_rate"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textSize="@dimen/sixteen"
+            android:layout_weight="1"
+            android:textAlignment="center"
+            android:layout_marginStart="50dp"
+            android:fontFamily="@font/montserrat"
+            android:textColor="@color/white"/>
+
+        <TextView
+            android:layout_height="50dp"
+            android:layout_width="wrap_content"
+            android:text="@string/label_lecture_description"
+            android:textSize="@dimen/twentyfive"
+            android:layout_weight="1"
+            android:textAlignment="center"
+            android:layout_marginStart="50dp"
+            android:fontFamily="@font/montserrat"
+            android:textColor="@color/white"/>
+
+        <TextView
+            android:id="@+id/lecture_description_rate"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textSize="@dimen/sixteen"
+            android:layout_weight="1"
+            android:textAlignment="center"
+            android:layout_marginStart="50dp"
+            android:fontFamily="@font/montserrat"
+            android:textColor="@color/white"/>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginTop="100dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:layout_marginStart="50dp"
+            android:id="@+id/lecture_input_rate"
+            android:layout_height="40dp"
+            android:layout_width="100dp"
+            android:text="0"
+            android:textAlignment="center"
+            android:fontFamily="@font/montserrat"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/sixteen"
+            android:layout_weight="1"
+            />
+        <TextView
+            android:layout_height="50dp"
+            android:layout_width="100dp"
+            android:text="of"
+            android:fontFamily="@font/montserrat"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/sixteen"
+            android:textAlignment="center"
+            android:layout_weight="1"
+            />
+        <TextView
+            android:layout_height="50dp"
+            android:layout_width="100dp"
+            android:text="5.0"
+            android:fontFamily="@font/montserrat"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/sixteen"
+            android:textAlignment="center"
+            android:layout_weight="1"
+            android:layout_marginEnd="50dp"
+            />
+
+    </LinearLayout>
+
+    <Button
+        android:layout_marginTop="100dp"
+        android:layout_marginStart="150dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="ExecuteRateLecture"
+        />
+</LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

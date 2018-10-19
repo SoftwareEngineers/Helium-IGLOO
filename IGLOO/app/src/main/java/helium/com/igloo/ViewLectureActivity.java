@@ -1,12 +1,17 @@
 package helium.com.igloo;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.provider.ContactsContract;
+import android.support.annotation.RequiresApi;
 import android.support.constraint.ConstraintLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -64,6 +69,7 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
     private ProgressBar progressBar;
     private Subscriber mSubscriber;
     private LectureModel lectureModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -189,6 +195,7 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
 
 
     private class Click implements View.OnClickListener {
+        @RequiresApi(api = Build.VERSION_CODES.CUPCAKE)
         @Override
         public void onClick(View v) {
             final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Questions");
@@ -218,11 +225,47 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
     @Override
     public void onStop() {
 
-        ViewLectureActivity.this.finish();
         if(mSession != null) {
             mSession.disconnect();
         }
         super.onStop();
+
+        LayoutInflater lay = LayoutInflater.from(ViewLectureActivity.this);
+        View promptsView = lay.inflate(R.layout.payment_alertdialog, null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(ViewLectureActivity.this);
+        builder.setView(promptsView);
+
+        TextView mPaymentDialog = promptsView.findViewById(R.id.txt_payment_dialog);
+        mPaymentDialog.setText(getString(R.string.question_to_rate));
+
+        builder
+                .setCancelable(false)
+                .setPositiveButton("Yes",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.dismiss();
+                                Toast.makeText(getApplicationContext(),"Yes",Toast.LENGTH_LONG).show();
+                                Intent intent = new Intent(ViewLectureActivity.this,LectureRateActivity.class);
+                                startActivity(intent);
+                                ViewLectureActivity.this.finish();
+                            }
+                        });
+
+        builder
+                .setNegativeButton("No",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                                Toast.makeText(getApplicationContext(),"No",Toast.LENGTH_LONG).show();
+                                ViewLectureActivity.this.finish();
+                            }
+                        });
+
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+
+
     }
 
     @Override
@@ -233,4 +276,5 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
         ViewLectureActivity.this.finish();
         super.onBackPressed();
     }
+
 }

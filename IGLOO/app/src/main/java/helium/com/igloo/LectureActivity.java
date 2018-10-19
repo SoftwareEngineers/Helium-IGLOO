@@ -265,6 +265,7 @@ public class LectureActivity extends AppCompatActivity implements Session.Sessio
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Lectures");
         databaseReference.child(key).child("live").setValue(false);
         super.onStop();
+
     }
 
     @Override
