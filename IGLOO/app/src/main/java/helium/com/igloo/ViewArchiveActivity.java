@@ -80,7 +80,7 @@ public class ViewArchiveActivity extends AppCompatActivity {
     private LectureModel lecture;
 
     private SpeechService mSpeechService;
-    
+
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
 
         @Override
