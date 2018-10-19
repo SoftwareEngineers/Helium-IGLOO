@@ -197,7 +197,7 @@ public class ViewArchiveActivity extends AppCompatActivity {
                 textViews.setText(lecture.getViews() + " Views");
                 String url = dataSnapshot.child(mKey).child("thumbnail").getValue(String.class);
 
-                StorageReference storageRef = storage.getReferenceFromUrl("gs://igloo-0830.appspot.com/images/").child(url);
+                StorageReference storageRef = storage.getReferenceFromUrl("gs://helium-igloo0830.appspot.com/images/").child(url);
                 final long ONE_MEGABYTE = 1024 * 1024;
                 storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
                     @Override
@@ -227,7 +227,7 @@ public class ViewArchiveActivity extends AppCompatActivity {
                 textOwner.setText(user.getName());
                 textSubscribers.setText(user.getNumberOfSubscribers() + " Subscribers");
 
-                StorageReference storageRef = storage.getReferenceFromUrl("gs://igloo-0830.appspot.com/images/").child(user.getProfileUrl());
+                StorageReference storageRef = storage.getReferenceFromUrl("gs://helium-igloo0830.appspot.com/images/").child(user.getProfileUrl());
                 final long ONE_MEGABYTE = 1024 * 1024;
                 storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
                     @Override
@@ -260,7 +260,6 @@ public class ViewArchiveActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         numberOfSubscribers = dataSnapshot.child("numberOfSubscribers").getValue(Double.class);
-                        Toast.makeText(ViewArchiveActivity.this, numberOfSubscribers + "", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override

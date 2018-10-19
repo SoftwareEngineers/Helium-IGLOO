@@ -28,9 +28,6 @@ import java.util.List;
 
 import helium.com.igloo.R;
 
-
-////////////// THIS CLASS IS NOT USED ANYMORE
-
 public class LectureSearchAdapter extends CursorAdapter {
 
     private String[] items;
@@ -42,8 +39,6 @@ public class LectureSearchAdapter extends CursorAdapter {
         this.items = items;
         this.list_cursor = cursor;
     }
-
-
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {

@@ -62,8 +62,6 @@ public class SubscriptionsFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (final DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                     SubscriptionModel subscriptions = new SubscriptionModel();
-                    Log.e("dfdfdffdfdfdfdfdfdf",childSnapshot.getKey());
-
                     subscriptions = childSnapshot.getValue(SubscriptionModel.class);
 
                     mSubscriptions.add(subscriptions);
