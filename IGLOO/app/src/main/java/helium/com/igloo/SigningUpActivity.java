@@ -4,6 +4,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
@@ -99,54 +101,59 @@ public class SigningUpActivity extends AppCompatActivity {
     private class SignUp implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(SigningUpActivity.this, new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
+            mProgressDialog.setMessage("Signing in please wait....");
+            mProgressDialog.show();
 
-                    if (!task.isSuccessful()) {
-//                        Toast.makeText(SigningUpActivity.this, "Sign Up failed." + task.getException(),
-//                                Toast.LENGTH_SHORT).show();
+            if(!isOnline()){
+                mProgressDialog.dismiss();
+                Toast.makeText(SigningUpActivity.this, "No internet connection", Toast.LENGTH_SHORT).show();
+            }
+            else {
+                auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(SigningUpActivity.this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
 
-                        String errorCode = ((FirebaseAuthException) task.getException()).getErrorCode();
+                        if (!task.isSuccessful()) {
 
-                        switch (errorCode) {
+                            String errorCode = ((FirebaseAuthException) task.getException()).getErrorCode();
 
-                            case "ERROR_INVALID_EMAIL":
-                                Toast.makeText(SigningUpActivity.this, "The email address is invalid.", Toast.LENGTH_LONG).show();
-                                break;
+                            switch (errorCode) {
 
-                            case "ERROR_EMAIL_ALREADY_IN_USE":
-                                Toast.makeText(SigningUpActivity.this, "The email address already exist.", Toast.LENGTH_LONG).show();
-                                break;
+                                case "ERROR_INVALID_EMAIL":
+                                    Toast.makeText(SigningUpActivity.this, "The email address is invalid.", Toast.LENGTH_LONG).show();
+                                    break;
 
-                            case "ERROR_WEAK_PASSWORD":
-                                Toast.makeText(SigningUpActivity.this, "The password is invalid it must 6 characters at least.", Toast.LENGTH_LONG).show();
-                                break;
+                                case "ERROR_EMAIL_ALREADY_IN_USE":
+                                    Toast.makeText(SigningUpActivity.this, "The email address already exist.", Toast.LENGTH_LONG).show();
+                                    break;
+
+                                case "ERROR_WEAK_PASSWORD":
+                                    Toast.makeText(SigningUpActivity.this, "The password is invalid it must 6 characters at least.", Toast.LENGTH_LONG).show();
+                                    break;
+                            }
+                        }
+                        else {
+
+                            Toast.makeText(SigningUpActivity.this, "You have registered successfully", Toast.LENGTH_SHORT).show();
+                            final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users");
+
+                            UserModel user = new UserModel(name, email, password, "default_profile.png");
+                            String userID = auth.getCurrentUser().getUid();
+
+                            databaseReference.child(userID).setValue(user);
+                            saveUser(email, password);
+                            FirebaseUser tempuser = auth.getCurrentUser();
+                            if(user!=null){
+                                UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                        .setDisplayName(name).build();
+                                tempuser.updateProfile(profileUpdates);
+                            }
+                            CountDown cd = new CountDown(100, 100);
+                            cd.start();
                         }
                     }
-                    else {
-                        mProgressDialog.setMessage("Signing in please wait....");
-                        mProgressDialog.show();
-
-                        Toast.makeText(SigningUpActivity.this, "You have registered successfully", Toast.LENGTH_SHORT).show();
-                        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users");
-
-                        UserModel user = new UserModel(name, email, password, "default_profile.png");
-                        String userID = auth.getCurrentUser().getUid();
-
-                        databaseReference.child(userID).setValue(user);
-                        saveUser(email, password);
-                        FirebaseUser tempuser = auth.getCurrentUser();
-                        if(user!=null){
-                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                                    .setDisplayName(name).build();
-                            tempuser.updateProfile(profileUpdates);
-                        }
-                        CountDown cd = new CountDown(100, 100);
-                        cd.start();
-                    }
-                }
-            });
+                });
+            }
         }
     }
 
@@ -183,6 +190,14 @@ public class SigningUpActivity extends AppCompatActivity {
             startActivity(new Intent(SigningUpActivity.this, TutorialActivity.class));
             overridePendingTransition(R.transition.slide_in_right,R.transition.slide_out_left);
         }
+    }
+
+    private boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        assert cm != null;
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
     private class SwitchPage implements View.OnClickListener {
