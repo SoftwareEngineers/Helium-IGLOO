@@ -144,7 +144,7 @@ public class SpeechService extends Service {
                 SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
                 for (WordInfo wordInfo:alternative.getWordsList()){
                     time = wordInfo.getStartTime().getSeconds() * 1000;
-                    text += wordInfo.getWord()+ " " +(wordInfo.getStartTime().getNanos()/1000000)+time+" ";
+                    text += wordInfo.getWord()+ " " +(wordInfo.getStartTime().getSeconds()*1000)+" ";
                 }
             }
             //if (!text.equals("")) {
