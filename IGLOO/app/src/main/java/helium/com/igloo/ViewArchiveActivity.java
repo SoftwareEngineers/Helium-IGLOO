@@ -14,7 +14,6 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
-import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.support.annotation.NonNull;
@@ -22,7 +21,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.MediaController;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -44,6 +42,20 @@ import com.github.hiteshsondhi88.libffmpeg.LoadBinaryResponseHandler;
 import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegCommandAlreadyRunningException;
 import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedException;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.api.gax.core.CredentialsProvider;
+import com.google.api.gax.core.FixedCredentialsProvider;
+import com.google.api.gax.longrunning.OperationFuture;
+import com.google.auth.oauth2.ServiceAccountCredentials;
+import com.google.cloud.speech.v1.LongRunningRecognizeMetadata;
+import com.google.cloud.speech.v1.LongRunningRecognizeRequest;
+import com.google.cloud.speech.v1.LongRunningRecognizeResponse;
+import com.google.cloud.speech.v1.RecognitionAudio;
+import com.google.cloud.speech.v1.RecognitionConfig;
+import com.google.cloud.speech.v1.SpeechClient;
+import com.google.cloud.speech.v1.SpeechRecognitionAlternative;
+import com.google.cloud.speech.v1.SpeechRecognitionResult;
+import com.google.cloud.speech.v1.SpeechSettings;
+import com.google.cloud.speech.v1.WordInfo;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -52,10 +64,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.protobuf.ByteString;
 
 import org.json.JSONObject;
 
-import java.io.Console;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -76,7 +88,6 @@ import helium.com.igloo.Models.QuestionModel;
 import helium.com.igloo.Models.SubscriptionModel;
 import helium.com.igloo.Models.TranscriptionModel;
 import helium.com.igloo.Models.UserModel;
-import helium.com.igloo.SpeechRecognition.SpeechService;
 
 
 public class ViewArchiveActivity extends AppCompatActivity {
@@ -93,8 +104,6 @@ public class ViewArchiveActivity extends AppCompatActivity {
     private ProgressDialog AudioExtractiondialog,DownloadDialog;
     private File sdCard;
     private LectureModel lecture;
-
-    private SpeechService mSpeechService;
     private TextView textOwner;
     private TextView textSubscribers;
     private TextView textTitle;
@@ -102,50 +111,11 @@ public class ViewArchiveActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     private CircleImageView mLecturer;
     private Button mSubscribe;
-
     private RecyclerView mRecycleViewTranscripts;
     private List<TranscriptionModel> transcripts;
     private TransciptionAdapter transciptionAdapter;
     private String transcribedText;
-
     private double numberOfSubscribers = 0;
-
-    private final ServiceConnection mServiceConnection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName componentName, IBinder binder) {
-
-            mSpeechService = SpeechService.from(binder);
-            mSpeechService.addListener(mSpeechServiceListener);
-            Toast.makeText(getApplicationContext(),"Service Connected",Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName componentName) {
-            Toast.makeText(getApplicationContext(),"Service disConnected",Toast.LENGTH_SHORT).show();
-        }
-
-    };
-
-    private final SpeechService.Listener mSpeechServiceListener =
-            new SpeechService.Listener() {
-                @Override
-                public void onSpeechRecognized(final String text, final boolean isFinal) {
-                    //recognized text
-                    if(isFinal) {
-                        lecture.setIs_transcribed(true);
-                        lecture.setTranscription(text.trim());
-                        updateLecture();
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG).show();
-                            }
-                        });
-                    }else{
-                    }
-                }
-            };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -410,17 +380,11 @@ public class ViewArchiveActivity extends AppCompatActivity {
     @Override
     public void onStart(){
         super.onStart();
-        if(this.bindService(new Intent(this, SpeechService.class), mServiceConnection, BIND_AUTO_CREATE)){
-
-        }else{
-
-        }
     }
 
     @Override
     public void onStop(){
         super.onStop();
-        unbindService(mServiceConnection);
     }
 
     private void ExtractAudio(File video) {
@@ -503,7 +467,6 @@ public class ViewArchiveActivity extends AppCompatActivity {
 
                     videoView.start();
                     Recognize();
-
                 }
             });
         } catch (FFmpegCommandAlreadyRunningException e) {
@@ -630,11 +593,43 @@ public class ViewArchiveActivity extends AppCompatActivity {
 
         try {
             File audio = new File(sdCard.getAbsolutePath()+ "/Iglo/audio.flac");
-            if (mSpeechService != null) {
-                FileInputStream fis = new FileInputStream(audio);
-                mSpeechService.recognizeInputStream(fis);
-            } else {
+            try{
+                CredentialsProvider credentialsProvider = FixedCredentialsProvider.create(ServiceAccountCredentials.fromStream(getResources().openRawResource(R.raw.credentials)));
+                SpeechSettings settings = SpeechSettings.newBuilder().setCredentialsProvider(credentialsProvider).build();
+                SpeechClient client = SpeechClient.create(settings);
+                LongRunningRecognizeRequest request = LongRunningRecognizeRequest.newBuilder()
+                        .setConfig(RecognitionConfig.newBuilder()
+                                .setEncoding(RecognitionConfig.AudioEncoding.FLAC)
+                                .setLanguageCode("en-US")
+                                .build())
+                        .setAudio(RecognitionAudio.newBuilder()
+                                .setContent(ByteString.readFrom(new FileInputStream(audio)))
+                                .build())
+                        .build();
 
+                // Use non-blocking call for getting file transcription
+                OperationFuture<LongRunningRecognizeResponse, LongRunningRecognizeMetadata> response =
+                        client.longRunningRecognizeAsync(request);
+                while (!response.isDone()) {
+                    System.out.println("Waiting for response...");
+                    Thread.sleep(1000);
+                }
+
+                List<SpeechRecognitionResult> results = response.get().getResultsList();
+
+                for (SpeechRecognitionResult result : results) {
+                    // There can be several alternative transcripts for a given chunk of speech. Just use the
+                    // first (most likely) one here.
+                    SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
+                    for (WordInfo wordInfo : alternative.getWordsList()) {
+                        transcribedText += wordInfo.getWord()+" "+(wordInfo.getStartTime().getSeconds()*1000)+(wordInfo.getStartTime().getNanos()/100000000)+" ";
+                    }
+                }
+                lecture.setTranscription(transcribedText);
+                lecture.setIs_transcribed(true);
+                updateLecture();
+            }catch (Exception e){
+                Toast.makeText(ViewArchiveActivity.this,e.toString(),Toast.LENGTH_LONG).show();
             }
         }catch (Exception e){
             Toast.makeText(getApplicationContext(),e.toString(),Toast.LENGTH_LONG).show();

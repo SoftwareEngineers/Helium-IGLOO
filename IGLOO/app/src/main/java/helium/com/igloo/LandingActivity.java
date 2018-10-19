@@ -9,6 +9,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -49,14 +50,24 @@ public class LandingActivity extends RequestPermission {
 
                 try{
                     sleep(3000);
-                    checkAppPermission();
-                    if (Build.VERSION.SDK_INT <= 22) {
-                        loadPreferences();
-                    }
-                    else{
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         checkAppPermission();
-                    }
 
+                    if (check() && checkPermissions()) {
+                        loadPreferences();
+
+
+                    } else {
+                        requestAppPermissions(new String[]{
+                                        Manifest.permission.CAMERA,
+                                        Manifest.permission.RECORD_AUDIO,
+                                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                        Manifest.permission.READ_EXTERNAL_STORAGE,
+
+                                        Manifest.permission.ACCESS_NETWORK_STATE,},
+                                R.string.permision_message, REQUEST_PERMISSION);
+                       }
+                    }
                 }
                 catch(InterruptedException ie){
                     ie.printStackTrace();
@@ -66,12 +77,11 @@ public class LandingActivity extends RequestPermission {
         timer.start();
     }
 
-
+    @RequiresApi(api = Build.VERSION_CODES.M)
     public void checkAppPermission(){
         if (check() && checkPermissions()) {
             loadPreferences();
 
-        if (Build.VERSION.SDK_INT > 22) {
 
             } else {
                 requestAppPermissions(new String[]{
@@ -81,7 +91,7 @@ public class LandingActivity extends RequestPermission {
                                 Manifest.permission.READ_EXTERNAL_STORAGE,
                                 Manifest.permission.ACCESS_NETWORK_STATE,},
                         R.string.permision_message, REQUEST_PERMISSION);
-            }
+
         }
     }
 

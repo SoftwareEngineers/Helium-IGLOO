@@ -16,7 +16,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <service android:name=".SpeechRecognition.SpeechService" />
 
         <activity android:name=".LandingActivity">
             <intent-filter>
@@ -39,6 +38,7 @@
         <activity android:name=".ViewArchiveActivity" />
         <activity android:name=".NotificationActivity"></activity>
         <activity android:name=".LectureRateActivity"></activity>
+        <activity android:name=".PendingLecturesActivity"></activity>
     </application>
 
 </manifest>
