@@ -108,7 +108,29 @@ public class CreatePublicLectureActivity extends AppCompatActivity {
                         uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                             @Override
                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                Toast.makeText(CreatePublicLectureActivity.this, "Thumbnail successfully changed", Toast.LENGTH_SHORT).show();
+                                lectureModel.setThumbnail(fileName);
+
+                                DateFormat dateFormat = new DateFormat();
+                                lectureModel.setTime_created(String.valueOf(dateFormat.format("hh:mm a MMM-dd-yyyy", new Date())));
+                                final String key = mDatabase.push().getKey();
+                                lectureModel.setId(key);
+                                lectureModel.setOwner_name(auth.getCurrentUser().getDisplayName());
+
+                                mDatabase.child(key).setValue(lectureModel).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        progressBar.setVisibility(View.GONE);
+                                        Intent intent = new Intent(CreatePublicLectureActivity.this, LectureActivity.class);
+                                        intent.putExtra("key", key);
+                                        startActivity(intent);
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        progressBar.setVisibility(View.GONE);
+                                        Toast.makeText(CreatePublicLectureActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
@@ -117,30 +139,6 @@ public class CreatePublicLectureActivity extends AppCompatActivity {
                             }
                         });
                     }
-
-                    lectureModel.setThumbnail(fileName);
-
-                    DateFormat dateFormat = new DateFormat();
-                    lectureModel.setTime_created(String.valueOf(dateFormat.format("hh:mm a MMM-dd-yyyy", new Date())));
-                    final String key = mDatabase.push().getKey();
-                    lectureModel.setId(key);
-                    lectureModel.setOwner_name(auth.getCurrentUser().getDisplayName());
-
-                    mDatabase.child(key).setValue(lectureModel).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            progressBar.setVisibility(View.GONE);
-                            Intent intent = new Intent(CreatePublicLectureActivity.this, LectureActivity.class);
-                            intent.putExtra("key", key);
-                            startActivity(intent);
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            progressBar.setVisibility(View.GONE);
-                            Toast.makeText(CreatePublicLectureActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
                 }
             }
         });
