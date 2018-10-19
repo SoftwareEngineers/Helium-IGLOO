@@ -99,8 +99,8 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
                     SubscriptionModel subscription = new SubscriptionModel(lectureModel.getOwner_name(), auth.getCurrentUser().getDisplayName(), lectureModel.getOwner_id(),auth.getCurrentUser().getUid(),"pending");
                     databaseReference.child(lectureModel.getOwner_id()).child(auth.getCurrentUser().getUid()).setValue(subscription);
 
-                    final DatabaseReference userReference = FirebaseDatabase.getInstance().getReference("User");
-                    final DatabaseReference profilereference = userReference.child(auth.getCurrentUser().getUid());
+                    final DatabaseReference userReference = FirebaseDatabase.getInstance().getReference("Users");
+                    final DatabaseReference profilereference = userReference.child(lectureModel.getOwner_id());
 
                     databaseReference.addValueEventListener(new ValueEventListener() {
                         @Override
