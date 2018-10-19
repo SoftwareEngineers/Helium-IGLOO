@@ -124,7 +124,7 @@
                 </LinearLayout>
 
                 <Button
-                    android:id="@+id/btn_subscribe2"
+                    android:id="@+id/btn_archive_subscribe"
                     android:layout_width="wrap_content"
                     android:layout_height="29dp"
                     android:layout_margin="5dp"
@@ -133,7 +133,7 @@
                     android:layout_marginStart="8dp"
                     android:layout_weight="1"
                     android:background="@drawable/ellipse_button"
-                    android:text="Subscribe"
+                    android:text="@string/subscribe"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
