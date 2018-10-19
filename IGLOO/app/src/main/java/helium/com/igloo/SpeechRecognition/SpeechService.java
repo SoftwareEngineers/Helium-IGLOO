@@ -139,10 +139,12 @@ public class SpeechService extends Service {
             String text = "";
 
             List<SpeechRecognitionResult> results = response.getResultsList();
+            long time = 0;
             for (SpeechRecognitionResult result : results){
                 SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
                 for (WordInfo wordInfo:alternative.getWordsList()){
-                    text += wordInfo.getWord()+ " " + wordInfo.getStartTime().getSeconds()+":"+wordInfo.getStartTime().getNanos()/100000000+"\n";
+                    time = wordInfo.getStartTime().getSeconds() * 1000;
+                    text += wordInfo.getWord()+ " " +(wordInfo.getStartTime().getNanos()/1000000)+time+" ";
                 }
             }
             //if (!text.equals("")) {
