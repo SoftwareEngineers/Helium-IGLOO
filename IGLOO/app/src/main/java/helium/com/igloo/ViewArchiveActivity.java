@@ -21,6 +21,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.MediaController;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -53,6 +54,7 @@ import com.google.firebase.storage.StorageReference;
 
 import org.json.JSONObject;
 
+import java.io.Console;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -63,11 +65,14 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import helium.com.igloo.Adapters.QuestionAdapter;
+import helium.com.igloo.Adapters.TransciptionAdapter;
 import helium.com.igloo.Models.LectureModel;
 import helium.com.igloo.Models.QuestionModel;
+import helium.com.igloo.Models.TranscriptionModel;
 import helium.com.igloo.Models.UserModel;
 import helium.com.igloo.SpeechRecognition.SpeechService;
 
@@ -88,13 +93,17 @@ public class ViewArchiveActivity extends AppCompatActivity {
     private LectureModel lecture;
 
     private SpeechService mSpeechService;
-
     private TextView textOwner;
     private TextView textSubscribers;
     private TextView textTitle;
     private TextView textViews;
     private FirebaseAuth auth;
     private CircleImageView mLecturer;
+
+    private RecyclerView mRecycleViewTranscripts;
+    private List<TranscriptionModel> transcripts;
+    private TransciptionAdapter transciptionAdapter;
+    private String transcribedText;
 
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
 
@@ -118,6 +127,9 @@ public class ViewArchiveActivity extends AppCompatActivity {
                 public void onSpeechRecognized(final String text, final boolean isFinal) {
                     //recognized text
                     if(isFinal) {
+                        lecture.setIs_transcribed(true);
+                        lecture.setTranscription(text.trim());
+                        updateLecture();
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -217,6 +229,22 @@ public class ViewArchiveActivity extends AppCompatActivity {
                 });
                 if (lecture.getIs_transcribed()) {
                     playArchive(archiveID);
+                    transcribedText = lecture.getTranscription();
+                    StringTokenizer st = new StringTokenizer(transcribedText," ");
+                    mRecycleViewTranscripts = findViewById(R.id.rec_questions);
+                    transcripts = new ArrayList<>();
+                    while (st.hasMoreElements()){
+                        transcripts.add(new TranscriptionModel(st.nextElement().toString(),Double.parseDouble(st.nextElement().toString())));
+                    }
+                    try {
+                        transciptionAdapter = new TransciptionAdapter(transcripts, ViewArchiveActivity.this);
+                        mRecycleViewTranscripts.setAdapter(transciptionAdapter);
+                        LinearLayoutManager lm = new LinearLayoutManager(ViewArchiveActivity.this);
+                        lm.setOrientation(LinearLayoutManager.VERTICAL);
+                        mRecycleViewTranscripts.setLayoutManager(lm);
+                    }catch (Exception e){
+                        Log.e("errorrrrrrrrrr",e.toString());
+                    }
                 } else {
                     InitializeTranscripts();
                 }
@@ -443,6 +471,7 @@ public class ViewArchiveActivity extends AppCompatActivity {
                 @Override
                 public void onFinish() {
                     AudioExtractiondialog.dismiss();
+
                     videoView.start();
                     Recognize();
 
