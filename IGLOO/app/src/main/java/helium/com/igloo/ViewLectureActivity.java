@@ -106,7 +106,6 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             numberOfSubscribers = dataSnapshot.child("numberOfSubscribers").getValue(Double.class);
-                            Toast.makeText(ViewLectureActivity.this, numberOfSubscribers + "", Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
