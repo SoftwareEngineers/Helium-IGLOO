@@ -343,7 +343,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 mTabPic.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        startActivity(new Intent(HomeActivity.this, ProfileActivity.class));
+                        Intent intent = new Intent(HomeActivity.this, ProfileActivity.class);
+                        intent.putExtra("profileID", auth.getCurrentUser().getUid());
+                        startActivity(intent);
+
                     }
                 });
             }

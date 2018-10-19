@@ -46,7 +46,7 @@ public class ArchiveLectureFragment extends Fragment {
     private LectureAdapter lectureAdapter;
     private ProgressBar progressBar;
     private Context context;
-    DatabaseReference databaseReference;
+    private DatabaseReference databaseReference;
 
     public ArchiveLectureFragment() {
         // Required empty public constructor
@@ -57,10 +57,11 @@ public class ArchiveLectureFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_archive_lecture, container, false);
         context = super.getContext();
-        databaseReference = FirebaseDatabase.getInstance().getReference("Lectures");
+
         progressBar = (ProgressBar)view.findViewById(R.id.pro_archive_lectures);
         progressBar.setVisibility(View.VISIBLE);
         recyclerView = (RecyclerView)view.findViewById(R.id.rec_archive_lectures);
+
         lectures = new ArrayList<>();
         lectureAdapter = new LectureAdapter(lectures, context);
         recyclerView.setAdapter(lectureAdapter);
@@ -74,6 +75,8 @@ public class ArchiveLectureFragment extends Fragment {
 
     public void loadLectures(){
         final Context context = super.getContext();
+        databaseReference = FirebaseDatabase.getInstance().getReference("Lectures");
+
         databaseReference.orderByChild("time_created").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -99,32 +102,6 @@ public class ArchiveLectureFragment extends Fragment {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-        databaseReference.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });

@@ -1,11 +1,19 @@
 package helium.com.igloo;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -13,6 +21,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -23,7 +32,14 @@ import com.google.firebase.storage.StorageReference;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import de.hdodenhof.circleimageview.CircleImageView;
+import helium.com.igloo.Adapters.LectureAdapter;
+import helium.com.igloo.Models.LectureModel;
+import helium.com.igloo.Models.SubscriptionModel;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -34,6 +50,16 @@ public class ProfileActivity extends AppCompatActivity {
     private RatingBar mRating;
     private TextView mSubscribers;
     private TextView mLectures;
+    private TextView mTokens;
+    private RecyclerView mLecturesList;
+    private Button mSubscribe;
+    private Button mUnsubscribe;
+
+    private List<LectureModel> lectures;
+    private LectureAdapter lectureAdapter;
+    private String profileKey;
+    private double noOfSubscribers;
+    private boolean flag = false;
 
     private FirebaseAuth auth;
     private FirebaseStorage storage;
@@ -45,6 +71,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         auth = FirebaseAuth.getInstance();
         storage = FirebaseStorage.getInstance();
+        Intent intent = getIntent();
 
         mProfileBack = (ImageButton)findViewById(R.id.profile_back);
         mProfilePic = (CircleImageView) findViewById(R.id.profile_picture);
@@ -53,11 +80,36 @@ public class ProfileActivity extends AppCompatActivity {
         mRating = (RatingBar)findViewById(R.id.profile_rating);
         mSubscribers = (TextView) findViewById(R.id.profile__subscribers);
         mLectures = (TextView) findViewById(R.id.profile_lectures);
+        mTokens = (TextView) findViewById(R.id.profile_tokens);
+        mLecturesList = (RecyclerView) findViewById(R.id.profile_lectures_list);
+        mSubscribe = (Button) findViewById(R.id.profile_subscribe);
+        mUnsubscribe = (Button) findViewById(R.id.profile_unsubscribe);
+
+        if(!intent.getStringExtra("profileID").equals(auth.getCurrentUser().getUid())){
+            profileKey = intent.getStringExtra("profileID");
+
+            if(!isSubscribe()){
+                mUnsubscribe.setVisibility(View.VISIBLE);
+            }
+            else {
+                mSubscribe.setVisibility(View.VISIBLE);
+            }
+        }
+        else {
+            profileKey = auth.getCurrentUser().getUid();
+        }
+
+        lectures = new ArrayList<>();
+        lectureAdapter = new LectureAdapter(lectures, this);
+        mLecturesList.setAdapter(lectureAdapter);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        mLecturesList.setLayoutManager(layoutManager);
 
         mRating.setNumStars(5);
 
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users");
-        DatabaseReference userRef = databaseReference.child(auth.getCurrentUser().getUid());
+        DatabaseReference userRef = databaseReference.child(profileKey);
 
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -68,6 +120,7 @@ public class ProfileActivity extends AppCompatActivity {
                 double subscribers = dataSnapshot.child("numberOfSubscribers").getValue(Double.class);
                 double lectures = dataSnapshot.child("numberOfLectures").getValue(Double.class);
                 double rating = dataSnapshot.child("rating").getValue(Double.class);
+                int tokens = dataSnapshot.child("tokens").getValue(Integer.class);
 
                 storage = FirebaseStorage.getInstance();
                 StorageReference storageRef = storage.getReferenceFromUrl("gs://igloo-0830.appspot.com/images/").child(url);
@@ -85,6 +138,7 @@ public class ProfileActivity extends AppCompatActivity {
                 mRating.setRating((float) rating);
                 mSubscribers.setText(Integer.toString((int)subscribers));
                 mLectures.setText(Integer.toString((int)lectures));
+                mTokens.setText(Integer.toString(tokens));
 
             }
 
@@ -100,7 +154,80 @@ public class ProfileActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        mSubscribe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final DatabaseReference userReference = FirebaseDatabase.getInstance().getReference("User");
+                final DatabaseReference profilereference = userReference.child(auth.getCurrentUser().getUid());
+
+                databaseReference.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        noOfSubscribers = dataSnapshot.child("numberOfSubscribers").getValue(Double.class);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+                profilereference.child("numberOfSubscribers").setValue(noOfSubscribers++);
+            }
+        });
+
+        loadLectures();
     }
 
+    private void loadLectures() {
+        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Lectures");
 
+        databaseReference.orderByChild("time_created").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                lectures.clear();
+
+                for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
+                    if(childSnapshot.child("available").getValue(Boolean.class) &&
+                            childSnapshot.child("owner_id").getValue(String.class).equals(profileKey)){
+                        LectureModel lecture = childSnapshot.getValue(LectureModel.class);
+
+                        lectures.add(lecture);
+                        Collections.reverse(lectures);
+                        lectureAdapter.notifyDataSetChanged();
+                        mLecturesList.smoothScrollToPosition(0);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private boolean isSubscribe(){
+
+        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Subscription");
+        final DatabaseReference userReference = databaseReference.child(profileKey);
+
+        userReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(final DataSnapshot childSnapshot : dataSnapshot.getChildren()){
+                    if(childSnapshot.getKey().equals(auth.getCurrentUser().getUid())){
+                        flag = true;
+                        break;
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        return flag;
+    }
 }

@@ -16,14 +16,6 @@
             android:layout_width="match_parent"
             android:layout_height="250dp"/>
 
-        <ImageButton
-            android:id="@+id/archive_back_button"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/ic_arrow_back_white"
-            android:background="@android:color/transparent"
-            android:contentDescription="@string/nothing" />
-
         <ProgressBar
             android:id="@+id/prog_archive"
             style="?android:attr/progressBarStyle"
