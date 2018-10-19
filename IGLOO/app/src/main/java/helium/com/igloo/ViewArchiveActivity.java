@@ -180,7 +180,8 @@ public class ViewArchiveActivity extends AppCompatActivity {
                 if (lecture.getIs_transcribed()) {
                     playArchive(archiveID);
                 } else {
-                    InitializeTranscripts();
+                    Toast.makeText(ViewArchiveActivity.this,"trans",Toast.LENGTH_SHORT).show();
+                    //InitializeTranscripts();
                 }
             }
 
