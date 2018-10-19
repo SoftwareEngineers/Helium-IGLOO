@@ -41,7 +41,7 @@ public class SigningInActivity extends AppCompatActivity {
     private String password;
     private boolean doubleBackToExitPressedOnce = false;
 
-   // @RequiresApi(api = Build.VERSION_CODES.M)
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

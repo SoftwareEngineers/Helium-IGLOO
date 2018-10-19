@@ -54,6 +54,8 @@ public class SubscriptionsFragment extends Fragment {
     }
 
     private void loadSubscriptions() {
+        mSubscriptions.clear();
+        mSubscriptionList.removeAllViews();
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Subscriptions");
         DatabaseReference userReference = databaseReference.child(auth.getCurrentUser().getUid());
 
