@@ -50,6 +50,13 @@ public class PendingLecturesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pending_lectures);
         auth = FirebaseAuth.getInstance();
+        recyclerView = (RecyclerView)findViewById(R.id.rec_lectures);
+        lectures = new ArrayList<>();
+        lectureAdapter = new PendingLectureAdapter(lectures, context);
+        recyclerView.setAdapter(lectureAdapter);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(layoutManager);
         loadLectures();
     }
 
@@ -83,7 +90,6 @@ public class PendingLecturesActivity extends AppCompatActivity {
 
             }
         });
-        progressBar.setVisibility(View.GONE);
     }
 
     public void checkStatus(final String key, String archiveID){
