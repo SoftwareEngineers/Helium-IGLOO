@@ -104,11 +104,11 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
         public SubscriptionViewHolder(View v) {
             super(v);
 
-            userRating.setNumStars(5);
-
             userPic = (CircleImageView) v.findViewById(R.id.subscriptions_pic);
             userName = (TextView) v.findViewById(R.id.subscriptions_name);
             userRating = (RatingBar) v.findViewById(R.id.subscriptions_rating);
+
+            userRating.setNumStars(5);
         }
     }
 }

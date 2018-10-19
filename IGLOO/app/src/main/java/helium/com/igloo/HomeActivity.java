@@ -226,8 +226,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         searchView = (SearchView) MenuItemCompat.getActionView(item);
         mSearchAutoComplete =  searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
 
-        //mSearchAutoComplete.setDropDownBackgroundResource(R.drawable.background_white);
-        //mSearchAutoComplete.setBackgroundColor(Color.WHITE);
         mSearchAutoComplete.setDropDownAnchor(R.id.menu_search);
         mSearchAutoComplete.setThreshold(1);
 
@@ -355,10 +353,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         if (id == R.id.home) {
             android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.frame_container, new HomeFragment()).commit();
+            setTitle("IGLOO");
         }
         else if (id == R.id.subscriptions) {
             android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.frame_container, new SubscriptionsFragment()).commit();
+            setTitle("Subscriptions");
         }
         else if (id == R.id.payment) {
             startActivity(new Intent(HomeActivity.this, PaymentActivity.class));
