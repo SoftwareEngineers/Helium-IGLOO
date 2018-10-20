@@ -35,7 +35,6 @@ import java.util.List;
 
 import helium.com.igloo.Adapters.PendingLectureAdapter;
 import helium.com.igloo.Models.LectureModel;
-import helium.com.igloo.PendingLecturesActivity;
 import helium.com.igloo.R;
 
 public class PendingLecturesFragment extends Fragment {
