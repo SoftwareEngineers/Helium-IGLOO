@@ -161,12 +161,18 @@ public class ProfileActivity extends AppCompatActivity {
                 subscriptionReference.child(profileKey).setValue(subscription);
 
                 final DatabaseReference userReference = FirebaseDatabase.getInstance().getReference("Users");
-                final DatabaseReference profilereference = userReference.child(profileKey);
+                final DatabaseReference profileReference = userReference.child(profileKey);
 
-                profilereference.addValueEventListener(new ValueEventListener() {
+                profileReference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         noOfSubscribers = dataSnapshot.child("numberOfSubscribers").getValue(Double.class);
+
+                        noOfSubscribers++;
+                        mSubscribers.setText(Integer.toString((int)noOfSubscribers));
+                        profileReference.child("numberOfSubscribers").setValue(noOfSubscribers);
+                        mSubscribe.setVisibility(View.INVISIBLE);
+                        mUnsubscribe.setVisibility(View.VISIBLE);
                     }
 
                     @Override
@@ -174,11 +180,6 @@ public class ProfileActivity extends AppCompatActivity {
 
                     }
                 });
-                double num = noOfSubscribers + 1;
-
-                profilereference.child("numberOfSubscribers").setValue(num);
-                mSubscribe.setVisibility(View.INVISIBLE);
-                mUnsubscribe.setVisibility(View.VISIBLE);
             }
         });
 
@@ -190,12 +191,18 @@ public class ProfileActivity extends AppCompatActivity {
                 subscriptionReference.child(profileKey).getRef().removeValue();
 
                 final DatabaseReference userReference = FirebaseDatabase.getInstance().getReference("Users");
-                final DatabaseReference profilereference = userReference.child(profileKey);
+                final DatabaseReference profileReference = userReference.child(profileKey);
 
-                profilereference.addValueEventListener(new ValueEventListener() {
+                profileReference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         noOfSubscribers = dataSnapshot.child("numberOfSubscribers").getValue(Double.class);
+
+                        noOfSubscribers--;
+                        mSubscribers.setText(Integer.toString((int)noOfSubscribers));
+                        profileReference.child("numberOfSubscribers").setValue(noOfSubscribers);
+                        mUnsubscribe.setVisibility(View.INVISIBLE);
+                        mSubscribe.setVisibility(View.VISIBLE);
                     }
 
                     @Override
@@ -203,10 +210,6 @@ public class ProfileActivity extends AppCompatActivity {
 
                     }
                 });
-                double num = noOfSubscribers - 1;
-                profilereference.child("numberOfSubscribers").setValue(num);
-                mUnsubscribe.setVisibility(View.INVISIBLE);
-                mSubscribe.setVisibility(View.VISIBLE);
             }
         });
 

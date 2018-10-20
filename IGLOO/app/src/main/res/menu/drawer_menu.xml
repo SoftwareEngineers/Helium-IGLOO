@@ -9,7 +9,8 @@
             android:icon="@drawable/ic_subscriptions"/>
         <item
             android:id="@+id/pending_lectures"
-            android:title="Pending Lectures" />
+            android:title="Pending Lectures"
+            android:icon="@drawable/ic_pending"/>
         <item android:id="@+id/payment"
             android:title="@string/payment"
             android:icon="@drawable/ic_credit_card"/>

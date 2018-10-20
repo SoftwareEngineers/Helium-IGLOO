@@ -1,14 +1,13 @@
-package helium.com.igloo;
+package helium.com.igloo.Fragments;
 
 import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -34,11 +33,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import helium.com.igloo.Adapters.LectureAdapter;
 import helium.com.igloo.Adapters.PendingLectureAdapter;
 import helium.com.igloo.Models.LectureModel;
+import helium.com.igloo.PendingLecturesActivity;
+import helium.com.igloo.R;
 
-public class PendingLecturesActivity extends AppCompatActivity {
+public class PendingLecturesFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private List<LectureModel> lectures;
@@ -46,24 +46,33 @@ public class PendingLecturesActivity extends AppCompatActivity {
     private DatabaseReference databaseReference;
     private FirebaseAuth auth;
     private FFmpeg ffmpeg;
+    private Context context;
+
+    public PendingLecturesFragment() {
+        // Required empty public constructor
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pending_lectures);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+
+        View v = inflater.inflate(R.layout.fragment_pending_lectures, container, false);
+
+        context = super.getContext();
 
         loadFFmpeg();
-
         auth = FirebaseAuth.getInstance();
-        recyclerView = findViewById(R.id.rec_lectures);
+        recyclerView = v.findViewById(R.id.rec_lectures);
         lectures = new ArrayList<>();
-        lectureAdapter = new PendingLectureAdapter(lectures, this,ffmpeg);
+        lectureAdapter = new PendingLectureAdapter(lectures, getContext(),ffmpeg);
         recyclerView.setAdapter(lectureAdapter);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
 
         loadLectures();
+
+        return v;
     }
 
     public void loadLectures(){
@@ -99,7 +108,7 @@ public class PendingLecturesActivity extends AppCompatActivity {
     }
 
     public void checkStatus(final String key, String archiveID){
-        RequestQueue reqQueue = Volley.newRequestQueue(this);
+        RequestQueue reqQueue = Volley.newRequestQueue(context);
         reqQueue.add(new JsonObjectRequest(Request.Method.GET,
                 "https://iglov2.herokuapp.com/videos/"+archiveID,
                 null, new Response.Listener<JSONObject>() {
@@ -111,19 +120,19 @@ public class PendingLecturesActivity extends AppCompatActivity {
                         databaseReference.child(key).child("uploadable").setValue(true);
                     }
                 } catch (JSONException error) {
-                    Toast.makeText(PendingLecturesActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(PendingLecturesActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         }));
     }
 
     private void loadFFmpeg() {
-        ffmpeg = FFmpeg.getInstance(PendingLecturesActivity.this);
+        ffmpeg = FFmpeg.getInstance(context);
         try {
             ffmpeg.loadBinary(new LoadBinaryResponseHandler() {
 
@@ -144,8 +153,6 @@ public class PendingLecturesActivity extends AppCompatActivity {
                 }
             });
         } catch (FFmpegNotSupportedException e) {
-            // Handle if FFmpeg is not supported by device
-            Toast.makeText(PendingLecturesActivity.this,e.toString(),Toast.LENGTH_LONG).show();
         }
     }
 }

@@ -48,6 +48,7 @@ import java.util.ArrayList;
 import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 import helium.com.igloo.Fragments.HomeFragment;
+import helium.com.igloo.Fragments.PendingLecturesFragment;
 import helium.com.igloo.Fragments.SubscriptionsFragment;
 import helium.com.igloo.Models.LectureModel;
 import helium.com.igloo.Models.NotificationModel;
@@ -360,11 +361,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             fragmentManager.beginTransaction().replace(R.id.frame_container, new SubscriptionsFragment()).commit();
             setTitle("Subscriptions");
         }
+        else if(id == R.id.pending_lectures){
+            android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.frame_container, new PendingLecturesFragment()).commit();
+            setTitle("Pending");
+        }
         else if (id == R.id.payment) {
             startActivity(new Intent(HomeActivity.this, PaymentActivity.class));
-        }
-        else if(id == R.id.pending_lectures){
-            startActivity(new Intent(HomeActivity.this, PendingLecturesActivity.class));
         }
         else {
             startActivity(new Intent(HomeActivity.this, SettingsActivity.class));

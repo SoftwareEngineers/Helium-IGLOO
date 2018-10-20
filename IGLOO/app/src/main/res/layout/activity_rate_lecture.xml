@@ -1,198 +1,260 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@mipmap/tutorial_background"
     tools:context=".LectureRateActivity">
-
-    <LinearLayout
-
+    
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:text="@string/lecturer_rating"
+        android:fontFamily="@font/montserrat"
+        android:textSize="@dimen/eighteen"
+        android:textColor="@color/colorPrimary"
+        android:padding="20dp"
+        android:textAlignment="center"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/buttonColor"
+        android:orientation="horizontal"
+        android:paddingTop="18dp"
+        android:paddingBottom="18dp"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/rate_sub1"
+            android:fontFamily="@font/montserrat_bold"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sixteen"/>
+
+        <TextView
+            android:id="@+id/rating_lecturer_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_bold"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sixteen"
+            android:layout_marginStart="2dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/rate_sub2"
+            android:fontFamily="@font/montserrat_bold"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sixteen"
+            android:layout_marginStart="2dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <LinearLayout
-            android:layout_marginStart="@dimen/twentyfive"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingTop="18dp"
+            android:paddingBottom="18dp"
+            android:paddingStart="20dp"
+            android:gravity="start|center">
 
-           <CheckBox
-               android:onClick="CheckOutsdanding"
-               android:id="@+id/rating_outstanding"
-               android:layout_width="@dimen/thirty"
-               android:layout_height="@dimen/thirty" />
+            <CheckBox
+                android:id="@+id/rating_outstanding"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:button="@drawable/custom_checkbox"
+                android:onClick="CheckOutsdanding" />
 
             <TextView
 
-                android:layout_width="150dp"
-                android:layout_height="20dp"
-                android:layout_marginStart="@dimen/thirty"
+                android:layout_width="240dp"
+                android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat"
                 android:text="@string/label_rating_outstanding"
-                android:textColor="@color/colorPrimary"
-                android:textSize="@dimen/sixteen"
-
-                />
+                android:textColor="@color/textColor"
+                android:textSize="@dimen/sixteen"/>
 
             <RatingBar
-                style="@style/customRatingBar"
+                style="@style/Widget.AppCompat.RatingBar.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center|end"
-                android:layout_marginStart="@dimen/thirty"
-                android:layout_marginEnd="@dimen/thirty"
+                android:isIndicator="true"
                 android:numStars="5"
-                android:rating="5" />
+                android:rating="5"
+                android:progressTint="@color/yellowCorn"/>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/line"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="18dp"
+            android:paddingBottom="18dp"
+            android:paddingStart="20dp"
+            android:gravity="start|center">
+
+            <CheckBox
+                android:id="@+id/rating_verygood"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="CheckVeryGood" />
+
+            <TextView
+                android:layout_width="240dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat"
+                android:text="@string/label_rating_verygood"
+                android:textColor="@color/textColor"
+                android:textSize="@dimen/sixteen" />
+
+            <RatingBar
+                style="@style/Widget.AppCompat.RatingBar.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:progressTint="@color/yellowCorn"
+                android:rating="4" />
 
 
         </LinearLayout>
 
-    <LinearLayout
-        android:layout_marginStart="@dimen/twentyfive"
-        android:layout_marginTop="@dimen/twentyfive"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/line"/>
 
-        <CheckBox
-            android:onClick="CheckVeryGood"
-            android:id="@+id/rating_verygood"
-            android:layout_width="@dimen/thirty"
-            android:layout_height="@dimen/thirty" />
-
-        <TextView
-            android:layout_marginStart="@dimen/thirty"
-            android:layout_width="150dp"
-            android:layout_height="20dp"
-            android:fontFamily="@font/montserrat"
-            android:textColor="@color/colorPrimary"
-            android:textSize="@dimen/sixteen"
-            android:text="@string/label_rating_verygood"
-            />
-
-        <RatingBar
-            style="@style/customRatingBar"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="@dimen/thirty"
-            android:rating="4" />
+            android:orientation="horizontal"
+            android:paddingTop="18dp"
+            android:paddingBottom="18dp"
+            android:paddingStart="20dp"
+            android:gravity="start|center">
 
+            <CheckBox
+                android:id="@+id/rating_average"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="CheckAverage" />
 
+            <TextView
+                android:layout_width="240dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat"
+                android:text="@string/label_rating_average"
+                android:textColor="@color/textColor"
+                android:textSize="@dimen/sixteen" />
 
-    </LinearLayout>
+            <RatingBar
+                style="@style/Widget.AppCompat.RatingBar.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:progressTint="@color/yellowCorn"
+                android:rating="3" />
 
-    <LinearLayout
-        android:layout_marginStart="@dimen/twentyfive"
-        android:layout_marginTop="@dimen/twentyfive"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        </LinearLayout>
 
-        <CheckBox
-            android:onClick="CheckAverage"
-            android:id="@+id/rating_average"
-            android:layout_width="@dimen/thirty"
-            android:layout_height="@dimen/thirty" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/line"/>
 
-        <TextView
-            android:layout_marginStart="@dimen/thirty"
-            android:layout_width="150dp"
-            android:layout_height="20dp"
-            android:fontFamily="@font/montserrat"
-            android:textColor="@color/colorPrimary"
-            android:textSize="@dimen/sixteen"
-            android:text="@string/label_rating_average"
-            />
-
-        <RatingBar
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:rating="3"
-            style="@style/customRatingBar"
-            android:layout_gravity="center"
-            android:layout_marginStart="@dimen/thirty"/>
+            android:orientation="horizontal"
+            android:paddingTop="18dp"
+            android:paddingBottom="18dp"
+            android:paddingStart="20dp"
+            android:gravity="start|center">
 
+            <CheckBox
+                android:id="@+id/rating_notgood"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="CheckNotGood" />
 
-    </LinearLayout>
+            <TextView
+                android:layout_width="240dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat"
+                android:text="@string/label_rating_notgood"
+                android:textColor="@color/textColor"
+                android:textSize="@dimen/sixteen" />
 
-    <LinearLayout
-        android:layout_marginStart="@dimen/twentyfive"
-        android:layout_marginTop="@dimen/twentyfive"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <CheckBox
-            android:onClick="CheckNotGood"
-            android:id="@+id/rating_notgood"
-            android:layout_width="@dimen/thirty"
-            android:layout_height="@dimen/thirty" />
-        <TextView
-            android:layout_marginStart="@dimen/thirty"
-            android:layout_width="150dp"
-            android:layout_height="20dp"
-            android:fontFamily="@font/montserrat"
-            android:textColor="@color/colorPrimary"
-            android:textSize="@dimen/sixteen"
-            android:text="@string/label_rating_notgood"
-            />
+            <RatingBar
+                style="@style/Widget.AppCompat.RatingBar.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:progressTint="@color/yellowCorn"
+                android:rating="2" />
+        </LinearLayout>
 
-        <RatingBar
-            android:layout_width="wrap_content"
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/line"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:rating="2"
-            style="@style/customRatingBar"
-            android:layout_gravity="center"
-            android:layout_marginStart="@dimen/thirty"/>
-    </LinearLayout>
+            android:orientation="horizontal"
+            android:paddingTop="18dp"
+            android:paddingBottom="18dp"
+            android:paddingStart="20dp"
+            android:gravity="start|center">
 
-    <LinearLayout
-        android:layout_marginStart="@dimen/twentyfive"
-        android:layout_marginTop="@dimen/twentyfive"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <CheckBox
-            android:onClick="CheckTerrible"
-            android:id="@+id/rating_terrible"
-            android:layout_width="@dimen/thirty"
-            android:layout_height="@dimen/thirty" />
-        <TextView
-            android:layout_marginStart="@dimen/thirty"
-            android:layout_width="150dp"
-            android:layout_height="20dp"
-            android:fontFamily="@font/montserrat"
-            android:textColor="@color/colorPrimary"
-            android:textSize="@dimen/sixteen"
-            android:text="@string/label_rating_terrible"
-            />
+            <CheckBox
+                android:id="@+id/rating_terrible"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="CheckTerrible" />
 
-        <RatingBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:rating="1"
-            style="@style/customRatingBar"
-            android:layout_gravity="center"
-            android:layout_marginStart="@dimen/thirty"/>
-    </LinearLayout>
+            <TextView
+                android:layout_width="240dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat"
+                android:text="@string/label_rating_terrible"
+                android:textColor="@color/textColor"
+                android:textSize="@dimen/sixteen" />
 
+            <RatingBar
+                style="@style/Widget.AppCompat.RatingBar.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:progressTint="@color/yellowCorn"
+                android:rating="1" />
+        </LinearLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/line"/>
 
         <Button
-            android:text="@string/button_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="150dp"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
             android:layout_marginTop="100dp"
-            android:onClick="ExecuteRateLecture" />
+            android:onClick="ExecuteRateLecture"
+            android:text="@string/button_label"
+            android:fontFamily="@font/montserrat_bold"
+            android:background="@color/buttonColor"
+            android:textColor="@color/white"/>
     </LinearLayout>
 
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>
