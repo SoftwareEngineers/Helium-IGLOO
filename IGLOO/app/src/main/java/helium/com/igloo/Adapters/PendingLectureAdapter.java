@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.MediaController;
@@ -185,7 +186,7 @@ public class PendingLectureAdapter extends RecyclerView.Adapter<PendingLectureAd
         protected ImageView img_lecture;
         protected TextView textTitle;
         protected TextView textViews;
-        protected Button buttonUpload;
+        protected ImageButton buttonUpload;
         protected View view;
 
          PendingLectureViewHolder(View v) {
@@ -194,14 +195,9 @@ public class PendingLectureAdapter extends RecyclerView.Adapter<PendingLectureAd
             img_lecture  = (ImageView)v.findViewById(R.id.img_pending_lecture);
             textTitle = (TextView) v.findViewById(R.id.txt_pending_title);
             textViews = (TextView) v.findViewById(R.id.txt_pending_views);
-            buttonUpload  = (Button) v.findViewById(R.id.btn_pending_upload);
+            buttonUpload  = (ImageButton) v.findViewById(R.id.btn_pending_upload);
         }
     }
-
-
-
-
-    /////// INITIALIZE
 
     private void InitializeTranscripts(String archiveID){
 
@@ -235,12 +231,6 @@ public class PendingLectureAdapter extends RecyclerView.Adapter<PendingLectureAd
         }));
 
     }
-
-
-
-
-
-    ///// AUDIO EXTRACTION
 
     private void ExtractAudio(File video) {
         try {
@@ -305,14 +295,6 @@ public class PendingLectureAdapter extends RecyclerView.Adapter<PendingLectureAd
             Toast.makeText(context,e.toString(),Toast.LENGTH_LONG).show();
         }
     }
-
-
-
-
-
-
-
-    //// DOWNLOAD FILE FROM WEB
 
     private void DownloadVideoFromWeb(String url){
 
@@ -431,14 +413,6 @@ public class PendingLectureAdapter extends RecyclerView.Adapter<PendingLectureAd
             }
         }
     }
-
-
-
-
-
-
-
-    /////RECOGNIZE AUDIO
 
     private void Recognize(){
         transcribedText = "";
