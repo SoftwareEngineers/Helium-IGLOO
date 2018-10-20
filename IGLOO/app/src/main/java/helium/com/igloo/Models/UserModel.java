@@ -11,9 +11,11 @@ public class UserModel {
     private String profileUrl;
     private int tokens;
     private double rating;
-    private double numberOfSubscribers;
+    private int numberOfSubscribers;
     private List<String> subscriptions;
     private double numberOfLectures;
+    private double totalRatings;
+    private int numberOfRatings;
     private List<String> tags;
 
     public UserModel(){
@@ -83,7 +85,7 @@ public class UserModel {
         return numberOfSubscribers;
     }
 
-    public void setNumberOfSubscribers(double numberOfSubscribers) {
+    public void setNumberOfSubscribers(int numberOfSubscribers) {
         this.numberOfSubscribers = numberOfSubscribers;
     }
 
@@ -110,4 +112,12 @@ public class UserModel {
     public void setTags(List<String> tags) {
         this.tags = tags;
     }
+
+    public double getTotalRatings(){ return this.totalRatings;}
+
+    public void setTotalRatings(double totalrating){ this.totalRatings = rating;}
+
+    public int getNumberOfRatings(){return this.numberOfRatings;}
+
+    public void setNumberOfRatings(int numberOfRatings){this.numberOfRatings = numberOfRatings;}
 }

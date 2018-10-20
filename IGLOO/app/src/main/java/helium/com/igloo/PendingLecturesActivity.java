@@ -17,6 +17,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
+import com.github.hiteshsondhi88.libffmpeg.LoadBinaryResponseHandler;
+import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedException;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -42,19 +45,23 @@ public class PendingLecturesActivity extends AppCompatActivity {
     private PendingLectureAdapter lectureAdapter;
     private DatabaseReference databaseReference;
     private FirebaseAuth auth;
+    private FFmpeg ffmpeg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pending_lectures);
+        loadFFmpeg();
+
         auth = FirebaseAuth.getInstance();
-        recyclerView = (RecyclerView)findViewById(R.id.rec_lectures);
+        recyclerView = findViewById(R.id.rec_lectures);
         lectures = new ArrayList<>();
-        lectureAdapter = new PendingLectureAdapter(lectures, this);
+        lectureAdapter = new PendingLectureAdapter(lectures, this,ffmpeg);
         recyclerView.setAdapter(lectureAdapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
+
         loadLectures();
     }
 
@@ -112,5 +119,32 @@ public class PendingLecturesActivity extends AppCompatActivity {
                 Toast.makeText(PendingLecturesActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         }));
+    }
+
+    private void loadFFmpeg() {
+        ffmpeg = FFmpeg.getInstance(PendingLecturesActivity.this);
+        try {
+            ffmpeg.loadBinary(new LoadBinaryResponseHandler() {
+
+                @Override
+                public void onStart() {}
+
+                @Override
+                public void onFailure() {
+                }
+
+                @Override
+                public void onSuccess() {
+
+                }
+                @Override
+                public void onFinish() {
+                    //lblView.setText("Finished loading library!");
+                }
+            });
+        } catch (FFmpegNotSupportedException e) {
+            // Handle if FFmpeg is not supported by device
+            Toast.makeText(PendingLecturesActivity.this,e.toString(),Toast.LENGTH_LONG).show();
+        }
     }
 }
