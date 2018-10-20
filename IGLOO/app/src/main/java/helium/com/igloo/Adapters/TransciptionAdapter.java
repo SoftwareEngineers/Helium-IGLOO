@@ -15,12 +15,10 @@ public class TransciptionAdapter extends RecyclerView.Adapter<TransciptionAdapte
 
     private List<TranscriptionModel> transcriptions;
     private Context context;
-    private MediaPlayer mp;
 
-    public TransciptionAdapter(List<TranscriptionModel> transcriptions, Context context , MediaPlayer mp) {
+    public TransciptionAdapter(List<TranscriptionModel> transcriptions, Context context) {
         this.transcriptions = transcriptions;
         this.context = context;
-        this.mp = mp;
     }
 
     @Override
@@ -36,12 +34,6 @@ public class TransciptionAdapter extends RecyclerView.Adapter<TransciptionAdapte
         final TranscriptionModel trans = transcriptions.get(position);
         holder.transcriptionWord.setText(trans.getWord());
         holder.transcriptionTime.setText(trans.getTime()+"");
-        holder.v.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mp.seekTo(trans.getTime());
-            }
-        });
     }
 
     @Override
@@ -52,10 +44,8 @@ public class TransciptionAdapter extends RecyclerView.Adapter<TransciptionAdapte
     public class TranscriptionViewHolder extends RecyclerView.ViewHolder{
         protected TextView transcriptionWord;
         protected TextView transcriptionTime;
-        protected View v;
         public TranscriptionViewHolder(View itemView) {
             super(itemView);
-            v = itemView;
             transcriptionWord = itemView.findViewById(R.id.txtTransciptionWord);
             transcriptionTime = itemView.findViewById(R.id.txtTransciptionTime);
         }
