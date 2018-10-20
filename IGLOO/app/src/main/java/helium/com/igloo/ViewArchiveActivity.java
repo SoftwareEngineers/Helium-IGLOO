@@ -105,7 +105,7 @@ public class ViewArchiveActivity extends AppCompatActivity {
         mSubscribe = (Button) findViewById(R.id.btn_archive_subscribe);
         mUnsubscribe = (Button) findViewById(R.id.btn_archive_unsubscribe);
         txtTranscriptSearch = findViewById(R.id.txtArchiveSearch);
-        
+
         auth = FirebaseAuth.getInstance();
 
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("");

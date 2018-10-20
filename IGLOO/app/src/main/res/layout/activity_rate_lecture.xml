@@ -72,12 +72,12 @@
                 android:id="@+id/rating_outstanding"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:button="@drawable/custom_checkbox"
+                android:backgroundTint="#BCC5D3"
                 android:onClick="CheckOutsdanding" />
 
             <TextView
 
-                android:layout_width="240dp"
+                android:layout_width="230dp"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat"
                 android:text="@string/label_rating_outstanding"
@@ -115,7 +115,7 @@
                 android:onClick="CheckVeryGood" />
 
             <TextView
-                android:layout_width="240dp"
+                android:layout_width="230dp"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat"
                 android:text="@string/label_rating_verygood"
@@ -153,7 +153,7 @@
                 android:onClick="CheckAverage" />
 
             <TextView
-                android:layout_width="240dp"
+                android:layout_width="230dp"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat"
                 android:text="@string/label_rating_average"
@@ -190,7 +190,7 @@
                 android:onClick="CheckNotGood" />
 
             <TextView
-                android:layout_width="240dp"
+                android:layout_width="230dp"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat"
                 android:text="@string/label_rating_notgood"
@@ -226,7 +226,7 @@
                 android:onClick="CheckTerrible" />
 
             <TextView
-                android:layout_width="240dp"
+                android:layout_width="230dp"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat"
                 android:text="@string/label_rating_terrible"
