@@ -166,5 +166,6 @@ public class PaymentActivity extends AppCompatActivity {
     public void onBackPressed() {
         PaymentActivity.this.finish();
         super.onBackPressed();
+        overridePendingTransition(R.transition.slide_in_left, R.transition.slide_out_right);
     }
 }
