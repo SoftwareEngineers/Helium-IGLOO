@@ -471,6 +471,7 @@ public class PendingLectureAdapter extends RecyclerView.Adapter<PendingLectureAd
                 Toast.makeText(context,"transcribed", Toast.LENGTH_LONG).show();
 
                 audio.getCanonicalFile().delete();
+                
                 File video = new File(sdCard.getAbsolutePath(),"Iglo/video.mp4");
                 if (video.exists()){
                     try {
