@@ -84,6 +84,8 @@ import helium.com.igloo.R;
 import helium.com.igloo.ViewArchiveActivity;
 import helium.com.igloo.ViewLectureActivity;
 
+import static java.lang.Thread.sleep;
+
 public class PendingLectureAdapter extends RecyclerView.Adapter<PendingLectureAdapter.PendingLectureViewHolder> {
     private List<LectureModel> lectures;
     private Context context;
@@ -91,10 +93,12 @@ public class PendingLectureAdapter extends RecyclerView.Adapter<PendingLectureAd
     private UserModel user;
     private ProgressDialog DownloadDialog;
     private ProgressDialog AudioExtractiondialog;
+    private ProgressDialog TranscribeDialog;
     private File sdCard;
     private FFmpeg ffmpeg;
     private String transcribedText;
     private String lectureID;
+    private SpeechClient client;
 
     public PendingLectureAdapter(List<LectureModel> lectures, Context context, FFmpeg ffmpeg) {
         this.lectures = lectures;
@@ -107,6 +111,11 @@ public class PendingLectureAdapter extends RecyclerView.Adapter<PendingLectureAd
         DownloadDialog.setIndeterminate(true);
         DownloadDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         DownloadDialog.setCancelable(false);
+
+        TranscribeDialog = new ProgressDialog(context);
+        TranscribeDialog.setTitle("Transcribing");
+        TranscribeDialog.setMessage("Proccesing...");
+        TranscribeDialog.setCancelable(false);
 
         //DIALOG FOR EXTRACTING AUDIO FROM VIDEO
 
@@ -253,7 +262,7 @@ public class PendingLectureAdapter extends RecyclerView.Adapter<PendingLectureAd
                 audio.getCanonicalFile().delete();
             }
             if(video.exists()){
-                String command ="-i "+ video +" -c:a flac "+String.valueOf(audio);
+                String command ="-i "+ String.valueOf(video) +" -c:a flac "+String.valueOf(audio);
                 executeFFmpeg(command.split(" "));
             }
         }catch (Exception e){
@@ -295,15 +304,16 @@ public class PendingLectureAdapter extends RecyclerView.Adapter<PendingLectureAd
                 @Override
                 public void onFinish() {
                     AudioExtractiondialog.dismiss();
+                    TranscribeDialog.show();
                     Toast.makeText(context, "Extraction Success : ", Toast.LENGTH_LONG).show();
-                    File video = new File(sdCard.getAbsolutePath(),"Iglo/video.mp4");
+                    /*File video = new File(sdCard.getAbsolutePath(),"Iglo/video.mp4");
                     if (video.exists()){
                         try {
                             video.getCanonicalFile().delete();
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                    }
+                    }*/
                     Recognize();
 
                 }
@@ -448,17 +458,18 @@ public class PendingLectureAdapter extends RecyclerView.Adapter<PendingLectureAd
     /////RECOGNIZE AUDIO
 
     private void Recognize(){
-
+        transcribedText = "";
         try {
-            File audio = new File(sdCard.getAbsolutePath()+ "/Iglo/audio.flac");
+            File audio = new File(sdCard.getAbsolutePath(), "Iglo/audio.flac");
             try{
                 CredentialsProvider credentialsProvider = FixedCredentialsProvider.create(ServiceAccountCredentials.fromStream(context.getResources().openRawResource(R.raw.credentials)));
                 SpeechSettings settings = SpeechSettings.newBuilder().setCredentialsProvider(credentialsProvider).build();
-                SpeechClient client = SpeechClient.create(settings);
+                client = SpeechClient.create(settings);
                 LongRunningRecognizeRequest request = LongRunningRecognizeRequest.newBuilder()
                         .setConfig(RecognitionConfig.newBuilder()
                                 .setEncoding(RecognitionConfig.AudioEncoding.FLAC)
                                 .setLanguageCode("en-US")
+                                .setEnableWordTimeOffsets(true)
                                 .build())
                         .setAudio(RecognitionAudio.newBuilder()
                                 .setContent(ByteString.readFrom(new FileInputStream(audio)))
@@ -472,22 +483,24 @@ public class PendingLectureAdapter extends RecyclerView.Adapter<PendingLectureAd
                     System.out.println("Waiting for response...");
                     Thread.sleep(1000);
                 }
-
                 List<SpeechRecognitionResult> results = response.get().getResultsList();
+
 
                 for (SpeechRecognitionResult result : results) {
                     // There can be several alternative transcripts for a given chunk of speech. Just use the
                     // first (most likely) one here.
                     SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
                     for (WordInfo wordInfo : alternative.getWordsList()) {
-                        transcribedText += wordInfo.getWord()+" "+(wordInfo.getStartTime().getSeconds()*1000)+(wordInfo.getStartTime().getNanos()/100000000)+" ";
+                            transcribedText += wordInfo.getWord()+" "+(wordInfo.getStartTime().getSeconds()*1000)+" ";
                     }
                 }
+                System.out.println("RESPONSE: "+transcribedText);
                 DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Lectures").child(lectureID);
 
                 reference.child("available").setValue(true);
                 reference.child("transcription").setValue(transcribedText.trim());
                 reference.child("is_transcribed").setValue(true);
+                TranscribeDialog.hide();
                 Toast.makeText(context,"transcribe", Toast.LENGTH_LONG).show();
 
             }catch (Exception e){
