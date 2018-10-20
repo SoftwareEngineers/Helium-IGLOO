@@ -114,9 +114,8 @@ public class PendingLectureAdapter extends RecyclerView.Adapter<PendingLectureAd
         DownloadDialog.setCancelable(false);
 
         TranscribeDialog = new ProgressDialog(context);
-        TranscribeDialog.setTitle("Transcribing");
-        TranscribeDialog.setMessage("Proccesing...");
-        TranscribeDialog.setCancelable(false);
+        TranscribeDialog.setTitle(null);
+
 
         //DIALOG FOR EXTRACTING AUDIO FROM VIDEO
 
@@ -271,6 +270,10 @@ public class PendingLectureAdapter extends RecyclerView.Adapter<PendingLectureAd
                     AudioExtractiondialog.setTitle("Extracting Audio");
                     AudioExtractiondialog.setCancelable(false);
                     AudioExtractiondialog.show();
+                    TranscribeDialog.setMessage("Processing...");
+                    TranscribeDialog.setTitle("Transcribing Audio");
+                    TranscribeDialog.setCancelable(false);
+                    TranscribeDialog.show();
                 }
 
                 @Override
@@ -440,7 +443,7 @@ public class PendingLectureAdapter extends RecyclerView.Adapter<PendingLectureAd
     private void Recognize(){
         transcribedText = "";
         try {
-            File audio = new File(sdCard.getAbsolutePath()+"/Iglo/audio.flac");
+            File audio = new File(sdCard.getAbsolutePath(),"Iglo/audio.flac");
             try{
                 CredentialsProvider credentialsProvider = FixedCredentialsProvider.create(ServiceAccountCredentials.fromStream(context.getResources().openRawResource(R.raw.credentials)));
                 SpeechSettings settings = SpeechSettings.newBuilder().setCredentialsProvider(credentialsProvider).build();
@@ -449,6 +452,7 @@ public class PendingLectureAdapter extends RecyclerView.Adapter<PendingLectureAd
                         .setConfig(RecognitionConfig.newBuilder()
                                 .setEncoding(RecognitionConfig.AudioEncoding.FLAC)
                                 .setLanguageCode("en-US")
+                                .setEnableWordTimeOffsets(true)
                                 .build())
                         .setAudio(RecognitionAudio.newBuilder()
                                 .setContent(ByteString.readFrom(new FileInputStream(audio)))
