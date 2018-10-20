@@ -95,7 +95,6 @@ public class ViewArchiveActivity extends AppCompatActivity {
     private VideoView videoView;
     private MediaController mediaController;
     private ProgressBar progressBar;
-    private Uri mUrl;
     private RecyclerView mRecycleViewQuestions;
     private List<QuestionModel> questions;
     private QuestionAdapter questionAdapter;
@@ -103,6 +102,7 @@ public class ViewArchiveActivity extends AppCompatActivity {
     private FFmpeg ffmpeg;
     private ProgressDialog AudioExtractiondialog,DownloadDialog;
     private File sdCard;
+
     private LectureModel lecture;
     private TextView textOwner;
     private TextView textSubscribers;
@@ -111,6 +111,8 @@ public class ViewArchiveActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     private CircleImageView mLecturer;
     private Button mSubscribe;
+    private Button mUnsubscribe;
+
     private RecyclerView mRecycleViewTranscripts;
     private List<TranscriptionModel> transcripts;
     private TransciptionAdapter transciptionAdapter;
@@ -153,6 +155,7 @@ public class ViewArchiveActivity extends AppCompatActivity {
         textViews = (TextView)findViewById(R.id.txt_views);
         mLecturer = (CircleImageView)findViewById(R.id.img_owner);
         mSubscribe = (Button) findViewById(R.id.btn_archive_subscribe);
+        mUnsubscribe = (Button) findViewById(R.id.btn_archive_unsubscribe);
 
         auth = FirebaseAuth.getInstance();
 
@@ -226,10 +229,16 @@ public class ViewArchiveActivity extends AppCompatActivity {
                 final DatabaseReference userReference = FirebaseDatabase.getInstance().getReference("Users");
                 final DatabaseReference profileReference = userReference.child(lecture.getOwner_id());
 
-                profileReference.addValueEventListener(new ValueEventListener() {
+                profileReference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         numberOfSubscribers = dataSnapshot.child("numberOfSubscribers").getValue(Double.class);
+
+                        numberOfSubscribers++;
+                        textSubscribers.setText(Integer.toString((int)numberOfSubscribers));
+                        profileReference.child("numberOfSubscribers").setValue(numberOfSubscribers);
+                        mSubscribe.setVisibility(View.GONE);
+                        mUnsubscribe.setVisibility(View.VISIBLE);
                     }
 
                     @Override
@@ -237,8 +246,36 @@ public class ViewArchiveActivity extends AppCompatActivity {
 
                     }
                 });
-                double num = numberOfSubscribers + 1;
-                profileReference.child("numberOfSubscribers").setValue(num);
+            }
+        });
+
+        mUnsubscribe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Subscriptions");
+                final DatabaseReference subscriptionReference = databaseReference.child(auth.getCurrentUser().getUid());
+                subscriptionReference.child(lecture.getOwner_id()).getRef().removeValue();
+
+                final DatabaseReference userReference = FirebaseDatabase.getInstance().getReference("Users");
+                final DatabaseReference profileReference = userReference.child(lecture.getOwner_id());
+
+                profileReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        numberOfSubscribers = dataSnapshot.child("numberOfSubscribers").getValue(Double.class);
+
+                        numberOfSubscribers--;
+                        textSubscribers.setText(Integer.toString((int)numberOfSubscribers));
+                        profileReference.child("numberOfSubscribers").setValue(numberOfSubscribers);
+                        mUnsubscribe.setVisibility(View.INVISIBLE);
+                        mSubscribe.setVisibility(View.VISIBLE);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
             }
         });
 
@@ -250,6 +287,7 @@ public class ViewArchiveActivity extends AppCompatActivity {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecycleViewQuestions.setLayoutManager(layoutManager);
         loadQuestions();
+        isSubscribe();
     }
 
 
@@ -645,6 +683,27 @@ public class ViewArchiveActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         finish();
+    }
+
+    private void isSubscribe(){
+        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Subscriptions");
+        final DatabaseReference userReference = databaseReference.child(auth.getCurrentUser().getUid());
+
+        userReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.hasChild(lecture.getOwner_id())){
+                    mUnsubscribe.setVisibility(View.VISIBLE);
+                }
+                else {
+                    mSubscribe.setVisibility(View.VISIBLE);
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
 }
