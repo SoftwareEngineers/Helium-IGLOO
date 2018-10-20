@@ -104,7 +104,7 @@ public class ViewArchiveActivity extends AppCompatActivity {
         mLecturer = (CircleImageView)findViewById(R.id.img_owner);
         mSubscribe = (Button) findViewById(R.id.btn_archive_subscribe);
         mUnsubscribe = (Button) findViewById(R.id.btn_archive_unsubscribe);
-        txtTranscriptSearch = findViewById(R.id.txtArchiveSearch);
+        txtTranscriptSearch = findViewById(R.id.txtVideoSearch);
         
         auth = FirebaseAuth.getInstance();
 
@@ -134,13 +134,14 @@ public class ViewArchiveActivity extends AppCompatActivity {
                 List<String> words = new ArrayList<>();
                 String word;
                 int time = 0;
+                int i = 0;
                 while (st.hasMoreElements()){
                     word = st.nextElement().toString();
                     time = Integer.parseInt(st.nextElement().toString());
-                    transcripts.add(new TranscriptionModel(word,time));
+                    transcripts.add(new TranscriptionModel(word,time,i++));
                     words.add(word);
                 }
-                TransciptionAdapter adapter = new TransciptionAdapter(ViewArchiveActivity.this,transcripts);
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(ViewArchiveActivity.this,android.R.layout.simple_list_item_1,words);
                 txtTranscriptSearch.setAdapter(adapter);
                playArchive(archiveID);
             }
