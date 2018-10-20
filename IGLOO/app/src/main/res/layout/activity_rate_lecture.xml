@@ -29,15 +29,28 @@
                android:id="@+id/rating_outstanding"
                android:layout_width="@dimen/thirty"
                android:layout_height="@dimen/thirty" />
+
             <TextView
-                android:layout_width="wrap_content"
+
+                android:layout_width="150dp"
                 android:layout_height="20dp"
+                android:layout_marginStart="@dimen/thirty"
                 android:fontFamily="@font/montserrat"
+                android:text="@string/label_rating_outstanding"
                 android:textColor="@color/colorPrimary"
                 android:textSize="@dimen/sixteen"
-                android:text="@string/label_rating_outstanding"
 
                 />
+
+            <RatingBar
+                style="@style/customRatingBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|end"
+                android:layout_marginStart="@dimen/thirty"
+                android:layout_marginEnd="@dimen/thirty"
+                android:numStars="5"
+                android:rating="5" />
 
 
         </LinearLayout>
@@ -56,13 +69,24 @@
             android:layout_height="@dimen/thirty" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_marginStart="@dimen/thirty"
+            android:layout_width="150dp"
             android:layout_height="20dp"
             android:fontFamily="@font/montserrat"
             android:textColor="@color/colorPrimary"
             android:textSize="@dimen/sixteen"
             android:text="@string/label_rating_verygood"
             />
+
+        <RatingBar
+            style="@style/customRatingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/thirty"
+            android:rating="4" />
+
+
 
     </LinearLayout>
 
@@ -80,13 +104,23 @@
             android:layout_height="@dimen/thirty" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_marginStart="@dimen/thirty"
+            android:layout_width="150dp"
             android:layout_height="20dp"
             android:fontFamily="@font/montserrat"
             android:textColor="@color/colorPrimary"
             android:textSize="@dimen/sixteen"
             android:text="@string/label_rating_average"
             />
+
+        <RatingBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:rating="3"
+            style="@style/customRatingBar"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/thirty"/>
+
 
     </LinearLayout>
 
@@ -102,13 +136,22 @@
             android:layout_width="@dimen/thirty"
             android:layout_height="@dimen/thirty" />
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_marginStart="@dimen/thirty"
+            android:layout_width="150dp"
             android:layout_height="20dp"
             android:fontFamily="@font/montserrat"
             android:textColor="@color/colorPrimary"
             android:textSize="@dimen/sixteen"
             android:text="@string/label_rating_notgood"
             />
+
+        <RatingBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:rating="2"
+            style="@style/customRatingBar"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/thirty"/>
     </LinearLayout>
 
     <LinearLayout
@@ -123,13 +166,22 @@
             android:layout_width="@dimen/thirty"
             android:layout_height="@dimen/thirty" />
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_marginStart="@dimen/thirty"
+            android:layout_width="150dp"
             android:layout_height="20dp"
             android:fontFamily="@font/montserrat"
             android:textColor="@color/colorPrimary"
             android:textSize="@dimen/sixteen"
             android:text="@string/label_rating_terrible"
             />
+
+        <RatingBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:rating="1"
+            style="@style/customRatingBar"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/thirty"/>
     </LinearLayout>
 
 

@@ -43,9 +43,9 @@ public class LiveLectureFragment extends Fragment {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_live_lecture, container, false);
         context = super.getContext();
-        progressBar = (ProgressBar)view.findViewById(R.id.pro_live_lectures);
+        progressBar = view.findViewById(R.id.pro_live_lectures);
         progressBar.setVisibility(View.VISIBLE);
-        recyclerView = (RecyclerView)view.findViewById(R.id.rec_live_lectures);
+        recyclerView = view.findViewById(R.id.rec_live_lectures);
 
         lectures = new ArrayList<>();
         lectureAdapter = new LectureAdapter(lectures, super.getContext());

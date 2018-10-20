@@ -14,7 +14,7 @@
         android:padding="15dp">
 
         <ImageView
-            android:id="@+id/img_lecture"
+            android:id="@+id/img_pending_lecture"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -28,7 +28,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/txt_title"
+                android:id="@+id/txt_pending_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat"
@@ -36,7 +36,7 @@
                 android:textSize="@dimen/fourteen" />
 
             <TextView
-                android:id="@+id/txt_views"
+                android:id="@+id/txt_pending_views"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat"
@@ -46,7 +46,7 @@
         </LinearLayout>
 
         <Button
-            android:id="@+id/btn_upload"
+            android:id="@+id/btn_pending_upload"
             android:layout_width="wrap_content"
             android:layout_height="30dp"
             android:layout_margin="5dp"

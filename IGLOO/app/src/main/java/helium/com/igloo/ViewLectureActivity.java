@@ -207,8 +207,51 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
 
     @Override
     public void onStreamDropped(Session session, Stream stream) {
-        Intent intent = new Intent(ViewLectureActivity.this, HomeActivity.class);
-        startActivity(intent);
+        LayoutInflater lay = LayoutInflater.from(ViewLectureActivity.this);
+        View promptsView = lay.inflate(R.layout.layout_payment_dialog, null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(ViewLectureActivity.this);
+        builder.setView(promptsView);
+
+        TextView mPaymentDialog = promptsView.findViewById(R.id.txt_payment_dialog);
+        mPaymentDialog.setText(getString(R.string.question_to_rate));
+
+        builder
+                .setCancelable(false)
+                .setPositiveButton("Yes",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                Toast.makeText(getApplicationContext(),"Yes",Toast.LENGTH_LONG).show();
+                                Intent intent = new Intent(ViewLectureActivity.this,LectureRateActivity.class);
+                                intent.putExtra("owner_id",lectureModel.getOwner_id());
+
+                                startActivity(intent);
+                                ViewLectureActivity.this.finish();
+                                dialog.dismiss();
+
+                            }
+                        });
+
+        builder
+                .setNegativeButton("No",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                Toast.makeText(getApplicationContext(),"No",Toast.LENGTH_LONG).show();
+                                Intent intent = new Intent(ViewLectureActivity.this, HomeActivity.class);
+
+
+                                startActivity(intent);
+                                ViewLectureActivity.this.finish();
+                                dialog.dismiss();
+
+                            }
+                        });
+
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+
+
+
     }
 
     @Override
@@ -252,41 +295,8 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
             mSession.disconnect();
         }
         super.onStop();
+        ViewLectureActivity.this.finish();
 
-        LayoutInflater lay = LayoutInflater.from(ViewLectureActivity.this);
-        View promptsView = lay.inflate(R.layout.layout_payment_dialog, null);
-        AlertDialog.Builder builder = new AlertDialog.Builder(ViewLectureActivity.this);
-        builder.setView(promptsView);
-
-        TextView mPaymentDialog = promptsView.findViewById(R.id.txt_payment_dialog);
-        mPaymentDialog.setText(getString(R.string.question_to_rate));
-
-        builder
-                .setCancelable(false)
-                .setPositiveButton("Yes",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.dismiss();
-                                Toast.makeText(getApplicationContext(),"Yes",Toast.LENGTH_LONG).show();
-                                Intent intent = new Intent(ViewLectureActivity.this,LectureRateActivity.class);
-                                startActivity(intent);
-                                ViewLectureActivity.this.finish();
-                            }
-                        });
-
-        builder
-                .setNegativeButton("No",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                                Toast.makeText(getApplicationContext(),"No",Toast.LENGTH_LONG).show();
-                                ViewLectureActivity.this.finish();
-                            }
-                        });
-
-
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
 
 
     }
