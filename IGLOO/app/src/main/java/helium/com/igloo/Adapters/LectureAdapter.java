@@ -136,6 +136,8 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.LectureV
                         final EditText password = new EditText(context);
                         password.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
                         alertDialog.setTitle("Enter password");
+                        layout.addView(password);
+                        alertDialog.setView(layout);
                         alertDialog.setPositiveButton("Confirm",new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 if(password.getText().toString().equals(p.getPassword())){
