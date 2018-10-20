@@ -16,6 +16,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -51,7 +52,7 @@ import helium.com.igloo.Models.SubscriptionModel;
 public class ViewLectureActivity extends AppCompatActivity implements Session.SessionListener {
 
     private Switch more;
-    private ConstraintLayout details;
+    private LinearLayout details;
     private String key;
     private DatabaseReference databaseReference;
     private TextView textLectureTitle;
@@ -59,7 +60,7 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
     private EditText textQuestion;
     private TextView textLectureOwner;
     private ImageView imageViewPrivate;
-    private Button buttonAsk,buttonCall,buttonSubscribe;
+    private Button buttonAsk,buttonSubscribe;
     private FirebaseAuth auth;
     private FrameLayout viewLecture;
     private Session mSession;
@@ -85,10 +86,9 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
         viewLecture =  findViewById(R.id.view_lecture);
         textQuestion = findViewById(R.id.txt_question);
         textLectureOwner = findViewById(R.id.txt_lecture_owner);
-        details = findViewById(R.id.lyout_more_details);
+        details = (LinearLayout) findViewById(R.id.lyout_more_details);
         imageViewPrivate = findViewById(R.id.img_private);
         buttonAsk = findViewById(R.id.btn_ask);
-        buttonCall = findViewById(R.id.btn_call);
         buttonSubscribe = findViewById(R.id.btn_subscribe);
 
         buttonSubscribe.setOnClickListener(new View.OnClickListener() {
@@ -122,7 +122,6 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
             }
         });
         buttonAsk.setOnClickListener(new Click());
-        buttonCall.setOnClickListener(new Click());
         more.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -273,10 +272,7 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
             DateFormat dateFormat = new DateFormat();
             question.setTime(String.valueOf(dateFormat.format("hh:mm a MMM-dd-yyyy", new Date())));
             question.setOwner_id(auth.getCurrentUser().getUid());
-            if(v == buttonAsk)
-                question.setIs_call(false);
-            else if(v == buttonCall)
-                question.setIs_call(true);
+            question.setIs_call(false);
             databaseReference.child(questionId).setValue(question).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
