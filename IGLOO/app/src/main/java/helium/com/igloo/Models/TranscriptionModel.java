@@ -3,6 +3,7 @@ package helium.com.igloo.Models;
 public class TranscriptionModel {
     private String word;
     private int time;
+    private int position;
 
     public TranscriptionModel(String word, int time) {
         this.word = word;

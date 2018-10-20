@@ -136,7 +136,7 @@ public class ViewArchiveActivity extends AppCompatActivity {
                     transcripts.add(new TranscriptionModel(word,time));
                     words.add(word);
                 }
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(ViewArchiveActivity.this,android.R.layout.simple_list_item_1,words);
+                TransciptionAdapter adapter = new TransciptionAdapter(ViewArchiveActivity.this,transcripts);
                 txtTranscriptSearch.setAdapter(adapter);
                playArchive(archiveID);
             }
@@ -233,17 +233,6 @@ public class ViewArchiveActivity extends AppCompatActivity {
                             progressBar.setVisibility(View.GONE);
                             videoView.setBackground(null);
                             videoView.start();
-                            txtTranscriptSearch.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                @Override
-                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                    if(videoView!=null){
-                                        videoView.seekTo(transcripts.get(position).getTime());
-                                        Toast.makeText(ViewArchiveActivity.this,"ang mp dili null"+id, Toast.LENGTH_SHORT).show();
-                                    }else{
-                                        Toast.makeText(ViewArchiveActivity.this,"null ang mp", Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            });
                             Log.e("Opentok Archive", "Archive started");
                         }
                     });
