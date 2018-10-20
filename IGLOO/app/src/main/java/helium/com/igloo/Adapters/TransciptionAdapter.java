@@ -34,7 +34,17 @@ public class TransciptionAdapter extends ArrayAdapter<TranscriptionModel>{
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        return super.getView(position, convertView, parent);
+        if(convertView == null){
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.transcription_layout, parent,false);
+        }
+        TextView txtWord = convertView.findViewById(R.id.txtTransciptionWord);
+        TextView txtTime = convertView.findViewById(R.id.txtTransciptionTime);
+        TranscriptionModel trans = getItem(position);
+        if(trans != null){
+            txtWord.setText(trans.getWord());
+            txtTime.setText(trans.getTime()+"");
+        }
+        return convertView;
     }
 
     private Filter filter = new Filter() {
