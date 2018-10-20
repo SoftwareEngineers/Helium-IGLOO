@@ -128,26 +128,14 @@ public class PendingLectureAdapter extends RecyclerView.Adapter<PendingLectureAd
         lectureViewHolder.textTitle.setText(p.getTitle());
         lectureViewHolder.textViews.setText(String.valueOf(p.getViews()));
 
-        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users");
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        final FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef1 = storage.getReferenceFromUrl("gs://helium-igloo0830.appspot.com/images/").child(p.getThumbnail());
+        final long ONE_MEGABYTE = 1024 * 1024;
+        storageRef1.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                user = dataSnapshot.child(auth.getCurrentUser().getUid()).getValue(UserModel.class);
-                final FirebaseStorage storage = FirebaseStorage.getInstance();
-                StorageReference storageRef1 = storage.getReferenceFromUrl("gs://helium-igloo0830.appspot.com/images/").child(user.getProfileUrl());
-                final long ONE_MEGABYTE = 1024 * 1024;
-                storageRef1.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                    @Override
-                    public void onSuccess(byte[] bytes) {
-                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                        lectureViewHolder.img_lecture.setImageBitmap(bitmap);
-                    }
-                });
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
+            public void onSuccess(byte[] bytes) {
+                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                lectureViewHolder.img_lecture.setImageBitmap(bitmap);
             }
         });
 
@@ -219,7 +207,7 @@ public class PendingLectureAdapter extends RecyclerView.Adapter<PendingLectureAd
                 try {
                     String url;
                     url= response.getString("url");
-                    //Toast.makeText(getApplicationContext(),url,Toast.LENGTH_LONG).show();
+                    //Toast.makeText(context,url,Toast.LENGTH_LONG).show();
                     Log.d("Sample",url);
 
                     DownloadVideoFromWeb(url);
@@ -296,14 +284,6 @@ public class PendingLectureAdapter extends RecyclerView.Adapter<PendingLectureAd
                 public void onFinish() {
                     AudioExtractiondialog.dismiss();
                     Toast.makeText(context, "Extraction Success : ", Toast.LENGTH_LONG).show();
-                    File video = new File(sdCard.getAbsolutePath(),"Iglo/video.mp4");
-                    if (video.exists()){
-                        try {
-                            video.getCanonicalFile().delete();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
                     Recognize();
 
                 }
@@ -432,7 +412,7 @@ public class PendingLectureAdapter extends RecyclerView.Adapter<PendingLectureAd
                 Toast.makeText(context, "Download error: " + result, Toast.LENGTH_LONG).show();
             else {
                 File video = new File(sdCard.getAbsolutePath(),"Iglo/video.mp4");
-                Toast.makeText(context, "Download success: " + result, Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "Download success: ", Toast.LENGTH_LONG).show();
                 ExtractAudio(video);
 
             }
@@ -488,7 +468,19 @@ public class PendingLectureAdapter extends RecyclerView.Adapter<PendingLectureAd
                 reference.child("available").setValue(true);
                 reference.child("transcription").setValue(transcribedText.trim());
                 reference.child("is_transcribed").setValue(true);
-                Toast.makeText(context,"transcribe", Toast.LENGTH_LONG).show();
+                Toast.makeText(context,"transcribed", Toast.LENGTH_LONG).show();
+
+                audio.getCanonicalFile().delete();
+                File video = new File(sdCard.getAbsolutePath(),"Iglo/video.mp4");
+                if (video.exists()){
+                    try {
+                        video.getCanonicalFile().delete();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+
 
             }catch (Exception e){
                 Toast.makeText(context,e.toString(),Toast.LENGTH_LONG).show();
