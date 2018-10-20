@@ -2,62 +2,71 @@ package helium.com.igloo.Adapters;
 
 import android.content.Context;
 import android.media.MediaPlayer;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Filter;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 import java.util.List;
 import helium.com.igloo.Models.TranscriptionModel;
 import helium.com.igloo.R;
 
-public class TransciptionAdapter extends RecyclerView.Adapter<TransciptionAdapter.TranscriptionViewHolder>{
+public class TransciptionAdapter extends ArrayAdapter<TranscriptionModel>{
+    private List<TranscriptionModel> transcriptionModelList;
 
-    private List<TranscriptionModel> transcriptions;
-    private Context context;
-    private MediaPlayer mp;
-
-    public TransciptionAdapter(List<TranscriptionModel> transcriptions, Context context , MediaPlayer mp) {
-        this.transcriptions = transcriptions;
-        this.context = context;
-        this.mp = mp;
+    public TransciptionAdapter(@NonNull Context context, @NonNull List<TranscriptionModel> transcriptList) {
+        super(context,0, transcriptList);
+        transcriptionModelList = new ArrayList<>();
     }
 
+    @NonNull
     @Override
-    public TranscriptionViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        final View itemView = LayoutInflater.
-                from(context).
-                inflate(R.layout.transcription_layout, parent, false);
-        return new TranscriptionViewHolder(itemView);
+    public Filter getFilter() {
+        return filter;
     }
 
+    @NonNull
     @Override
-    public void onBindViewHolder(final TranscriptionViewHolder holder, int position) {
-        final TranscriptionModel trans = transcriptions.get(position);
-        holder.transcriptionWord.setText(trans.getWord());
-        holder.transcriptionTime.setText(trans.getTime()+"");
-        holder.v.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mp.seekTo(trans.getTime());
+    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        return super.getView(position, convertView, parent);
+    }
+
+    private Filter filter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            FilterResults results = new FilterResults();
+            List<TranscriptionModel> suggestions = new ArrayList<>();
+            if(constraint == null || constraint.length() == 0){
+                suggestions.addAll(transcriptionModelList);
+            }else{
+                String filterPattern = constraint.toString().toLowerCase().trim();
+                for(TranscriptionModel trans : transcriptionModelList){
+                    if(trans.getWord().toLowerCase().trim().contains(filterPattern)){
+                        suggestions.add(trans);
+                    }
+                }
             }
-        });
-    }
-
-    @Override
-    public int getItemCount() {
-        return transcriptions.size();
-    }
-
-    public class TranscriptionViewHolder extends RecyclerView.ViewHolder{
-        protected TextView transcriptionWord;
-        protected TextView transcriptionTime;
-        protected View v;
-        public TranscriptionViewHolder(View itemView) {
-            super(itemView);
-            v = itemView;
-            transcriptionWord = itemView.findViewById(R.id.txtTransciptionWord);
-            transcriptionTime = itemView.findViewById(R.id.txtTransciptionTime);
+            results.values = suggestions;
+            results.count = suggestions.size();
+            return results;
         }
-    }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            clear();
+            addAll((List) results.values);
+            notifyDataSetChanged();
+        }
+
+        @Override
+        public CharSequence convertResultToString(Object resultValue) {
+            return ((TranscriptionModel) resultValue).getWord();
+        }
+    };
 }

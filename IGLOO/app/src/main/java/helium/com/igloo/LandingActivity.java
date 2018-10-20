@@ -50,9 +50,6 @@ public class LandingActivity extends RequestPermission {
 
                 try{
                     sleep(3000);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        checkAppPermission();
-
                     if (check() && checkPermissions()) {
                         loadPreferences();
 
@@ -68,7 +65,6 @@ public class LandingActivity extends RequestPermission {
                                 R.string.permision_message, REQUEST_PERMISSION);
                        }
                     }
-                }
                 catch(InterruptedException ie){
                     ie.printStackTrace();
                 }

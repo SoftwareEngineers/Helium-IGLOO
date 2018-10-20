@@ -10,6 +10,9 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.MediaController;
 import android.support.v7.app.AppCompatActivity;
@@ -32,6 +35,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ThrowOnExtraProperties;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -77,6 +81,8 @@ public class ViewArchiveActivity extends AppCompatActivity {
     private TransciptionAdapter transciptionAdapter;
     private String transcribedText;
     private double numberOfSubscribers = 0;
+    private AutoCompleteTextView txtTranscriptSearch;
+    private MediaPlayer mediaPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +104,8 @@ public class ViewArchiveActivity extends AppCompatActivity {
         mLecturer = (CircleImageView)findViewById(R.id.img_owner);
         mSubscribe = (Button) findViewById(R.id.btn_archive_subscribe);
         mUnsubscribe = (Button) findViewById(R.id.btn_archive_unsubscribe);
-
+        txtTranscriptSearch = findViewById(R.id.txtArchiveSearch);
+        
         auth = FirebaseAuth.getInstance();
 
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("");
@@ -121,6 +128,20 @@ public class ViewArchiveActivity extends AppCompatActivity {
                         videoView.setBackground(bitmapDrawable);
                     }
                 });
+                transcribedText = lecture.getTranscription();
+                StringTokenizer st = new StringTokenizer(transcribedText," ");
+                transcripts = new ArrayList<>();
+                List<String> words = new ArrayList<>();
+                String word;
+                int time = 0;
+                while (st.hasMoreElements()){
+                    word = st.nextElement().toString();
+                    time = Integer.parseInt(st.nextElement().toString());
+                    transcripts.add(new TranscriptionModel(word,time));
+                    words.add(word);
+                }
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(ViewArchiveActivity.this,android.R.layout.simple_list_item_1,words);
+                txtTranscriptSearch.setAdapter(adapter);
                playArchive(archiveID);
             }
 
@@ -239,31 +260,29 @@ public class ViewArchiveActivity extends AppCompatActivity {
                 try {
                     mediaController = new MediaController(ViewArchiveActivity.this);
                     mediaController.setAnchorView(videoView);
-                    Uri video = Uri.parse(response.getString("url"));
+                    final Uri video = Uri.parse(response.getString("url"));
 
                     Log.e("Opentok Archive", "Archive starting");
                     videoView.setMediaController(mediaController);
                     videoView.setVideoURI(video);
-
                     videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
 
-                        public void onPrepared(MediaPlayer mp) {
-                            transcribedText = lecture.getTranscription();
-                            StringTokenizer st = new StringTokenizer(transcribedText," ");
-                            mRecycleViewTranscripts = findViewById(R.id.rec_questions);
-                            transcripts = new ArrayList<>();
-                            while (st.hasMoreElements()){
-                                transcripts.add(new TranscriptionModel(st.nextElement().toString(),Integer.parseInt(st.nextElement().toString())));
-                            }
-                            transciptionAdapter = new TransciptionAdapter(transcripts, ViewArchiveActivity.this, mp);
-                            mRecycleViewTranscripts.setAdapter(transciptionAdapter);
-                            LinearLayoutManager lm = new LinearLayoutManager(ViewArchiveActivity.this);
-                            lm.setOrientation(LinearLayoutManager.VERTICAL);
-                            mRecycleViewTranscripts.setLayoutManager(lm);
+                        public void onPrepared(final MediaPlayer mp) {
                             questionAdapter.getMediaPlayer(mp);
                             progressBar.setVisibility(View.GONE);
                             videoView.setBackground(null);
                             videoView.start();
+                            txtTranscriptSearch.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                    if(videoView!=null){
+                                        videoView.seekTo(transcripts.get(position).getTime());
+                                        Toast.makeText(ViewArchiveActivity.this,"ang mp dili null"+id, Toast.LENGTH_SHORT).show();
+                                    }else{
+                                        Toast.makeText(ViewArchiveActivity.this,"null ang mp", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
                             Log.e("Opentok Archive", "Archive started");
                         }
                     });
