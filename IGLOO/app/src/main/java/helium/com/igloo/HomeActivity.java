@@ -368,9 +368,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
         else if (id == R.id.payment) {
             startActivity(new Intent(HomeActivity.this, PaymentActivity.class));
+            overridePendingTransition(R.transition.slide_in_right,R.transition.slide_out_left);
         }
         else {
             startActivity(new Intent(HomeActivity.this, SettingsActivity.class));
+            overridePendingTransition(R.transition.slide_in_right,R.transition.slide_out_left);
         }
 
         mDrawer.closeDrawer(GravityCompat.START);
