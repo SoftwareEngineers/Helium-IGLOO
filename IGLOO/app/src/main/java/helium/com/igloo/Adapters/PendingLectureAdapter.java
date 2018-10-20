@@ -74,6 +74,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.util.List;
 
@@ -245,7 +246,6 @@ public class PendingLectureAdapter extends RecyclerView.Adapter<PendingLectureAd
     private void ExtractAudio(File video) {
         try {
             File audio = new File(sdCard.getAbsolutePath(), "Iglo/audio.flac");
-
             if (audio.exists()) {
                 audio.getCanonicalFile().delete();
             }
@@ -440,7 +440,7 @@ public class PendingLectureAdapter extends RecyclerView.Adapter<PendingLectureAd
     private void Recognize(){
         transcribedText = "";
         try {
-            File audio = new File(sdCard.getAbsolutePath(), "Iglo/audio.flac");
+            File audio = new File(sdCard.getAbsolutePath()+"/Iglo/audio.flac");
             try{
                 CredentialsProvider credentialsProvider = FixedCredentialsProvider.create(ServiceAccountCredentials.fromStream(context.getResources().openRawResource(R.raw.credentials)));
                 SpeechSettings settings = SpeechSettings.newBuilder().setCredentialsProvider(credentialsProvider).build();
@@ -449,13 +449,11 @@ public class PendingLectureAdapter extends RecyclerView.Adapter<PendingLectureAd
                         .setConfig(RecognitionConfig.newBuilder()
                                 .setEncoding(RecognitionConfig.AudioEncoding.FLAC)
                                 .setLanguageCode("en-US")
-                                .setEnableWordTimeOffsets(true)
                                 .build())
                         .setAudio(RecognitionAudio.newBuilder()
                                 .setContent(ByteString.readFrom(new FileInputStream(audio)))
                                 .build())
                         .build();
-
                 // Use non-blocking call for getting file transcription
                 OperationFuture<LongRunningRecognizeResponse, LongRunningRecognizeMetadata> response =
                         client.longRunningRecognizeAsync(request);
