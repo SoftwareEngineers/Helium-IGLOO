@@ -96,6 +96,7 @@ public class CreatePublicLectureActivity extends AppCompatActivity {
                     lectureModel.setLive(false);
                     lectureModel.setIs_transcribed(false);
                     lectureModel.setTranscription("");
+                    lectureModel.setUploadable(false);
 
                     StorageReference mStorageRef = storage.getReferenceFromUrl("gs://helium-igloo0830.appspot.com/images/");;
                     if (selectedImage != null) {

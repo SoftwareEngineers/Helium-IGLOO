@@ -41,21 +41,32 @@
     <string name="create_public">Create public lecture</string>
     <string name="create_private">Create private lecture</string>
     <string name="questions">QUESTIONS</string>
-    <string name ="current_balance">Current Balance</string>
-    <string name ="account_balance">0</string>
+    <string name="current_balance">Current Balance</string>
+    <string name="account_balance">0</string>
     <string name="subscribe">SUBSCRIBE</string>
     <string name="start">START</string>
+
     <string name ="top_up_amount">50</string>
     <string name ="top_up_label">Top up amount</string>
     <string name ="money_to_token_dialog">Are you sure that you want \nto exchange your cash into tokens?</string>
     <string name ="token_to_money_dialog">Are you sure that you want \nto exchange your tokens into cash?</string>
     <string name ="token_label">Topup Tokens</string>
     <string name ="cash_label">Convert to cash</string>
+    <string name="question_to_rate">Lecture has ended. \nWould you like to rate this Lecturer?</string>
+    <string name="label_lecturer_name">Lecturer Name</string>
+    <string name="button_label">Submit</string>
+    <string name="label_lecturer_description">Description</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="subscriber">Subscribers</string>
     <string name="lectures">Lectures</string>
     <string name="tokens">Tokens</string>
+    <string name="label_rating_outstanding">Outstanding</string>
+    <string name="label_rating_verygood">Very Good</string>
+    <string name="label_rating_average">Average</string>
+    <string name="label_rating_notgood">Not Good</string>
+    <string name="label_rating_terrible">Terrible</string>
     <string name="permision_message">Please enable all permissions</string>
     <string name="unsubscribe">UNSUBSCRIBE</string>
 </resources>

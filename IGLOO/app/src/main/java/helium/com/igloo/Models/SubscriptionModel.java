@@ -8,6 +8,7 @@ public class SubscriptionModel {
     private String status;
 
     public  SubscriptionModel(){}
+
     public SubscriptionModel(String streamer, String subscriber, String streamer_id, String subscriber_id , String status) {
         this.streamer = streamer;
         this.subscriber = subscriber;
