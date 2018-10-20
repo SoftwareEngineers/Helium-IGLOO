@@ -15,4 +15,5 @@
     <color name="shadow">#dddddd</color>
     <color name="backlight">#4e4c5264</color>
     <color name="line">#E2E8ED</color>
+    <color name="bluishGray">#F2F6F8</color>
 </resources>

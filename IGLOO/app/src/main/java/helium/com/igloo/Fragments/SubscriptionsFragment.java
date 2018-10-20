@@ -60,6 +60,9 @@ public class SubscriptionsFragment extends Fragment {
         userReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
+                mSubscriptions.clear();
+
                 for (final DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                     SubscriptionModel subscriptions = new SubscriptionModel();
                     subscriptions = childSnapshot.getValue(SubscriptionModel.class);

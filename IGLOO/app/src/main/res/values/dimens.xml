@@ -8,8 +8,8 @@
     <dimen name="tutorialTextBox_width">290dp</dimen>
     <dimen name="sixteen">16sp</dimen>
     <dimen name="eighteen">18sp</dimen>
-    <dimen name="thirty">30sp</dimen>
-    <dimen name="twentyfive">25sp</dimen>
+    <dimen name="thirty">30dp</dimen>
+    <dimen name="twentyfive">25dp</dimen>
     <dimen name="pagerHeight">595dp</dimen>
     <dimen name="sliderWidth">100dp</dimen>
     <dimen name="sliderHeight">45dp</dimen>
