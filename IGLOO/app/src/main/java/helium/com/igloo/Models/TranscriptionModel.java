@@ -3,10 +3,12 @@ package helium.com.igloo.Models;
 public class TranscriptionModel {
     private String word;
     private int time;
+    private int position;
 
-    public TranscriptionModel(String word, int time) {
+    public TranscriptionModel(String word, int time, int position) {
         this.word = word;
         this.time = time;
+        this.position = position;
     }
 
     public String getWord() {
@@ -23,5 +25,13 @@ public class TranscriptionModel {
 
     public void setTime(int time) {
         this.time = time;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
     }
 }

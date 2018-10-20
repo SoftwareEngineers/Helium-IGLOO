@@ -104,7 +104,7 @@ public class ViewArchiveActivity extends AppCompatActivity {
         mLecturer = (CircleImageView)findViewById(R.id.img_owner);
         mSubscribe = (Button) findViewById(R.id.btn_archive_subscribe);
         mUnsubscribe = (Button) findViewById(R.id.btn_archive_unsubscribe);
-        txtTranscriptSearch = findViewById(R.id.txtArchiveSearch);
+        txtTranscriptSearch = findViewById(R.id.txtVideoSearch);
 
         auth = FirebaseAuth.getInstance();
 
@@ -134,10 +134,11 @@ public class ViewArchiveActivity extends AppCompatActivity {
                 List<String> words = new ArrayList<>();
                 String word;
                 int time = 0;
+                int i = 0;
                 while (st.hasMoreElements()){
                     word = st.nextElement().toString();
                     time = Integer.parseInt(st.nextElement().toString());
-                    transcripts.add(new TranscriptionModel(word,time));
+                    transcripts.add(new TranscriptionModel(word,time,i++));
                     words.add(word);
                 }
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(ViewArchiveActivity.this,android.R.layout.simple_list_item_1,words);
@@ -272,17 +273,6 @@ public class ViewArchiveActivity extends AppCompatActivity {
                             progressBar.setVisibility(View.GONE);
                             videoView.setBackground(null);
                             videoView.start();
-                            txtTranscriptSearch.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                @Override
-                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                    if(videoView!=null){
-                                        videoView.seekTo(transcripts.get(position).getTime());
-                                        Toast.makeText(ViewArchiveActivity.this,"ang mp dili null"+id, Toast.LENGTH_SHORT).show();
-                                    }else{
-                                        Toast.makeText(ViewArchiveActivity.this,"null ang mp", Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            });
                             Log.e("Opentok Archive", "Archive started");
                         }
                     });

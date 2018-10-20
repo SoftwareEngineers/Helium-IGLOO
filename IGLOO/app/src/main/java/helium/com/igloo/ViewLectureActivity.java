@@ -83,7 +83,6 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
         progressBar.setVisibility(View.VISIBLE);
         textLectureTitle = findViewById(R.id.txt_owner);
         viewLecture =  findViewById(R.id.view_lecture);
-        textLectureDescription = findViewById(R.id.txt_lecture_description);
         textQuestion = findViewById(R.id.txt_question);
         textLectureOwner = findViewById(R.id.txt_lecture_owner);
         details = findViewById(R.id.lyout_more_details);
