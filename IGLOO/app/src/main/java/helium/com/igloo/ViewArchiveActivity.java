@@ -131,7 +131,7 @@ public class ViewArchiveActivity extends AppCompatActivity {
                 transcribedText = lecture.getTranscription();
                 StringTokenizer st = new StringTokenizer(transcribedText," ");
                 transcripts = new ArrayList<>();
-                List<String> words = new ArrayList<>();
+                final List<String> words = new ArrayList<>();
                 String word;
                 int time = 0;
                 int i = 0;
@@ -143,6 +143,18 @@ public class ViewArchiveActivity extends AppCompatActivity {
                 }
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(ViewArchiveActivity.this,android.R.layout.simple_list_item_1,words);
                 txtTranscriptSearch.setAdapter(adapter);
+                txtTranscriptSearch.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        int index =words.indexOf(parent.getItemAtPosition(position));
+                        int time = transcripts.get(index).getTime();
+                        if(mediaPlayer!=null){
+                            mediaPlayer.seekTo(time);
+                        }
+                        Toast.makeText(ViewArchiveActivity.this,transcripts.get(index).getTime()+"",Toast.LENGTH_LONG).show();
+
+                    }
+                });
                playArchive(archiveID);
             }
 
@@ -269,6 +281,7 @@ public class ViewArchiveActivity extends AppCompatActivity {
                     videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
 
                         public void onPrepared(final MediaPlayer mp) {
+                            mediaPlayer = mp;
                             questionAdapter.getMediaPlayer(mp);
                             progressBar.setVisibility(View.GONE);
                             videoView.setBackground(null);
