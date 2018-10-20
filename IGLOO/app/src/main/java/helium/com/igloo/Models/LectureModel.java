@@ -20,6 +20,7 @@ public class LectureModel {
     private Boolean uploadable;
     private int views;
 
+
     public LectureModel(String id, String owner_id, String title, String description, String password, Boolean isPublic, Boolean isAvailable, Boolean isLive, String time_created, String session_id, String archive_id, String owner_name,Boolean is_transcribed, String transcription,int views, Boolean uploadable) {
 
         this.id = id;

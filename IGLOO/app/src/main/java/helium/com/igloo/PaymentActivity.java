@@ -82,7 +82,6 @@ public class PaymentActivity extends AppCompatActivity {
 
     }
 
-
     private double computeMoneyFromTokens(){
         int tokens = Integer.parseInt(mAccount_balance.getText().toString());
         int cashAmount = Integer.parseInt(mTopup_amount.getText().toString());
@@ -110,7 +109,7 @@ public class PaymentActivity extends AppCompatActivity {
                 .setPositiveButton("OK",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                //UpdateUserTokens(5);
+
                                 if (command == 1){
 
 
@@ -161,5 +160,11 @@ public class PaymentActivity extends AppCompatActivity {
         }
         userRef.child("tokens").setValue(final_balance);
         mAccount_balance.setText(String.valueOf((int)final_balance));
+    }
+
+    @Override
+    public void onBackPressed() {
+        PaymentActivity.this.finish();
+        super.onBackPressed();
     }
 }
