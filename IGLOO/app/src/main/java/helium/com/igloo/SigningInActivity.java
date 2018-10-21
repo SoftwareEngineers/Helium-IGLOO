@@ -56,7 +56,7 @@ public class SigningInActivity extends AppCompatActivity {
         mProgressDialog = new ProgressDialog(this);
 
         mPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        //mPassword.setTextAppearance(R.style.passwordFields);
+        mPassword.setTextAppearance(R.style.passwordFields);
         mSignInButton.setEnabled(false);
 
         mEmail.addTextChangedListener(new Change());

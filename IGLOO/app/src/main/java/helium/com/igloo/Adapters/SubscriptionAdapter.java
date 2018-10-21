@@ -63,7 +63,7 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String name = dataSnapshot.child("name").getValue(String.class);
-                double rating = dataSnapshot.child("rating").getValue(Double.class);
+                double rating = dataSnapshot.child("totalRatings").getValue(Double.class);
                 String url = dataSnapshot.child("profileUrl").getValue(String.class);
 
                 subscriptionViewHolder.userName.setText(name);

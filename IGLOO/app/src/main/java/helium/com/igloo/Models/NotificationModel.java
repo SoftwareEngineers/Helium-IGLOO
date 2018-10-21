@@ -25,9 +25,6 @@ public class NotificationModel implements Serializable{
         this.notification_description = notification_description;
     }
 
-
-
-
     public String getStreamer() {
         return streamer;
     }

@@ -131,6 +131,7 @@ public class CreatePrivateLectureActivity extends AppCompatActivity {
                                 final String key = mDatabase.push().getKey();
                                 lectureModel.setId(key);
                                 lectureModel.setOwner_name(auth.getCurrentUser().getDisplayName());
+
                                 mDatabase.child(key).setValue(lectureModel).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {

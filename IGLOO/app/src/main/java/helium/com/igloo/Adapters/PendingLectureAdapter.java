@@ -136,7 +136,7 @@ public class PendingLectureAdapter extends RecyclerView.Adapter<PendingLectureAd
     public void onBindViewHolder(final PendingLectureViewHolder lectureViewHolder, int i) {
         final LectureModel p = lectures.get(i);
         lectureViewHolder.textTitle.setText(p.getTitle());
-        lectureViewHolder.textViews.setText(String.valueOf(p.getViews()));
+        lectureViewHolder.textViews.setText(String.valueOf(p.getViews()) + " VIEWS");
 
         final FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef1 = storage.getReferenceFromUrl("gs://helium-igloo0830.appspot.com/images/").child(p.getThumbnail());

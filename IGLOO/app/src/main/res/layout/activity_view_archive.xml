@@ -49,11 +49,12 @@
                     android:layout_marginEnd="8dp"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
-                    android:hint="Search"
+                    android:hint="@string/search"
+                    android:singleLine="true"
                     android:textColor="@color/white"
-                    android:textStyle="bold"
                     android:completionThreshold="1"
                     android:textColorHint="@color/white"
+                    android:fontFamily="@font/montserrat"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/view_lecture" />
@@ -61,37 +62,62 @@
             </android.support.constraint.ConstraintLayout>
 
             <LinearLayout
+                android:id="@+id/layout_more_button"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
                 android:paddingTop="10dp"
-                android:paddingStart="20dp"
-                android:paddingBottom="10dp">
+                android:paddingStart="15dp"
+                android:paddingEnd="0dp"
+                android:paddingBottom="10dp"
+                android:gravity="start|center"
+                android:background="@drawable/ripple_effect">
 
-                <TextView
-                    android:id="@+id/txt_title"
+                <LinearLayout
+                    android:layout_width="305dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginEnd="5dp">
+
+                    <TextView
+                        android:id="@+id/txt_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat"
+                        android:textColor="@color/textColor"
+                        android:textSize="@dimen/sixteen" />
+
+                    <TextView
+                        android:id="@+id/txt_views"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat"
+                        android:textColor="@color/lightGrey"
+                        android:textSize="@dimen/fourteen" />
+
+                </LinearLayout>
+
+                <ImageButton
+                    android:id="@+id/archive_arrow_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat"
-                    android:textColor="@color/textColor"
-                    android:textSize="@dimen/sixteen" />
-
-                <TextView
-                    android:id="@+id/txt_views"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat"
-                    android:textColor="@color/lightGrey"
-                    android:textSize="@dimen/fourteen" />
+                    android:src="@drawable/ic_arrow_drop_down"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="@string/nothing" />
 
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/line"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:background="@color/bluishGray"
-                android:gravity="left|center"
+                android:gravity="start|center"
                 android:orientation="horizontal"
                 android:padding="15dp">
 
@@ -101,10 +127,10 @@
                     android:layout_height="40dp" />
 
                 <LinearLayout
-                    android:layout_width="180dp"
+                    android:layout_width="165dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
                     android:orientation="vertical">
 
                     <TextView
@@ -147,6 +173,41 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/layout_more"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="10dp"
+                android:paddingStart="15dp"
+                android:paddingEnd="0dp"
+                android:paddingBottom="10dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/publish_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat"
+                    android:textColor="@color/lightGrey"
+                    android:textSize="@dimen/twelve"
+                    android:layout_marginBottom="10dp"/>
+
+                <TextView
+                    android:id="@+id/archive_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat"
+                    android:textColor="@color/lightGrey"
+                    android:textSize="@dimen/fourteen" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/line"/>
+
         </LinearLayout>
 
         <TextView
@@ -157,20 +218,7 @@
             android:textColor="@color/colorPrimary"
             android:textSize="@dimen/fourteen"
             android:layout_marginStart="15dp"
-            android:layout_marginTop="15dp"/>
-
-        <AutoCompleteTextView
-            android:id="@+id/txtArchiveSearch"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:hint="Search"
-            android:completionThreshold="1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/archive_back_button"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_marginTop="5dp"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rec_questions"

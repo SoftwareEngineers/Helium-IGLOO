@@ -49,7 +49,7 @@ public class LandingActivity extends RequestPermission {
             public void run(){
 
                 try{
-                    sleep(3000);
+                    sleep(2000);
                     if (check() && checkPermissions()) {
                         loadPreferences();
 
