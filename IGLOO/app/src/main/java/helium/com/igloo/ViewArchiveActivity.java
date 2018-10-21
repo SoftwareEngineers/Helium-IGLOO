@@ -10,10 +10,14 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.MediaController;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -75,6 +79,11 @@ public class ViewArchiveActivity extends AppCompatActivity {
     private CircleImageView mLecturer;
     private Button mSubscribe;
     private Button mUnsubscribe;
+    private ImageButton mMore;
+    private Animation rotate_forward, rotate_backward;
+    private Animation slide_up, slide_down;
+    private LinearLayout mMoreButton, mMoreLayout;
+    private TextView mPublishedDate, mDescription;
 
     private RecyclerView mRecycleViewTranscripts;
     private List<TranscriptionModel> transcripts;
@@ -83,6 +92,7 @@ public class ViewArchiveActivity extends AppCompatActivity {
     private double numberOfSubscribers = 0;
     private AutoCompleteTextView txtTranscriptSearch;
     private MediaPlayer mediaPlayer;
+    private boolean isMoreOpen = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +115,33 @@ public class ViewArchiveActivity extends AppCompatActivity {
         mSubscribe = (Button) findViewById(R.id.btn_archive_subscribe);
         mUnsubscribe = (Button) findViewById(R.id.btn_archive_unsubscribe);
         txtTranscriptSearch = findViewById(R.id.txtVideoSearch);
+        mMore = (ImageButton) findViewById(R.id.archive_arrow_button);
+        rotate_forward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_forward);
+        rotate_backward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_backward);
+        slide_up = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.slide_up);
+        slide_down = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.slide_down);
+        mMoreButton = (LinearLayout) findViewById(R.id.layout_more_button);
+        mMoreLayout = (LinearLayout) findViewById(R.id.layout_more);
+        mPublishedDate = findViewById(R.id.publish_date);
+        mDescription = findViewById(R.id.archive_description);
+
+        mMoreButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!isMoreOpen){
+                    mMore.startAnimation(rotate_forward);
+                    mMoreLayout.setVisibility(View.VISIBLE);
+                    mMoreLayout.startAnimation(slide_down);
+                    isMoreOpen = true;
+                }
+                else{
+                    mMore.startAnimation(rotate_backward);
+                    mMoreLayout.startAnimation(slide_down);
+                    mMoreLayout.setVisibility(View.GONE);
+                    isMoreOpen = false;
+                }
+            }
+        });
 
         auth = FirebaseAuth.getInstance();
 
@@ -116,7 +153,30 @@ public class ViewArchiveActivity extends AppCompatActivity {
                 lecture = dataSnapshot.child(mKey).getValue(LectureModel.class);
                 textTitle.setText(lecture.getTitle());
                 textViews.setText(lecture.getViews() + " Views");
+                mPublishedDate.setText("Published on "+ lecture.getTime_created());
+                mDescription.setText(lecture.getDescription());
+
                 String url = dataSnapshot.child(mKey).child("thumbnail").getValue(String.class);
+
+                if(!lecture.getOwner_id().equals(auth.getCurrentUser().getUid())) {
+                    final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Subscriptions");
+                    final DatabaseReference userReference = databaseReference.child(auth.getCurrentUser().getUid());
+                    userReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.hasChild(lecture.getOwner_id())) {
+                                mUnsubscribe.setVisibility(View.VISIBLE);
+                            } else {
+                                mSubscribe.setVisibility(View.VISIBLE);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                }
 
                 StorageReference storageRef = storage.getReferenceFromUrl("gs://helium-igloo0830.appspot.com/images/").child(url);
                 final long ONE_MEGABYTE = 1024 * 1024;
@@ -169,7 +229,7 @@ public class ViewArchiveActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 UserModel user = dataSnapshot.child(lecture.getOwner_id()).getValue(UserModel.class);
                 textOwner.setText(user.getName());
-                textSubscribers.setText(user.getNumberOfSubscribers() + " Subscribers");
+                textSubscribers.setText((int)user.getNumberOfSubscribers() + " subscribers");
 
                 StorageReference storageRef = storage.getReferenceFromUrl("gs://helium-igloo0830.appspot.com/images/").child(user.getProfileUrl());
                 final long ONE_MEGABYTE = 1024 * 1024;
@@ -206,7 +266,7 @@ public class ViewArchiveActivity extends AppCompatActivity {
                         numberOfSubscribers = dataSnapshot.child("numberOfSubscribers").getValue(Double.class);
 
                         numberOfSubscribers++;
-                        textSubscribers.setText(Integer.toString((int)numberOfSubscribers));
+                        textSubscribers.setText(Integer.toString((int)numberOfSubscribers) + " subscribers");
                         profileReference.child("numberOfSubscribers").setValue(numberOfSubscribers);
                         mSubscribe.setVisibility(View.GONE);
                         mUnsubscribe.setVisibility(View.VISIBLE);
@@ -236,7 +296,7 @@ public class ViewArchiveActivity extends AppCompatActivity {
                         numberOfSubscribers = dataSnapshot.child("numberOfSubscribers").getValue(Double.class);
 
                         numberOfSubscribers--;
-                        textSubscribers.setText(Integer.toString((int)numberOfSubscribers));
+                        textSubscribers.setText(Integer.toString((int)numberOfSubscribers)  + " subscribers");
                         profileReference.child("numberOfSubscribers").setValue(numberOfSubscribers);
                         mUnsubscribe.setVisibility(View.INVISIBLE);
                         mSubscribe.setVisibility(View.VISIBLE);
@@ -258,7 +318,6 @@ public class ViewArchiveActivity extends AppCompatActivity {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecycleViewQuestions.setLayoutManager(layoutManager);
         loadQuestions();
-        isSubscribe();
     }
 
 
@@ -338,27 +397,6 @@ public class ViewArchiveActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         finish();
-    }
-
-    private void isSubscribe(){
-        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Subscriptions");
-        final DatabaseReference userReference = databaseReference.child(auth.getCurrentUser().getUid());
-
-        userReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.hasChild(lecture.getOwner_id())){
-                    mUnsubscribe.setVisibility(View.VISIBLE);
-                }
-                else {
-                    mSubscribe.setVisibility(View.VISIBLE);
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
     }
 
 }

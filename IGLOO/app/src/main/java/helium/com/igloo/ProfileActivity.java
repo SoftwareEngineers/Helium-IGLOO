@@ -115,7 +115,7 @@ public class ProfileActivity extends AppCompatActivity {
                 String url = dataSnapshot.child("profileUrl").getValue(String.class);
                 double subscribers = dataSnapshot.child("numberOfSubscribers").getValue(Double.class);
                 double lectures = dataSnapshot.child("numberOfLectures").getValue(Double.class);
-                double rating = dataSnapshot.child("rating").getValue(Double.class);
+                double rating = dataSnapshot.child("totalRatings").getValue(Double.class);
                 int tokens = dataSnapshot.child("tokens").getValue(Integer.class);
 
                 storage = FirebaseStorage.getInstance();

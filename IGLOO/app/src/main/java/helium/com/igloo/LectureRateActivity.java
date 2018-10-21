@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,37 +26,44 @@ public class LectureRateActivity extends AppCompatActivity {
     private CheckBox mCheckBoxAverage;
     private CheckBox mCheckBoxNotGood;
     private CheckBox mCheckBoxTerrible;
+    private TextView mLectureName;
+
     private boolean isRated;
-    private FirebaseAuth auth;
     private double mTotalRatings;
     private double mLecturerRating;
     private double mNumberofRatings;
     private double mRating;
-    private String owner_id;
+    private String ownerID;
+    private String ownerName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rate_lecture);
+
+        ownerID = getIntent().getExtras().getString("lecturerID");
+        ownerName = getIntent().getExtras().getString("lecturerName");
 
         mCheckBoxOutstanding = findViewById(R.id.rating_outstanding);
         mCheckBoxVeryGood = findViewById(R.id.rating_verygood);
         mCheckBoxAverage = findViewById(R.id.rating_average);
         mCheckBoxNotGood = findViewById(R.id.rating_notgood);
         mCheckBoxTerrible = findViewById(R.id.rating_terrible);
+        mLectureName = findViewById(R.id.rating_lecturer_name);
+
+        mLectureName.setText(ownerName);
+
         mRating = 0;
         mTotalRatings = 0;
         mNumberofRatings = 0;
-        owner_id = getIntent().getExtras().getString("owner_id");
         isRated = false;
-        auth = FirebaseAuth.getInstance();
+
         loadLecturerRatingDetails();
-
-
     }
 
     private void loadLecturerRatingDetails(){
         final DatabaseReference userReference = FirebaseDatabase.getInstance().getReference("Users");
-        final DatabaseReference profilereference = userReference.child(owner_id);
+        final DatabaseReference profilereference = userReference.child(ownerID);
 
         profilereference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -79,7 +87,7 @@ public class LectureRateActivity extends AppCompatActivity {
                 mLecturerRating = getAverageRating(mRating);
 
                 DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users");
-                DatabaseReference userRef = databaseReference.child(owner_id);
+                DatabaseReference userRef = databaseReference.child(ownerID);
 
                 userRef.child("totalRatings").setValue(mLecturerRating);
                 userRef.child("rating").setValue(mTotalRatings);
@@ -113,7 +121,7 @@ public class LectureRateActivity extends AppCompatActivity {
 
         }
         else {
-            Toast.makeText(getApplicationContext(),"please rate first",Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(),"Please rate first",Toast.LENGTH_LONG).show();
         }
     }
 

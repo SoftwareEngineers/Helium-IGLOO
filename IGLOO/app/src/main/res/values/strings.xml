@@ -52,7 +52,7 @@
     <string name="token_to_money_dialog">Are you sure that you want \nto exchange your tokens into cash?</string>
     <string name="token_label">Topup Tokens</string>
     <string name="cash_label">Convert to cash</string>
-    <string name="question_to_rate">Lecture has ended. \nWould you like to rate this Lecturer?</string>
+    <string name="question_to_rate">Lecture has ended.\nWould you like to rate</string>
     <string name="label_lecturer_name">Lecturer Name</string>
     <string name="button_label">Submit rating</string>
     <string name="label_lecturer_description">Description</string>
@@ -73,4 +73,6 @@
     <string name="rate_sub2">as a lecturer?</string>
     <string name="lecturer_rating">Lecturer Rating</string>
     <string name="ask">ASK</string>
+    <string name="search">Search</string>
+    <string name="notification">Notifications</string>
 </resources>

@@ -16,6 +16,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -51,7 +52,7 @@ import helium.com.igloo.Models.SubscriptionModel;
 public class ViewLectureActivity extends AppCompatActivity implements Session.SessionListener {
 
     private Switch more;
-    private ConstraintLayout details;
+    private LinearLayout details;
     private String key;
     private DatabaseReference databaseReference;
     private TextView textLectureTitle;
@@ -59,13 +60,15 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
     private EditText textQuestion;
     private TextView textLectureOwner;
     private ImageView imageViewPrivate;
-    private Button buttonAsk,buttonCall,buttonSubscribe;
+    private Button buttonAsk,buttonSubscribe;
+
     private FirebaseAuth auth;
     private FrameLayout viewLecture;
     private Session mSession;
     private ProgressBar progressBar;
     private Subscriber mSubscriber;
     private LectureModel lectureModel;
+    private String lecturerName;
     private double numberOfSubscribers;
 
     @Override
@@ -88,7 +91,6 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
         details = findViewById(R.id.lyout_more_details);
         imageViewPrivate = findViewById(R.id.img_private);
         buttonAsk = findViewById(R.id.btn_ask);
-        buttonCall = findViewById(R.id.btn_call);
         buttonSubscribe = findViewById(R.id.btn_subscribe);
 
         buttonSubscribe.setOnClickListener(new View.OnClickListener() {
@@ -122,7 +124,6 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
             }
         });
         buttonAsk.setOnClickListener(new Click());
-        buttonCall.setOnClickListener(new Click());
         more.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -139,7 +140,11 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
                 lectureModel = dataSnapshot.child("Lectures").child(key).getValue(LectureModel.class);
                 textLectureTitle.setText(lectureModel.getTitle());
                 textLectureDescription.setText(lectureModel.getDescription());
-                textLectureOwner.setText(dataSnapshot.child("Users").child(lectureModel.getOwnerId()).child("name").getValue(String.class));
+
+                lecturerName = dataSnapshot.child("Users").child(lectureModel.getOwnerId()).child("name").getValue(String.class);
+                textLectureOwner.setText(lecturerName);
+
+
                 if(lectureModel.getPublic()){
                     imageViewPrivate.setVisibility(View.GONE);
                 }
@@ -212,7 +217,7 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
         builder.setView(promptsView);
 
         TextView mPaymentDialog = promptsView.findViewById(R.id.txt_payment_dialog);
-        mPaymentDialog.setText(getString(R.string.question_to_rate));
+        mPaymentDialog.setText(String.format("%s%s ?", getString(R.string.question_to_rate), lecturerName));
 
         builder
                 .setCancelable(false)
@@ -221,7 +226,8 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
                             public void onClick(DialogInterface dialog, int id) {
                                 Toast.makeText(getApplicationContext(),"Yes",Toast.LENGTH_LONG).show();
                                 Intent intent = new Intent(ViewLectureActivity.this,LectureRateActivity.class);
-                                intent.putExtra("owner_id",lectureModel.getOwner_id());
+                                intent.putExtra("lecturerID",lectureModel.getOwner_id());
+                                intent.putExtra("lecturerName", lecturerName);
 
                                 startActivity(intent);
                                 ViewLectureActivity.this.finish();
@@ -270,13 +276,9 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
             question.setLecture(key);
             question.setId(questionId);
             question.setIs_answered(false);
-            DateFormat dateFormat = new DateFormat();
-            question.setTime(String.valueOf(dateFormat.format("hh:mm a MMM-dd-yyyy", new Date())));
+            question.setTime(String.valueOf(DateFormat.format("hh:mm a MMM-dd-yyyy", new Date())));
             question.setOwner_id(auth.getCurrentUser().getUid());
-            if(v == buttonAsk)
-                question.setIs_call(false);
-            else if(v == buttonCall)
-                question.setIs_call(true);
+            question.setIs_call(false);
             databaseReference.child(questionId).setValue(question).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {

@@ -75,10 +75,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private List<String> titles;
 
     private boolean doubleBackToExitPressedOnce = false;
-    private DatabaseReference databaseReference;
-    private List<SubscriptionModel> subscriptionModelList;
-    private SubscriptionModel subscriptionModel;
-    private List<NotificationModel> notifications;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,9 +88,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.setItemBackgroundResource(R.drawable.item_highlight);
 
-        titles = new ArrayList<>(); ////// DATA FOR DISLPAYING SEARCH RESULTS
-        lectures = new ArrayList<>(); ////// DATABASE DATA
-        notifications = new ArrayList<>();
+        titles = new ArrayList<>();
+        lectures = new ArrayList<>();
 
         getTitlesAndIDs();
 
@@ -112,10 +107,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             public void onClick(View v) {
 
                 AlertDialog.Builder mBuilder = new AlertDialog.Builder(HomeActivity.this);
-                View mView = getLayoutInflater().inflate(R.layout.layout_choose_lectute, null);
+                View mView = getLayoutInflater().inflate(R.layout.layout_choose_lecture, null);
 
                 Button buttonPublicLecture = (Button) mView.findViewById(R.id.btn_public_lecture);
                 Button buttonPrivateLecture = (Button) mView.findViewById(R.id.btn_private_lecture);
+                ImageButton close = (ImageButton) mView.findViewById(R.id.close_choosing);
 
                 buttonPublicLecture.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -134,8 +130,15 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 });
 
                 mBuilder.setView(mView);
-                AlertDialog dialog = mBuilder.create();
+                final AlertDialog dialog = mBuilder.create();
                 dialog.show();
+
+                close.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.hide();
+                    }
+                });
             }
         });
 
@@ -156,40 +159,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 }
             }
         };
-
-        subscriptionModelList = new ArrayList<>();
-        databaseReference = FirebaseDatabase.getInstance().getReference("Subscription").child(auth.getCurrentUser().getUid());
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                subscriptionModelList.clear();
-                for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
-                    subscriptionModel = childSnapshot.getValue(SubscriptionModel.class);
-                    if(subscriptionModel.getStatus().equals("pending")){
-                        subscriptionModelList.add(subscriptionModel);
-                    }
-                }
-                for(int i=0;i<subscriptionModelList.size();i++){
-                    Notification noti = new Notification.Builder(HomeActivity.this)
-                            .setContentTitle(subscriptionModelList.get(i).getSubscriber()+" has subscribed to you")
-                            .setContentText("")
-                            .setSmallIcon(R.drawable.ic_coin)
-                            .build();
-                    NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-                    noti.flags |= Notification.FLAG_AUTO_CANCEL;
-                    nm.notify(0,noti);
-                    NotificationModel n = new NotificationModel();
-                    n.setNotification_title(subscriptionModelList.get(i).getSubscriber()+" has subscribed to you");
-                    n.setNotification_description("");
-                    notifications.add(n);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
 
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -241,9 +210,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         if (id == R.id.menu_notification) {
-            Intent i = new Intent(HomeActivity.this,NotificationActivity.class);
-            i.putExtra("notifications",(Serializable) notifications);
-            startActivity(i);
+            startActivity(new Intent(HomeActivity.this,NotificationActivity.class));
             overridePendingTransition(R.transition.slide_in_right,R.transition.slide_out_left);
         }
         else if (id == R.id.menu_search){
@@ -271,8 +238,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 }
             });
             }
-
-
 
         return super.onOptionsItemSelected(item);
     }
@@ -365,10 +330,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.frame_container, new PendingLecturesFragment()).commit();
             setTitle("Pending");
-        }
-        else if (id == R.id.payment) {
-            startActivity(new Intent(HomeActivity.this, PaymentActivity.class));
-            overridePendingTransition(R.transition.slide_in_right,R.transition.slide_out_left);
         }
         else {
             startActivity(new Intent(HomeActivity.this, SettingsActivity.class));
