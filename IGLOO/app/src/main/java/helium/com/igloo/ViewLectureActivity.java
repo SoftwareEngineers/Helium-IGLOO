@@ -2,6 +2,8 @@ package helium.com.igloo;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.constraint.ConstraintLayout;
@@ -35,6 +37,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.opentok.android.OpentokError;
 import com.opentok.android.Session;
 import com.opentok.android.Stream;
@@ -45,6 +49,7 @@ import org.json.JSONObject;
 
 import java.util.Date;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import helium.com.igloo.Models.LectureModel;
 import helium.com.igloo.Models.QuestionModel;
 import helium.com.igloo.Models.SubscriptionModel;
@@ -56,13 +61,14 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
     private String key;
     private DatabaseReference databaseReference;
     private TextView textLectureTitle;
-    private EditText textLectureDescription;
     private EditText textQuestion;
     private TextView textLectureOwner;
     private ImageView imageViewPrivate;
     private Button buttonAsk,buttonSubscribe;
+    private CircleImageView mLivePic;
 
     private FirebaseAuth auth;
+    private FirebaseStorage storage;
     private FrameLayout viewLecture;
     private Session mSession;
     private ProgressBar progressBar;
@@ -80,6 +86,7 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
 
         key = intent.getStringExtra("key");
         auth = FirebaseAuth.getInstance();
+        storage = FirebaseStorage.getInstance();
 
         more = findViewById(R.id.swi_more);
         progressBar = findViewById(R.id.prog_lecture);
@@ -92,6 +99,7 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
         imageViewPrivate = findViewById(R.id.img_private);
         buttonAsk = findViewById(R.id.btn_ask);
         buttonSubscribe = findViewById(R.id.btn_subscribe);
+        mLivePic = findViewById(R.id.live_pic);
 
         buttonSubscribe.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -139,11 +147,34 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
             public void onDataChange(DataSnapshot dataSnapshot) {
                 lectureModel = dataSnapshot.child("Lectures").child(key).getValue(LectureModel.class);
                 textLectureTitle.setText(lectureModel.getTitle());
-                textLectureDescription.setText(lectureModel.getDescription());
 
                 lecturerName = dataSnapshot.child("Users").child(lectureModel.getOwnerId()).child("name").getValue(String.class);
                 textLectureOwner.setText(lecturerName);
 
+                final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users");
+                final DatabaseReference userRef = databaseReference.child(key);
+
+                userRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        String url = dataSnapshot.child("profileUrl").getValue(String.class);
+
+                        StorageReference storageRef = storage.getReferenceFromUrl("gs://helium-igloo0830.appspot.com/images/").child(url);
+                        final long ONE_MEGABYTE = 1024 * 1024;
+                        storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                            @Override
+                            public void onSuccess(byte[] bytes) {
+                                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                                mLivePic.setImageBitmap(bitmap);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
 
                 if(lectureModel.getPublic()){
                     imageViewPrivate.setVisibility(View.GONE);
@@ -211,9 +242,9 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
 
     @Override
     public void onStreamDropped(Session session, Stream stream) {
-        LayoutInflater lay = LayoutInflater.from(ViewLectureActivity.this);
+        LayoutInflater lay = LayoutInflater.from(this);
         View promptsView = lay.inflate(R.layout.layout_payment_dialog, null);
-        AlertDialog.Builder builder = new AlertDialog.Builder(ViewLectureActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setView(promptsView);
 
         TextView mPaymentDialog = promptsView.findViewById(R.id.txt_payment_dialog);
@@ -296,10 +327,6 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
             mSession.disconnect();
         }
         super.onStop();
-        ViewLectureActivity.this.finish();
-
-
-
     }
 
     @Override

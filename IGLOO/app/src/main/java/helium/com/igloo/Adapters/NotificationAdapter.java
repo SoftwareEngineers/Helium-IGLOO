@@ -3,6 +3,7 @@ package helium.com.igloo.Adapters;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,7 +54,12 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         holder.notificationStreamer.setText(notif.getStreamer());
         holder.notificationTitle.setText(notif.getNotification_title());
         holder.notificationDescription.setText(notif.getNotification_description());
-        //holder.notificationDate.setText(notif.get);
+        holder.notificationDate.setText(notif.getTime_created());
+
+        if(notif.getStatus().equals("pending")){
+            holder.view.setBackgroundColor(Color.parseColor("#F2F6F8"));;
+        }
+
 
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users");
         final DatabaseReference userRef = databaseReference.child(notif.getStreamer_id());
@@ -92,9 +98,11 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         protected TextView notificationTitle;
         protected TextView notificationDescription;
         protected TextView notificationDate;
+        protected View view;
 
         public NotificationViewHolder(View itemView) {
             super(itemView);
+            view = itemView;
 
             profileImage = itemView.findViewById(R.id.notification_profile_image);
             notificationStreamer = itemView.findViewById(R.id.notification_streamer);
