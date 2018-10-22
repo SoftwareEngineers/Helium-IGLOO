@@ -70,7 +70,6 @@ public class NotificationActivity extends AppCompatActivity {
                 notifications.clear();
                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                     NotificationModel lecture = childSnapshot.getValue(NotificationModel.class);
-
                     notifications.add(lecture);
                     adapter.notifyDataSetChanged();
                     notificationRecycleView.smoothScrollToPosition(0);

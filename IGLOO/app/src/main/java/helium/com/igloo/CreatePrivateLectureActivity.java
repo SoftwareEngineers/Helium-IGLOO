@@ -25,8 +25,11 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -36,6 +39,8 @@ import java.io.IOException;
 import java.util.Date;
 
 import helium.com.igloo.Models.LectureModel;
+import helium.com.igloo.Models.NotificationModel;
+import helium.com.igloo.Models.SubscriptionModel;
 
 public class CreatePrivateLectureActivity extends AppCompatActivity {
 
@@ -97,6 +102,7 @@ public class CreatePrivateLectureActivity extends AppCompatActivity {
         mButtonCreate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                createNotification();
                 if(mTextTitle.getText().toString() != "" &&
                         mTextDescription.getText().toString() != "" &&
                         mTextPassword.getText().toString() != ""){
@@ -196,5 +202,36 @@ public class CreatePrivateLectureActivity extends AppCompatActivity {
                 .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
         cursor.moveToFirst();
         return cursor.getString(column_index);
+    }
+
+    public void createNotification(){
+        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        databaseReference.child("Subscriptions").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot childSnapshot: dataSnapshot.getChildren()){
+                    if(childSnapshot.hasChild(auth.getCurrentUser().getUid())){
+                        SubscriptionModel subscription = childSnapshot.child(auth.getCurrentUser().getUid()).getValue(SubscriptionModel.class);
+                        NotificationModel notification = new NotificationModel();
+                        notification.setNotification_title(mTextTitle.getText().toString());
+                        notification.setNotification_description(" has created a lecture");
+                        notification.setStatus("pending");
+                        notification.setStreamer_id(subscription.getStreamer_id());
+                        notification.setSubscriber(subscription.getSubscriber());
+                        notification.setStreamer(subscription.getStreamer());
+                        notification.setSubscriber_id(subscription.getSubscriber_id());
+                        DateFormat dateFormat = new DateFormat();
+                        notification.setTime_created(String.valueOf(dateFormat.format("hh:mm a MMM-dd-yyyy", new Date())));
+                        final String key = mDatabase.push().getKey();
+                        databaseReference.child("Notifications").child(subscription.getSubscriber_id()).child(key).setValue(notification);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 }
