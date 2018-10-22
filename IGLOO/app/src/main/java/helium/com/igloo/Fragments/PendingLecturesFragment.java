@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -39,6 +40,8 @@ import helium.com.igloo.R;
 
 public class PendingLecturesFragment extends Fragment {
 
+    private LinearLayout mNoPending;
+
     private RecyclerView recyclerView;
     private List<LectureModel> lectures;
     private PendingLectureAdapter lectureAdapter;
@@ -58,9 +61,12 @@ public class PendingLecturesFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_pending_lectures, container, false);
 
         context = super.getContext();
+        auth = FirebaseAuth.getInstance();
+
+        mNoPending = v.findViewById(R.id.no_pending_lectures);
 
         loadFFmpeg();
-        auth = FirebaseAuth.getInstance();
+
         recyclerView = v.findViewById(R.id.rec_lectures);
         lectures = new ArrayList<>();
         lectureAdapter = new PendingLectureAdapter(lectures, getContext(),ffmpeg);
@@ -95,6 +101,13 @@ public class PendingLecturesFragment extends Fragment {
                         Collections.reverse(lectures);
                         lectureAdapter.notifyDataSetChanged();
                         recyclerView.smoothScrollToPosition(0);
+                    }
+
+                    if(lectures.size() > 0){
+                        recyclerView.setVisibility(View.VISIBLE);
+                    }
+                    else{
+                        mNoPending.setVisibility(View.VISIBLE);
                     }
                 }
             }

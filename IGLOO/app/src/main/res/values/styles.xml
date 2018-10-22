@@ -38,4 +38,9 @@
 
     <!--<style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />-->
 
+    <style name="searchAppearance" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/textColor</item>
+        <item name="android:fontFamily">@font/montserrat</item>
+    </style>
+
 </resources>
