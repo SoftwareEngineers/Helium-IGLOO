@@ -31,7 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/rate_sub1"
-            android:fontFamily="@font/montserrat_bold"
+            android:fontFamily="@font/montserrat"
             android:textColor="@color/white"
             android:textSize="@dimen/sixteen"/>
 
@@ -39,19 +39,19 @@
             android:id="@+id/rating_lecturer_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/montserrat_bold"
+            android:fontFamily="@font/montserrat"
             android:textColor="@color/white"
             android:textSize="@dimen/sixteen"
-            android:layout_marginStart="2dp"/>
+            android:layout_marginStart="3dp"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/rate_sub2"
-            android:fontFamily="@font/montserrat_bold"
+            android:fontFamily="@font/montserrat"
             android:textColor="@color/white"
             android:textSize="@dimen/sixteen"
-            android:layout_marginStart="2dp"/>
+            android:layout_marginStart="3dp"/>
     </LinearLayout>
 
     <LinearLayout
@@ -77,7 +77,7 @@
 
             <TextView
 
-                android:layout_width="230dp"
+                android:layout_width="210dp"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat"
                 android:text="@string/label_rating_outstanding"
@@ -115,7 +115,7 @@
                 android:onClick="CheckVeryGood" />
 
             <TextView
-                android:layout_width="230dp"
+                android:layout_width="210dp"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat"
                 android:text="@string/label_rating_verygood"
@@ -153,7 +153,7 @@
                 android:onClick="CheckAverage" />
 
             <TextView
-                android:layout_width="230dp"
+                android:layout_width="210dp"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat"
                 android:text="@string/label_rating_average"
@@ -190,7 +190,7 @@
                 android:onClick="CheckNotGood" />
 
             <TextView
-                android:layout_width="230dp"
+                android:layout_width="210dp"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat"
                 android:text="@string/label_rating_notgood"
@@ -226,7 +226,7 @@
                 android:onClick="CheckTerrible" />
 
             <TextView
-                android:layout_width="230dp"
+                android:layout_width="210dp"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat"
                 android:text="@string/label_rating_terrible"

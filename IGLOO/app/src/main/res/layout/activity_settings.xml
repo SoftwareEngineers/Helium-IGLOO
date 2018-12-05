@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical"
     tools:context=".SettingsActivity">
 
@@ -25,11 +26,160 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/notification"
+            android:text="@string/settings"
             android:fontFamily="@font/montserrat"
             android:textColor="@color/colorPrimary"
             android:textSize="@dimen/sixteen"
             android:gravity="center"/>
 
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/line"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/settings_pic"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:contentDescription="@string/nothing"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/change_profile_pic"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/circle_button"
+                android:contentDescription="@string/nothing"
+                android:src="@drawable/ic_photo_camera"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.7"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="parent" />
+
+        </android.support.constraint.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/settings_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_bold"
+            android:textColor="@color/textColor"
+            android:textSize="@dimen/fourteen" />
+
+        <TextView
+            android:id="@+id/settings_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat"
+            android:textColor="@color/lightGrey"
+            android:textSize="@dimen/fourteen" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/background"
+        android:paddingTop="20dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_bold"
+            android:text="@string/account"
+            android:textSize="@dimen/fourteen"
+            android:textColor="@color/textColor"
+            android:layout_marginBottom="10dp"/>
+
+        <LinearLayout
+            android:id="@+id/edit_username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/settings_ripple_effect1"
+            android:padding="22dp"
+            android:layout_marginBottom="5dp"
+            android:gravity="start|center">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/edit_username"
+                android:fontFamily="@font/montserrat"
+                android:textColor="@color/textColor"
+                android:drawableStart="@drawable/ic_pen"
+                android:drawablePadding="20dp"
+                android:drawableEnd="@drawable/ic_keyboard_arrow_right"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/update_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/settings_ripple_effect2"
+            android:padding="22dp"
+            android:layout_marginBottom="5dp"
+            android:gravity="start|center">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/update_email"
+                android:fontFamily="@font/montserrat"
+                android:textColor="@color/textColor"
+                android:drawableStart="@drawable/ic_mail"
+                android:drawablePadding="20dp"
+                android:drawableEnd="@drawable/ic_keyboard_arrow_right"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/change_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/settings_ripple_effect3"
+            android:padding="22dp"
+            android:layout_marginBottom="5dp"
+            android:gravity="start|center">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/change_password"
+                android:fontFamily="@font/montserrat"
+                android:textColor="@color/textColor"
+                android:drawableStart="@drawable/ic_lock"
+                android:drawablePadding="20dp"
+                android:drawableEnd="@drawable/ic_keyboard_arrow_right"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
 </LinearLayout>

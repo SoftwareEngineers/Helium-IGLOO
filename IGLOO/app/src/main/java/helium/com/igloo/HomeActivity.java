@@ -10,9 +10,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
@@ -75,6 +77,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private List<String> titles;
 
     private boolean doubleBackToExitPressedOnce = false;
+    private List<NotificationModel> notifications;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,8 +91,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.setItemBackgroundResource(R.drawable.item_highlight);
 
-        titles = new ArrayList<>();
-        lectures = new ArrayList<>();
+        titles = new ArrayList<>(); ////// DATA FOR DISLPAYING SEARCH RESULTS
+        lectures = new ArrayList<>(); ////// DATABASE DATA
+        notifications = new ArrayList<>();
 
         getTitlesAndIDs();
 
@@ -186,6 +190,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @SuppressLint("RestrictedApi")
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -197,6 +202,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         mSearchAutoComplete =  searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
 
         mSearchAutoComplete.setDropDownAnchor(R.id.menu_search);
+        mSearchAutoComplete.setTextAppearance(R.style.searchAppearance);
         mSearchAutoComplete.setThreshold(1);
 
         adapter = new ArrayAdapter<>(HomeActivity.this, android.R.layout.simple_list_item_1,titles);
@@ -210,7 +216,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         if (id == R.id.menu_notification) {
-            startActivity(new Intent(HomeActivity.this,NotificationActivity.class));
+            Intent i = new Intent(HomeActivity.this,NotificationActivity.class);
+            i.putExtra("notifications",(Serializable) notifications);
+            startActivity(i);
             overridePendingTransition(R.transition.slide_in_right,R.transition.slide_out_left);
         }
         else if (id == R.id.menu_search){
@@ -238,6 +246,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 }
             });
             }
+
+
 
         return super.onOptionsItemSelected(item);
     }

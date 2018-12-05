@@ -12,10 +12,11 @@ public class NotificationModel implements Serializable{
     private String status;
     private String notification_title;
     private String notification_description;
+    private String time_created;
 
     public  NotificationModel(){ }
 
-    public NotificationModel(String streamer, String subscriber, String streamer_id, String subscriber_id, String status, String notification_title, String notification_description) {
+    public NotificationModel(String streamer, String subscriber, String streamer_id, String subscriber_id, String status, String notification_title, String notification_description, String time_created) {
         this.streamer = streamer;
         this.subscriber = subscriber;
         this.streamer_id = streamer_id;
@@ -23,6 +24,7 @@ public class NotificationModel implements Serializable{
         this.status = status;
         this.notification_title = notification_title;
         this.notification_description = notification_description;
+        this.time_created = time_created;
     }
 
     public String getStreamer() {
@@ -79,5 +81,13 @@ public class NotificationModel implements Serializable{
 
     public void setNotification_description(String notification_description) {
         this.notification_description = notification_description;
+    }
+
+    public String getTime_created() {
+        return time_created;
+    }
+
+    public void setTime_created(String time_created) {
+        this.time_created = time_created;
     }
 }

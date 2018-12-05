@@ -13,6 +13,6 @@
         android:textSize="@dimen/fourteen"
         android:textColor="@color/textColor"
         android:textAllCaps="false"
-        android:textAlignment="center"/>
+        android:gravity="start|center"/>
 
 </LinearLayout>

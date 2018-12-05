@@ -1,10 +1,8 @@
 package helium.com.igloo.Adapters;
 
 import android.content.Context;
-import android.media.MediaPlayer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +33,7 @@ public class TransciptionAdapter extends ArrayAdapter<TranscriptionModel>{
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         if(convertView == null){
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.transcription_layout, parent,false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.layout_transcription, parent,false);
         }
         TextView txtWord = convertView.findViewById(R.id.txtTransciptionWord);
         TextView txtTime = convertView.findViewById(R.id.txtTransciptionTime);

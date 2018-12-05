@@ -125,18 +125,18 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/montserrat_bold"
-                            android:textAlignment="center"
                             android:textColor="@color/colorPrimary"
-                            android:textSize="@dimen/sixteen" />
+                            android:textSize="@dimen/sixteen"
+                            android:gravity="center"/>
 
                         <TextView
                             android:id="@+id/profile_email"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/montserrat"
-                            android:textAlignment="center"
                             android:textColor="@color/textColor"
-                            android:textSize="@dimen/fourteen" />
+                            android:textSize="@dimen/fourteen"
+                            android:gravity="center"/>
 
                     </LinearLayout>
 

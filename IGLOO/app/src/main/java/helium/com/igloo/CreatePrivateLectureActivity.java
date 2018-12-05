@@ -25,8 +25,11 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -36,6 +39,7 @@ import java.io.IOException;
 import java.util.Date;
 
 import helium.com.igloo.Models.LectureModel;
+import helium.com.igloo.Models.SubscriptionModel;
 
 public class CreatePrivateLectureActivity extends AppCompatActivity {
 
@@ -53,6 +57,7 @@ public class CreatePrivateLectureActivity extends AppCompatActivity {
     public static final int GET_FROM_GALLERY = 3;
     private Uri selectedImage;
     private String fileName;
+    private int lecturesNo;
 
     private FirebaseAuth auth;
     private FirebaseStorage storage;
@@ -97,9 +102,9 @@ public class CreatePrivateLectureActivity extends AppCompatActivity {
         mButtonCreate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mTextTitle.getText().toString() != "" &&
-                        mTextDescription.getText().toString() != "" &&
-                        mTextPassword.getText().toString() != ""){
+                if(!mTextTitle.getText().toString().equals("") &&
+                        !mTextDescription.getText().toString().equals("") &&
+                        !mTextPassword.getText().toString().equals("")){
                     progressBar.setVisibility(View.VISIBLE);
                     final LectureModel lectureModel = new LectureModel();
                     lectureModel.setOwnerId(auth.getUid());
@@ -136,6 +141,10 @@ public class CreatePrivateLectureActivity extends AppCompatActivity {
                                     @Override
                                     public void onSuccess(Void aVoid) {
                                         progressBar.setVisibility(View.GONE);
+
+                                        update();
+                                        addNotification();
+
                                         Intent intent = new Intent(CreatePrivateLectureActivity.this, LectureActivity.class);
                                         intent.putExtra("key", key);
                                         startActivity(intent);
@@ -155,6 +164,9 @@ public class CreatePrivateLectureActivity extends AppCompatActivity {
                             }
                         });
                     }
+                }
+                else {
+                    Toast.makeText(CreatePrivateLectureActivity.this, "Please fill up the empty field", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -196,5 +208,29 @@ public class CreatePrivateLectureActivity extends AppCompatActivity {
                 .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
         cursor.moveToFirst();
         return cursor.getString(column_index);
+    }
+
+    private void update(){
+        final DatabaseReference userReference = FirebaseDatabase.getInstance().getReference("Users");
+        final DatabaseReference profileReference = userReference.child(auth.getCurrentUser().getUid());
+
+        profileReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                lecturesNo = dataSnapshot.child("numberOfLectures").getValue(Integer.class);
+
+                lecturesNo++;
+                profileReference.child("numberOfLectures").setValue(lecturesNo);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void addNotification(){
+
     }
 }

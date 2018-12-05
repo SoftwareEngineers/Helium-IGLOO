@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -24,6 +25,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -42,12 +44,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import helium.com.igloo.Adapters.QuestionAdapter;
 import helium.com.igloo.Models.LectureModel;
+import helium.com.igloo.Models.NotificationModel;
 import helium.com.igloo.Models.QuestionModel;
+import helium.com.igloo.Models.SubscriptionModel;
 
 public class LectureActivity extends AppCompatActivity implements Session.SessionListener, PublisherKit.PublisherListener, Session.ArchiveListener {
 
@@ -66,6 +71,8 @@ public class LectureActivity extends AppCompatActivity implements Session.Sessio
     private StorageReference storageReference;
     private Boolean flag;
 
+    private FirebaseAuth auth;
+
 
     private String ownerID;
 
@@ -74,6 +81,9 @@ public class LectureActivity extends AppCompatActivity implements Session.Sessio
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lecture_view);
         Intent intent = getIntent();
+
+        auth = FirebaseAuth.getInstance();
+
         key = intent.getStringExtra("key");
         progressBar = (ProgressBar)findViewById(R.id.prog_lecture);
         mLectureView = (FrameLayout) findViewById(R.id.frm_lecture_view);
@@ -98,8 +108,6 @@ public class LectureActivity extends AppCompatActivity implements Session.Sessio
                     alertDialog.setPositiveButton("Confirm",new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             if(mSession != null){
-//                                if(mPublisher != null)
-//                                    mSession.unpublish(mPublisher);
                                 mSession.disconnect();
                             }
                             Intent intent = new Intent(LectureActivity.this, HomeActivity.class);
@@ -264,6 +272,7 @@ public class LectureActivity extends AppCompatActivity implements Session.Sessio
         Toast.makeText(LectureActivity.this, "Lecture started successfully", Toast.LENGTH_SHORT).show();
         buttonStartLecture.setEnabled(true);
         flag = true;
+        createNotification();
     }
 
     @Override
@@ -324,10 +333,42 @@ public class LectureActivity extends AppCompatActivity implements Session.Sessio
     @Override
     public void onDestroy(){
         if(mSession != null){
-//            if(mPublisher != null)
-//                mSession.unpublish(mPublisher);
             mSession.disconnect();
         }
         super.onDestroy();
+    }
+
+    public void createNotification(){
+        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        databaseReference.child("Subscriptions").addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot childSnapshot: dataSnapshot.getChildren()){
+                    if(childSnapshot.hasChild(auth.getCurrentUser().getUid())){
+                        SubscriptionModel subscription = childSnapshot.child(auth.getCurrentUser().getUid()).getValue(SubscriptionModel.class);
+                        NotificationModel notification = new NotificationModel();
+
+                        notification.setNotification_title(textLectureTitle.getText().toString());
+                        notification.setNotification_description(" has created a lecture");
+                        notification.setStatus("pending");
+                        notification.setStreamer_id(subscription.getStreamer_id());
+                        notification.setSubscriber(subscription.getSubscriber());
+                        notification.setStreamer(subscription.getStreamer());
+                        notification.setSubscriber_id(subscription.getSubscriber_id());
+                        DateFormat dateFormat = new DateFormat();
+                        notification.setTime_created(String.valueOf(dateFormat.format("hh:mm a MMM-dd-yyyy", new Date())));
+
+                        Toast.makeText(LectureActivity.this, key, Toast.LENGTH_SHORT).show();
+                        databaseReference.child("Notifications").child(subscription.getSubscriber_id()).child(key).setValue(notification);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 }
