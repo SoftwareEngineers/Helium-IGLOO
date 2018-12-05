@@ -151,30 +151,19 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
                 lecturerName = dataSnapshot.child("Users").child(lectureModel.getOwnerId()).child("name").getValue(String.class);
                 textLectureOwner.setText(lecturerName);
 
-                final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users");
-                final DatabaseReference userRef = databaseReference.child(key);
 
-                userRef.addValueEventListener(new ValueEventListener() {
+                String url = dataSnapshot.child("Users").child(lectureModel.getOwnerId()).child("profileUrl").getValue(String.class);
+
+                StorageReference storageRef = storage.getReferenceFromUrl("gs://helium-igloo0830.appspot.com/images/").child(url);
+                final long ONE_MEGABYTE = 1024 * 1024;
+                storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
                     @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        String url = dataSnapshot.child("profileUrl").getValue(String.class);
-
-                        StorageReference storageRef = storage.getReferenceFromUrl("gs://helium-igloo0830.appspot.com/images/").child(url);
-                        final long ONE_MEGABYTE = 1024 * 1024;
-                        storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                            @Override
-                            public void onSuccess(byte[] bytes) {
-                                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                                mLivePic.setImageBitmap(bitmap);
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
+                    public void onSuccess(byte[] bytes) {
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                        mLivePic.setImageBitmap(bitmap);
                     }
                 });
+
 
                 if(lectureModel.getPublic()){
                     imageViewPrivate.setVisibility(View.GONE);
@@ -248,7 +237,7 @@ public class ViewLectureActivity extends AppCompatActivity implements Session.Se
         builder.setView(promptsView);
 
         TextView mPaymentDialog = promptsView.findViewById(R.id.txt_payment_dialog);
-        mPaymentDialog.setText(String.format("%s%s ?", getString(R.string.question_to_rate), lecturerName));
+        mPaymentDialog.setText(String.format("%s %s ?", getString(R.string.question_to_rate), lecturerName));
 
         builder
                 .setCancelable(false)

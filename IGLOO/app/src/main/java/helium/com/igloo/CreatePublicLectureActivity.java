@@ -127,7 +127,6 @@ public class CreatePublicLectureActivity extends AppCompatActivity {
                                         progressBar.setVisibility(View.GONE);
 
                                         update();
-                                        addNotification();
 
                                         Intent intent = new Intent(CreatePublicLectureActivity.this, LectureActivity.class);
                                         intent.putExtra("key", key);
@@ -219,10 +218,6 @@ public class CreatePublicLectureActivity extends AppCompatActivity {
 
             }
         });
-    }
-
-    private void addNotification(){
-
     }
 
 }

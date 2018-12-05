@@ -7,194 +7,92 @@
     android:orientation="vertical"
     tools:context=".ViewArchiveActivity">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="210dp">
+
+            <ProgressBar
+                android:id="@+id/prog_archive"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <VideoView
+                android:id="@+id/view_lecture"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <AutoCompleteTextView
+                android:id="@+id/txtVideoSearch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="25dp"
+                android:layout_marginEnd="25dp"
+                android:hint="@string/search"
+                android:singleLine="true"
+                android:textColor="@color/white"
+                android:completionThreshold="1"
+                android:textColorHint="@color/white"
+                android:fontFamily="@font/montserrat"
+                android:textSize="@dimen/fourteen"
+                android:backgroundTint="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/view_lecture"
+                android:drawableStart="@drawable/ic_search_white"
+                android:drawablePadding="10dp"
+                android:visibility="gone"/>
+
+        </android.support.constraint.ConstraintLayout>
 
         <LinearLayout
+            android:id="@+id/layout_more_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <android.support.constraint.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="210dp">
-
-                <ProgressBar
-                    android:id="@+id/prog_archive"
-                    style="?android:attr/progressBarStyle"
-                    android:layout_width="55dp"
-                    android:layout_height="55dp"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <VideoView
-                    android:id="@+id/view_lecture"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <AutoCompleteTextView
-                    android:id="@+id/txtVideoSearch"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:hint="@string/search"
-                    android:singleLine="true"
-                    android:textColor="@color/white"
-                    android:completionThreshold="1"
-                    android:textColorHint="@color/white"
-                    android:fontFamily="@font/montserrat"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/view_lecture" />
-
-            </android.support.constraint.ConstraintLayout>
+            android:orientation="horizontal"
+            android:paddingTop="10dp"
+            android:paddingStart="15dp"
+            android:paddingEnd="0dp"
+            android:paddingBottom="10dp"
+            android:gravity="start|center"
+            android:background="@drawable/ripple_effect">
 
             <LinearLayout
-                android:id="@+id/layout_more_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingTop="10dp"
-                android:paddingStart="15dp"
-                android:paddingEnd="0dp"
-                android:paddingBottom="10dp"
-                android:gravity="start|center"
-                android:background="@drawable/ripple_effect">
-
-                <LinearLayout
-                    android:layout_width="305dp"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginEnd="5dp">
-
-                    <TextView
-                        android:id="@+id/txt_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/montserrat"
-                        android:textColor="@color/textColor"
-                        android:textSize="@dimen/sixteen" />
-
-                    <TextView
-                        android:id="@+id/txt_views"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/montserrat"
-                        android:textColor="@color/lightGrey"
-                        android:textSize="@dimen/fourteen" />
-
-                </LinearLayout>
-
-                <ImageButton
-                    android:id="@+id/archive_arrow_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_arrow_drop_down"
-                    android:background="@android:color/transparent"
-                    android:contentDescription="@string/nothing" />
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/line"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:background="@color/bluishGray"
-                android:gravity="start|center"
-                android:orientation="horizontal"
-                android:padding="15dp">
-
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/img_owner"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp" />
-
-                <LinearLayout
-                    android:layout_width="165dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/txt_owner"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/montserrat"
-                        android:textColor="@color/textColor"
-                        android:textSize="@dimen/fourteen" />
-
-                    <TextView
-                        android:id="@+id/txt_subscribers"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/montserrat"
-                        android:textColor="@color/lightGrey"
-                        android:textSize="@dimen/twelve"/>
-
-                </LinearLayout>
-
-                <Button
-                    android:id="@+id/btn_archive_subscribe"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@android:color/transparent"
-                    android:text="@string/subscribe"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:textColor="@color/colorPrimary"
-                    android:visibility="gone"/>
-
-                <Button
-                    android:id="@+id/btn_archive_unsubscribe"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@android:color/transparent"
-                    android:text="@string/unsubscribe"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:textColor="@color/colorPrimary"
-                    android:visibility="gone"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/layout_more"
-                android:layout_width="match_parent"
+                android:layout_width="305dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingTop="10dp"
-                android:paddingStart="15dp"
-                android:paddingEnd="0dp"
-                android:paddingBottom="10dp"
-                android:visibility="gone">
+                android:layout_marginEnd="5dp">
 
                 <TextView
-                    android:id="@+id/publish_date"
+                    android:id="@+id/txt_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/montserrat"
-                    android:textColor="@color/lightGrey"
-                    android:textSize="@dimen/twelve"
-                    android:layout_marginBottom="10dp"/>
+                    android:textColor="@color/textColor"
+                    android:textSize="@dimen/sixteen" />
 
                 <TextView
-                    android:id="@+id/archive_description"
+                    android:id="@+id/txt_views"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/montserrat"
@@ -203,12 +101,122 @@
 
             </LinearLayout>
 
+            <ImageButton
+                android:id="@+id/archive_arrow_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_arrow_drop_down"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/nothing" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@color/bluishGray"
+            android:gravity="start|center"
+            android:orientation="horizontal"
+            android:padding="15dp">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/img_owner"
+                android:layout_width="40dp"
+                android:layout_height="40dp" />
+
+            <LinearLayout
+                android:layout_width="165dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txt_owner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat"
+                    android:textColor="@color/textColor"
+                    android:textSize="@dimen/fourteen" />
+
+                <TextView
+                    android:id="@+id/txt_subscribers"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat"
+                    android:textColor="@color/lightGrey"
+                    android:textSize="@dimen/twelve"/>
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btn_archive_subscribe"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:text="@string/subscribe"
+                android:fontFamily="@font/montserrat_bold"
+                android:textColor="@color/colorPrimary"
+                android:visibility="gone"/>
+
+            <Button
+                android:id="@+id/btn_archive_unsubscribe"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:text="@string/unsubscribe"
+                android:fontFamily="@font/montserrat_bold"
+                android:textColor="@color/colorPrimary"
+                android:visibility="gone"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_more"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/publish_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat"
+                android:textColor="@color/lightGrey"
+                android:textSize="@dimen/eleven"
+                android:layout_marginBottom="10dp"
+                android:paddingTop="8dp"
+                android:paddingStart="15dp"
+                android:paddingEnd="0dp"/>
+
+            <TextView
+                android:id="@+id/archive_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat"
+                android:textColor="@color/lightGrey"
+                android:textSize="@dimen/fourteen"
+                android:paddingStart="15dp"
+                android:paddingEnd="0dp"
+                android:layout_marginBottom="8dp"/>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/line"/>
 
         </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/questions_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="10dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -217,13 +225,13 @@
             android:fontFamily="@font/montserrat_bold"
             android:textColor="@color/colorPrimary"
             android:textSize="@dimen/fourteen"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="5dp"/>
+            android:layout_marginBottom="10dp"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rec_questions"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="10dp"/>
+            android:layout_height="match_parent"/>
+
+    </LinearLayout>
 
 </LinearLayout>

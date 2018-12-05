@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -81,18 +82,19 @@ public class ViewArchiveActivity extends AppCompatActivity {
     private Button mUnsubscribe;
     private ImageButton mMore;
     private Animation rotate_forward, rotate_backward;
-    private Animation slide_up, slide_down;
+    private Animation slide_down;
     private LinearLayout mMoreButton, mMoreLayout;
     private TextView mPublishedDate, mDescription;
+    private LinearLayout mContainer;
 
-    private RecyclerView mRecycleViewTranscripts;
     private List<TranscriptionModel> transcripts;
-    private TransciptionAdapter transciptionAdapter;
     private String transcribedText;
     private double numberOfSubscribers = 0;
     private AutoCompleteTextView txtTranscriptSearch;
     private MediaPlayer mediaPlayer;
     private boolean isMoreOpen = false;
+    private boolean isClicked = false;
+    private boolean isPlaying = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,12 +120,28 @@ public class ViewArchiveActivity extends AppCompatActivity {
         mMore = (ImageButton) findViewById(R.id.archive_arrow_button);
         rotate_forward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_forward);
         rotate_backward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_backward);
-        slide_up = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.slide_up);
         slide_down = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.slide_down);
         mMoreButton = (LinearLayout) findViewById(R.id.layout_more_button);
         mMoreLayout = (LinearLayout) findViewById(R.id.layout_more);
         mPublishedDate = findViewById(R.id.publish_date);
         mDescription = findViewById(R.id.archive_description);
+        mContainer = findViewById(R.id.questions_container);
+
+        if(isPlaying) {
+            txtTranscriptSearch.setVisibility(View.VISIBLE);
+            new CountDownTimer(2000, 100) {
+
+                public void onTick(long millisUntilFinished) { }
+
+                public void onFinish() {
+                    if(!txtTranscriptSearch.hasFocus()){
+                        txtTranscriptSearch.setVisibility(View.GONE);
+                        isClicked = false;
+                    }
+                }
+            }.start();
+
+        }
 
         mMoreButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -136,9 +154,34 @@ public class ViewArchiveActivity extends AppCompatActivity {
                 }
                 else{
                     mMore.startAnimation(rotate_backward);
-                    mMoreLayout.startAnimation(slide_down);
                     mMoreLayout.setVisibility(View.GONE);
                     isMoreOpen = false;
+                }
+            }
+        });
+
+        videoView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(!isClicked && isPlaying){
+                    isClicked = true;
+                    txtTranscriptSearch.setVisibility(View.VISIBLE);
+                    new CountDownTimer(2000, 100) {
+
+                        public void onTick(long millisUntilFinished) { }
+
+                        public void onFinish() {
+                            if(!txtTranscriptSearch.hasFocus()){
+                                txtTranscriptSearch.setVisibility(View.GONE);
+                                isClicked = false;
+                            }
+                        }
+                    }.start();
+                }
+                else {
+                    isClicked = false;
+                    txtTranscriptSearch.setVisibility(View.GONE);
                 }
             }
         });
@@ -345,11 +388,12 @@ public class ViewArchiveActivity extends AppCompatActivity {
                             progressBar.setVisibility(View.GONE);
                             videoView.setBackground(null);
                             videoView.start();
+                            isPlaying = true;
                             Log.e("Opentok Archive", "Archive started");
                         }
                     });
-
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     System.out.println("Video Play Error :" + e.getMessage());
                 }
             }
@@ -374,6 +418,9 @@ public class ViewArchiveActivity extends AppCompatActivity {
                         questionAdapter.notifyDataSetChanged();
                         mRecycleViewQuestions.smoothScrollToPosition(0);
                     }
+                }
+                if(questions.isEmpty()){
+                    mContainer.setVisibility(View.GONE);
                 }
             }
 

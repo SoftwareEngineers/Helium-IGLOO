@@ -243,7 +243,7 @@ public class PendingLectureAdapter extends RecyclerView.Adapter<PendingLectureAd
                 executeFFmpeg(command.split(" "));
             }
         }catch (Exception e){
-            Toast.makeText(context,e.toString(),Toast.LENGTH_LONG).show();
+            //Toast.makeText(context,e.toString(),Toast.LENGTH_LONG).show();
         }
 
     }
